@@ -17,9 +17,6 @@ const checkIPRange = (req, res, next) => {
   const allowedRange = process.env.IP_RANGE.split(',')
   const clientIp = getClientIp(req)
 
-  console.log('Client IP:', clientIp)
-  console.log('Allowed IP range:', allowedRange)
-
   if (ipRangeCheck(clientIp, allowedRange)) {
     next()
   } else {

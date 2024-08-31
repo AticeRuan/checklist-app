@@ -36,6 +36,7 @@ db.UserCheck = require('./userCheckModel')(sequelize, DataTypes)
 db.ListItem = require('./listitemModel')(sequelize, DataTypes)
 db.ListItemSite = require('./listitemSiteModel')(sequelize, DataTypes)
 db.User = require('./Auth/userModel')(sequelize, DataTypes)
+db.IPAddress = require('./Auth/ipAddressModel')(sequelize, DataTypes)
 
 db.BlacklistedToken = require('./Auth/blacklistedTokenModel')(
   sequelize,

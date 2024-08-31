@@ -2,6 +2,9 @@ require('dotenv').config()
 const cors = require('cors')
 const express = require('express')
 const app = express()
+const swaggerJsDoc = require('swagger-jsdoc')
+const swaggerOptions = require('./utils/swaggerConfig')
+const swaggerUi = require('swagger-ui-express')
 
 var corsOptions = {
   origin: 'http://localhost:5173',
@@ -16,6 +19,9 @@ var corsOptions = {
 app.use(express.json())
 app.use(cors(corsOptions))
 app.use(express.urlencoded({ extended: true }))
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions)
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
 //routes
 
@@ -51,6 +57,11 @@ app.use('/api/user-checks', userCheckRouter)
 //User
 const userRouter = require('./routes/userRouter')
 app.use('/api/users', userRouter)
+
+//ip address
+
+const ipAddressRouter = require('./routes/ipAddressRouter')
+app.use('/api/ip-addresses', ipAddressRouter)
 
 //testing api
 
