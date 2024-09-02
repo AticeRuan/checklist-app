@@ -3,8 +3,9 @@ import Tile from './tile'
 const TileGrounp = ({
   title = 'Group',
   data,
-  draft = false,
-  archived = false,
+  handleDelete,
+  handleArchive,
+  handleRestore,
 }) => {
   return (
     <div className="flex flex-col w-full 2xl:w-[60vw] justify-center gap-6 items-center">
@@ -12,11 +13,21 @@ const TileGrounp = ({
         {title}
       </h2>
       <div className="w-full flex pl-[2rem] flex-wrap gap-6">
-        <Tile draft={draft} archived={archived} />
-        <Tile draft={draft} archived={archived} />
-        <Tile draft={draft} archived={archived} />
-        <Tile draft={draft} archived={archived} />
-        <Tile draft={draft} archived={archived} />
+        {data?.map((item) => {
+          const isDraft = item.status === 'draft'
+          const isArchived = item.status === 'archived'
+          return (
+            <Tile
+              key={item.template_id}
+              draft={isDraft}
+              archived={isArchived}
+              item={item}
+              handleDelete={handleDelete}
+              handleArchive={handleArchive}
+              handledRestore={handleRestore}
+            />
+          )
+        })}
       </div>
     </div>
   )

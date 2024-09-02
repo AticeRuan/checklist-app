@@ -25,9 +25,11 @@ const addTemplate = async (req, res) => {
 
 const updateTemplate = async (req, res) => {
   try {
-    const { title, description, category_id, last_updated_by, sites } = req.body
+    const { title, description, category_id, last_updated_by, sites, status } =
+      req.body
 
     let id = req.params.id
+    let seletedsites = sites || []
 
     await Template.update(
       {
@@ -35,28 +37,28 @@ const updateTemplate = async (req, res) => {
         description: description,
         category_id: category_id,
         last_updated_by: last_updated_by,
+        status: status,
       },
       { where: { template_id: id } },
     )
 
-    const existingTemplateSites = await TemplateSite.findAll({
-      where: { template_id: id },
-    })
-
-    if (existingTemplateSites.length > 0) {
+    if (sites && Array.isArray(sites)) {
+      // Destroy existing template sites
       await TemplateSite.destroy({ where: { template_id: id } })
-    }
 
-    for (let site_id of sites) {
-      await TemplateSite.create({
-        template_id: id,
-        site_id: site_id,
-      })
+      // Create new template sites in parallel if 'sites' is not empty
+      if (sites.length > 0) {
+        const sitePromises = sites.map((site_id) =>
+          TemplateSite.create({ template_id: id, site_id: site_id }),
+        )
+        await Promise.all(sitePromises)
+      }
     }
-
-    res.status(200).send('Template updated')
+    res.status(200).json({ message: 'Template updated' })
   } catch (err) {
-    res.status(500).send('Error:', err)
+    res
+      .status(500)
+      .json({ error: 'Internal server error', details: err.message })
   }
 }
 
@@ -71,20 +73,15 @@ const deleteTemplate = async (req, res) => {
     await template.destroy()
     res.status(204).json(template)
   } catch (err) {
-    res.status(500).send('Error:', err)
+    res
+      .status(500)
+      .json({ error: 'Internal server error', details: err.message })
   }
 }
 
-const getTemplatesByStatus = async (req, res) => {
+const getAllTemplates = async (req, res) => {
   try {
-    const status = req.params.status
-
-    if (!status) {
-      return res.status(400).json({ error: 'Status is required' })
-    }
-
     let templates = await Template.findAll({
-      where: { status: status },
       include: [
         {
           model: Category,
@@ -134,6 +131,6 @@ module.exports = {
   addTemplate,
   updateTemplate,
   deleteTemplate,
-  getTemplatesByStatus,
+  getAllTemplates,
   getOneTemplate,
 }

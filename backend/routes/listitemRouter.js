@@ -50,7 +50,7 @@ const checkIPRange = require('../middlewares/checkIPRange')
  *       500:
  *         description: Internal server error.
  */
-router.post('/', checkIPRange, listItemController.addListItem)
+router.post('/', checkIPRange, requireAuth, listItemController.addListItem)
 /**
  * @swagger
  * /api/listitems/{id}:
@@ -79,7 +79,7 @@ router.post('/', checkIPRange, listItemController.addListItem)
  *       500:
  *         description: Internal server error.
  */
-router.get('/:id', checkIPRange, listItemController.getOneListItem)
+router.get('/:id', checkIPRange, requireAuth, listItemController.getOneListItem)
 /**
  * @swagger
  * /api/listitems/{id}:
@@ -128,7 +128,12 @@ router.get('/:id', checkIPRange, listItemController.getOneListItem)
  *       500:
  *         description: Internal server error.
  */
-router.patch('/:id', checkIPRange, listItemController.updateListItem)
+router.patch(
+  '/:id',
+  checkIPRange,
+  requireAuth,
+  listItemController.updateListItem,
+)
 /**
  * @swagger
  * /api/listitems/{id}:
@@ -153,6 +158,11 @@ router.patch('/:id', checkIPRange, listItemController.updateListItem)
  *       500:
  *         description: Internal server error.
  */
-router.delete('/:id', checkIPRange, listItemController.deleteListItem)
+router.delete(
+  '/:id',
+  checkIPRange,
+  requireAuth,
+  listItemController.deleteListItem,
+)
 
 module.exports = router

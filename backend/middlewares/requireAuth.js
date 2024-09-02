@@ -26,21 +26,22 @@ const requireAuth = async (req, res, next) => {
       return res.status(401).json({ message: 'Please login again' })
     }
 
-    const { id } = jwt.verify(token, process.env.SECRET)
+    const decoded = jwt.verify(token, process.env.SECRET)
+    const user = await User.findOne({ where: { user_id: decoded.id } })
 
-    req.user = await User.findOne({ where: { user_id: id } })
-
-    if (!req.user) {
-      return res.status(401).json({ error: 'Unauthorized: User not found' })
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' })
     }
+
+    req.user = user
 
     next()
   } catch (error) {
-    if (error.name === 'TokenExpiredError') {
+    if (error instanceof jwt.TokenExpiredError) {
       return res
         .status(401)
-        .json({ message: 'Token has expired, please login again' })
-    } else if (error.name === 'JsonWebTokenError') {
+        .json({ message: 'Token has expired, please log in again.' })
+    } else if (error instanceof jwt.JsonWebTokenError) {
       return res.status(401).json({ message: 'Invalid token' })
     } else {
       return res.status(500).json({ message: 'Internal server error' })

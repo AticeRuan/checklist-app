@@ -39,7 +39,13 @@ const checkIPRange = require('../middlewares/checkIPRange')
  *       500:
  *         description: Internal server error.
  */
-router.post('/add-new-user', checkIPRange, userController.addUser)
+router.post(
+  '/add-new-user',
+  checkRole,
+  requireAuth,
+  checkIPRange,
+  userController.addUser,
+)
 /**
  * @swagger
  * /api/users/login:
@@ -98,7 +104,7 @@ router.post('/login', checkIPRange, userController.loginUser)
  *       500:
  *         description: Internal server error.
  */
-router.post('/logout', checkIPRange, userController.logoutUser)
+router.post('/logout', requireAuth, checkIPRange, userController.logoutUser)
 /**
  * @swagger
  * /api/users/{id}/change-password:
@@ -147,6 +153,81 @@ router.patch(
   '/:id/change-password',
   checkIPRange,
   userController.changePassword,
+)
+/**
+ * @swagger
+ * /api/users/delete-user:
+ *   delete:
+ *     summary: Delete a user
+ *     description: Delete a user account by username.
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: "john_doe"
+ *                 description: "The username of the user to delete."
+ *     responses:
+ *       200:
+ *         description: User deleted successfully.
+ *       400:
+ *         description: Username is required.
+ *       404:
+ *         description: User not found.
+ *       500:
+ *         description: Internal server error.
+ */
+router.delete(
+  '/delete-user',
+  checkRole,
+  requireAuth,
+  checkIPRange,
+  userController.deleteUser,
+)
+/**
+ * @swagger
+ * /api/users:
+ *   get:
+ *     summary: Get all users
+ *     description: Retrieve a list of all users in the system.
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A list of users.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   user_id:
+ *                     type: integer
+ *                     example: 1
+ *                   username:
+ *                     type: string
+ *                     example: "john_doe"
+ *                   role:
+ *                     type: string
+ *                     example: "admin"
+ *       500:
+ *         description: Internal server error.
+ */
+router.get(
+  '/',
+  checkRole,
+  requireAuth,
+  checkIPRange,
+  userController.getAllUsers,
 )
 
 module.exports = router

@@ -37,7 +37,13 @@ const checkIPRange = require('../middlewares/checkIPRange')
  *       500:
  *         description: Internal server error.
  */
-router.post('/', checkIPRange, ipAddressController.addIPAddress)
+router.post(
+  '/',
+  checkIPRange,
+  requireAuth,
+  checkRole,
+  ipAddressController.addIPAddress,
+)
 /**
  * @swagger
  * /api/ip-addresses:
@@ -59,7 +65,13 @@ router.post('/', checkIPRange, ipAddressController.addIPAddress)
  *       500:
  *         description: Internal server error.
  */
-router.get('/', checkIPRange, ipAddressController.getIPAddresses)
+router.get(
+  '/',
+  checkIPRange,
+  requireAuth,
+  checkRole,
+  ipAddressController.getIPAddresses,
+)
 /**
  * @swagger
  * /api/ip-addresses/{id}:
@@ -88,7 +100,13 @@ router.get('/', checkIPRange, ipAddressController.getIPAddresses)
  *       500:
  *         description: Internal server error.
  */
-router.get('/:id', checkIPRange, ipAddressController.getIPAddressById)
+router.get(
+  '/:id',
+  checkIPRange,
+  requireAuth,
+  checkRole,
+  ipAddressController.getIPAddressById,
+)
 /**
  * @swagger
  * /api/ip-addresses/{id}:
@@ -128,7 +146,13 @@ router.get('/:id', checkIPRange, ipAddressController.getIPAddressById)
  *       500:
  *         description: Internal server error.
  */
-router.patch('/:id', checkIPRange, ipAddressController.updateIPAddress)
+router.patch(
+  '/:id',
+  checkIPRange,
+  requireAuth,
+  checkRole,
+  ipAddressController.updateIPAddress,
+)
 /**
  * @swagger
  * /api/ip-addresses/{id}:
@@ -153,6 +177,12 @@ router.patch('/:id', checkIPRange, ipAddressController.updateIPAddress)
  *       500:
  *         description: Internal server error.
  */
-router.delete('/:id', checkIPRange, ipAddressController.deleteIPAddress)
+router.delete(
+  '/:id',
+  checkIPRange,
+  requireAuth,
+  checkRole,
+  ipAddressController.deleteIPAddress,
+)
 
 module.exports = router

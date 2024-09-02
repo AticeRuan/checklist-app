@@ -25,10 +25,10 @@ const requireAuth = require('../middlewares/requireAuth')
  *       500:
  *         description: Internal server error.
  */
-router.post('/', checkIPRange, templateController.addTemplate)
+router.post('/', requireAuth, checkIPRange, templateController.addTemplate)
 /**
  * @swagger
- * /api/templates/all/{status}:
+ * /api/templates:
  *   get:
  *     summary: Get templates by status
  *     description: Retrieve a list of templates filtered by their status.
@@ -56,11 +56,7 @@ router.post('/', checkIPRange, templateController.addTemplate)
  *       500:
  *         description: Internal server error.
  */
-router.get(
-  '/all/:status',
-  checkIPRange,
-  templateController.getTemplatesByStatus,
-)
+router.get('/', requireAuth, checkIPRange, templateController.getAllTemplates)
 /**
  * @swagger
  * /api/templates/{id}:
@@ -89,7 +85,7 @@ router.get(
  *       500:
  *         description: Internal server error.
  */
-router.get('/:id', checkIPRange, templateController.getOneTemplate)
+router.get('/:id', requireAuth, checkIPRange, templateController.getOneTemplate)
 /**
  * @swagger
  * /api/templates/{id}:
@@ -133,7 +129,12 @@ router.get('/:id', checkIPRange, templateController.getOneTemplate)
  *       500:
  *         description: Internal server error.
  */
-router.patch('/:id', checkIPRange, templateController.updateTemplate)
+router.patch(
+  '/:id',
+  requireAuth,
+  checkIPRange,
+  templateController.updateTemplate,
+)
 /**
  * @swagger
  * /api/templates/{id}:
@@ -158,6 +159,11 @@ router.patch('/:id', checkIPRange, templateController.updateTemplate)
  *       500:
  *         description: Internal server error.
  */
-router.delete('/:id', checkIPRange, templateController.deleteTemplate)
+router.delete(
+  '/:id',
+  requireAuth,
+  checkIPRange,
+  templateController.deleteTemplate,
+)
 
 module.exports = router

@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import logo from '../assets/ballance.png'
+import { useSelector } from 'react-redux'
 
 const Navbar = () => {
   const navLinks = [
@@ -36,41 +37,55 @@ const Navbar = () => {
       icon: <ArchiveIcon />,
     },
     {
-      name: 'Settings',
-      url: '/settings',
-      requireAuth: true,
-      icon: <SettingsIcon />,
-    },
-    {
       name: 'User',
       url: '/user',
       requireAuth: false,
       icon: <UserIcon />,
     },
+    {
+      name: 'Settings',
+      url: '/settings',
+      requireAuth: true,
+      icon: <SettingsIcon />,
+    },
   ]
 
+  const user = useSelector((state) => state.auth.user)
+  const isAdmin = user?.role === 'admin'
+
   const { pathname } = useLocation()
+
   return (
-    <div className="flex flex-col bg-b-mid-blue justify-start items-center py-[2rem]  w-[6rem] md:w-[8.125rem]  gap-[1.5rem] md:gap-[2.56rem]">
-      <img src={logo} width={62} height={62} className="w-[3.875rem]" />
+    <div className="flex flex-col bg-b-mid-blue justify-start items-center py-[2rem]  w-[6rem] sm:w-[8.125rem] ">
+      <img
+        src={logo}
+        width={62}
+        height={62}
+        className="w-[3.875rem] pb-[1.5rem] md:pb-[2.56rem]"
+      />
       {navLinks.map((link, index) => {
         const isActive =
           pathname === link.url ||
-          (link.url === '/all-lists' && pathname.startsWith('/update'))
+          (link.url === '/all-lists' && pathname.startsWith('/update')) ||
+          (link.url === '/drafts' && pathname.startsWith('/drafts'))
+
+        const shouldDisplay = isAdmin || link.name !== 'Settings'
         return (
-          <Link
-            key={index}
-            to={link.url}
-            className="p-2 hover:bg-b-light-blue flex flex-col justify-center items-center gap-[8px] w-full py-[1rem]"
-            style={{
-              backgroundColor: isActive ? '#00739E' : '',
-            }}
-          >
-            {link.icon}
-            <p className="text-[1rem] text-white hidden md:block">
-              {link.name}
-            </p>
-          </Link>
+          shouldDisplay && (
+            <Link
+              key={index}
+              to={link.url}
+              className="p-2 hover:bg-b-light-blue flex flex-col justify-center items-center gap-[8px] w-full py-[1rem]  md:py-[1.25rem] whitespace-nowrap transition-all duration-500"
+              style={{
+                backgroundColor: isActive ? '#00739E' : '',
+              }}
+            >
+              {link.icon}
+              <p className="text-[1rem] text-white hidden md:block">
+                {link.name}
+              </p>
+            </Link>
+          )
         )
       })}
     </div>

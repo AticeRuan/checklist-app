@@ -21,7 +21,8 @@ const RootRoutes = () => {
         <Route path="/drafts" element={<Drafts />} />
         <Route path="/settings" element={<Settings />} />
         <Route path="/user" element={<User />} />
-        <Route path="/update" element={<Update />} />
+        <Route path="/update/:id" element={<Update />} />
+        <Route path="/drafts/:id" element={<Update />} />
       </Route>
     </Routes>
   )

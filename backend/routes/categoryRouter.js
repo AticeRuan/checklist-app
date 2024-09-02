@@ -32,7 +32,13 @@ const checkIPRange = require('../middlewares/checkIPRange')
  *       500:
  *         description: Internal server error.
  */
-router.post('/', checkIPRange, categoryController.addCategory)
+router.post(
+  '/',
+  checkIPRange,
+  requireAuth,
+  checkRole,
+  categoryController.addCategory,
+)
 /**
  * @swagger
  * /api/categories:
@@ -123,6 +129,64 @@ router.patch(
   checkIPRange,
   requireAuth,
   categoryController.updateCategory,
+)
+/**
+ * @swagger
+ * /api/categories/{id}:
+ *   delete:
+ *     summary: Delete a category
+ *     description: Delete a category by its ID.
+ *     tags: [Categories]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the category to be deleted.
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Category deleted successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Category deleted successfully"
+ *       404:
+ *         description: Category not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Category not found"
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Internal server error"
+ *                 details:
+ *                   type: string
+ *                   example: "Error message details"
+ */
+router.delete(
+  '/:id',
+  checkIPRange,
+  requireAuth,
+  checkRole,
+  categoryController.deleteCategory,
 )
 
 module.exports = router

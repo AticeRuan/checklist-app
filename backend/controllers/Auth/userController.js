@@ -46,6 +46,28 @@ const addUser = async (req, res) => {
   }
 }
 
+const deleteUser = async (req, res) => {
+  const { username } = req.body
+
+  if (!username) {
+    return res.status(400).json({ message: 'Username is required' })
+  }
+
+  try {
+    const user = await User.findOne({ where: { user_name: username } })
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+    await User.destroy({ where: { user_name: username } })
+    res.status(200).json({ message: 'User deleted successfully' })
+  } catch (err) {
+    console.error('Error deleting user:', err)
+    res
+      .status(500)
+      .json({ error: 'Internal server error', details: err.message })
+  }
+}
+
 const loginUser = async (req, res) => {
   const { username, password } = req.body
 
@@ -69,8 +91,10 @@ const loginUser = async (req, res) => {
     }
 
     const token = createToken(user.user_id)
+    const role = user.role
+    const name = user.user_name
 
-    res.status(200).json({ token })
+    res.status(200).json({ token, role, name })
   } catch (error) {
     res.status(400).json({ message: error.message })
   }
@@ -116,9 +140,20 @@ const changePassword = async (req, res) => {
   }
 }
 
+const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.findAll()
+    res.status(200).json(users)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
+
 module.exports = {
   addUser,
   loginUser,
   logoutUser,
   changePassword,
+  deleteUser,
+  getAllUsers,
 }
