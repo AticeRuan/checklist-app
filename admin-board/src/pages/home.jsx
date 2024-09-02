@@ -3,7 +3,7 @@ import TileGrounp from '../components/ui/tileGrounp'
 import { useSelector, useDispatch } from 'react-redux'
 import { useGetAllTemplatesQuery } from '../app/api/templateApi'
 import { getTemplates } from '../app/features/template/templateSlice'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const Home = () => {
   const user = useSelector((state) => state.auth.user)
@@ -17,25 +17,62 @@ const Home = () => {
     if (templates) {
       dispatch(getTemplates(templates))
     }
-  }, [dispatch, templates])
+  }, [templates, dispatch])
 
   const localtemplates = useSelector((state) => state.template.templates)
 
-  const activetemplates = localtemplates?.filter(
+  const activeTemplates = localtemplates?.filter(
     (template) => template.status !== 'archived',
   )
 
-  const recentUpdatedTemplates = activetemplates
+  // const [activeTemplates, setActiveTemplates] = useState([])
+  // const [recentUpdatedTemplates, setRecentUpdatedTemplates] = useState([])
+  // const [recentCreatedTemplates, setRecentCreatedTemplates] = useState([])
+  // const [draftTemplates, setDraftTemplates] = useState([])
+
+  // useEffect(() => {
+  //   if (localtemplates?.length > 0) {
+  //     setActiveTemplates(
+  //       localtemplates?.filter((template) => template.status !== 'archived'),
+  //     )
+  //   }
+  // }, [localtemplates, activeTemplates])
+
+  // useEffect(() => {
+  //   if (activeTemplates?.length > 0) {
+  //     setDraftTemplates(
+  //       activeTemplates
+  //         ?.filter((template) => template.status === 'draft')
+  //         .slice(0, 5),
+  //     )
+  //     setRecentUpdatedTemplates(
+  //       activeTemplates
+  //         ?.slice()
+  //         .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+  //         .slice(0, 3),
+  //     )
+  //     setRecentCreatedTemplates(
+  //       activeTemplates
+  //         ?.slice()
+  //         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+  //         .slice(0, 3),
+  //     )
+  //   }
+  // }, [activeTemplates])
+
+  // console.log(activeTemplates)
+
+  const recentUpdatedTemplates = activeTemplates
     ?.slice()
     .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
     .slice(0, 3)
 
-  const recentCreatedTemplates = activetemplates
+  const recentCreatedTemplates = activeTemplates
     ?.slice()
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     .slice(0, 3)
 
-  const draftTemplates = activetemplates
+  const draftTemplates = activeTemplates
     ?.filter((template) => template.status === 'draft')
     .slice(0, 5)
 

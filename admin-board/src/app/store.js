@@ -14,24 +14,69 @@ import categoryReducer from './features/category/categorySlice'
 import siteReducer from './features/site/siteSlice'
 import ipAddressReducer from './features/ipAddress/ipAddressSlice'
 import listitemReducer from './features/listitem/listitemSlice'
+import { combineReducers } from '@reduxjs/toolkit'
+import { persistStore, persistReducer } from 'redux-persist'
+import storage from 'redux-persist/lib/storage'
+
+import { encryptTransform } from 'redux-persist-transform-encrypt'
+
+import {
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from 'redux-persist'
+
+const rootReducer = combineReducers({
+  [userApi.reducerPath]: userApi.reducer,
+  [templateApi.reducerPath]: templateApi.reducer,
+  [categoryApi.reducerPath]: categoryApi.reducer,
+  [siteApi.reducerPath]: siteApi.reducer,
+  [ipAddressApi.reducerPath]: ipAddressApi.reducer,
+  [listitemApi.reducerPath]: listitemApi.reducer,
+  auth: authReducer,
+  user: userReducer,
+  template: templateReducer,
+  category: categoryReducer,
+  site: siteReducer,
+  ipAddress: ipAddressReducer,
+  listitem: listitemReducer,
+})
+
+const persistConfig = {
+  key: 'root',
+  storage,
+  transforms: [
+    encryptTransform({
+      secretKey: import.meta.env.VITE_SECRET,
+      onError: function (error) {
+        console.log('error', error)
+      },
+    }),
+  ],
+  whitelist: [
+    'auth',
+    'user',
+    'template',
+    'category',
+    'site',
+    'ipAddress',
+    'listitem',
+  ],
+}
+
+const persistedReducer = persistReducer(persistConfig, rootReducer)
+
 export const store = configureStore({
-  reducer: {
-    [userApi.reducerPath]: userApi.reducer,
-    [templateApi.reducerPath]: templateApi.reducer,
-    [categoryApi.reducerPath]: categoryApi.reducer,
-    [siteApi.reducerPath]: siteApi.reducer,
-    [ipAddressApi.reducerPath]: ipAddressApi.reducer,
-    [listitemApi.reducerPath]: listitemApi.reducer,
-    auth: authReducer,
-    user: userReducer,
-    template: templateReducer,
-    category: categoryReducer,
-    site: siteReducer,
-    ipAddress: ipAddressReducer,
-    listitem: listitemReducer,
-  },
+  reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware()
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    })
       .concat(userApi.middleware)
       .concat(templateApi.middleware)
       .concat(categoryApi.middleware)
@@ -39,3 +84,30 @@ export const store = configureStore({
       .concat(ipAddressApi.middleware)
       .concat(listitemApi.middleware),
 })
+export const persistor = persistStore(store)
+
+// export const store = configureStore({
+//   reducer: {
+//     [userApi.reducerPath]: userApi.reducer,
+//     [templateApi.reducerPath]: templateApi.reducer,
+//     [categoryApi.reducerPath]: categoryApi.reducer,
+//     [siteApi.reducerPath]: siteApi.reducer,
+//     [ipAddressApi.reducerPath]: ipAddressApi.reducer,
+//     [listitemApi.reducerPath]: listitemApi.reducer,
+//     auth: authReducer,
+//     user: userReducer,
+//     template: templateReducer,
+//     category: categoryReducer,
+//     site: siteReducer,
+//     ipAddress: ipAddressReducer,
+//     listitem: listitemReducer,
+//   },
+//   middleware: (getDefaultMiddleware) =>
+//     getDefaultMiddleware()
+//       .concat(userApi.middleware)
+//       .concat(templateApi.middleware)
+//       .concat(categoryApi.middleware)
+//       .concat(siteApi.middleware)
+//       .concat(ipAddressApi.middleware)
+//       .concat(listitemApi.middleware),
+// })

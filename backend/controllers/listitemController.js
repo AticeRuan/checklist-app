@@ -9,6 +9,7 @@ const addListItem = async (req, res) => {
   try {
     const { template_id, is_environment_related, keyword, description, sites } =
       req.body
+    const last_updated_by = req.user.user_name
 
     // Create the list item
     const listItem = await ListItem.create({
@@ -16,7 +17,7 @@ const addListItem = async (req, res) => {
       is_environment_related: is_environment_related,
       keyword: keyword,
       description: description,
-      last_updated_by: 'Admin',
+      last_updated_by: last_updated_by,
     })
 
     // Ensure that listItem.id is valid and not null
@@ -64,6 +65,8 @@ const updateListItem = async (req, res) => {
     let id = req.params.id
     const { template_id, is_environment_related, keyword, description, sites } =
       req.body
+
+    const last_updated_by = req.user.user_name
     const listItem = await ListItem.findByPk(id)
 
     if (!listItem) {
@@ -74,6 +77,7 @@ const updateListItem = async (req, res) => {
       is_environment_related: is_environment_related,
       keyword: keyword,
       description: description,
+      last_updated_by: last_updated_by,
     })
 
     await ListItemSite.destroy({

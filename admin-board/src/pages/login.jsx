@@ -3,8 +3,10 @@ import { useState } from 'react'
 import { useLoginUserMutation } from '../app/api/userApi'
 import { useDispatch } from 'react-redux'
 import { login } from '../app/features/auth/authSlice'
+import { useNavigate } from 'react-router-dom'
 const Login = () => {
   const [user, setUser] = useState({ username: '', password: '' })
+  const navigate = useNavigate()
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -17,12 +19,15 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault()
     const data = user
+
     try {
       const loggedInUser = await loginUser(data).unwrap()
 
       if (loggedInUser && loggedInUser.token) {
         localStorage.setItem('token', loggedInUser.token)
         dispatch(login(loggedInUser))
+
+        navigate('/')
       } else {
         console.error('Login failed: No token received')
       }

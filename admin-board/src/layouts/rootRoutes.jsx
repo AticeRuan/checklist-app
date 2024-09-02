@@ -8,6 +8,7 @@ import Drafts from '../pages/drafts'
 import Settings from '../pages/settings'
 import User from '../pages/user'
 import Update from '../pages/update'
+import Login from '../pages/login'
 
 const RootRoutes = () => {
   const location = useLocation()
@@ -23,6 +24,7 @@ const RootRoutes = () => {
         <Route path="/user" element={<User />} />
         <Route path="/update/:id" element={<Update />} />
         <Route path="/drafts/:id" element={<Update />} />
+        <Route path="/login" element={<Login />} />
       </Route>
     </Routes>
   )

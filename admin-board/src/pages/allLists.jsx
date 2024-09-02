@@ -2,7 +2,6 @@ import SearchBox from '../components/ui/searchBox'
 import TileGrounp from '../components/ui/tileGrounp'
 import { useGetAllTemplatesQuery } from '../app/api/templateApi'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
 
 const AllLists = () => {
   const localtemplates = useSelector((state) => state.template.templates)
@@ -10,8 +9,6 @@ const AllLists = () => {
   const published = localtemplates?.filter(
     (template) => template.status === 'published',
   )
-
-  console.log(localtemplates)
 
   return (
     <div className="p-[3rem] flex flex-col items-start justify-start w-full ">
@@ -57,9 +54,17 @@ const AllLists = () => {
       </div>
       {/* filter ends */}
       {/* list start */}
-      <div className=" flex items-center flex-col gap-16 justify-center w-full">
-        <TileGrounp title="" data={published} />
-      </div>
+      {published?.length > 0 ? (
+        <div className=" flex items-center flex-col gap-16 justify-center w-full">
+          <TileGrounp title="" data={published} />
+        </div>
+      ) : (
+        <div className=" flex items-center flex-col gap-16 justify-center w-full h-full">
+          <h3 className="flex items-center justify-center capitalize text-xl font-bold">
+            No published templates
+          </h3>
+        </div>
+      )}
     </div>
   )
 }

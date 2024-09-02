@@ -1,17 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query'
-
+import customBaseQuery from '../customBaseQuery'
 export const listitemApi = createApi({
   reducerPath: 'listitemApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_API_URL}/api`,
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem('token')
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`)
-      }
-      return headers
-    },
-  }),
+  baseQuery: customBaseQuery,
   endpoints: (builder) => ({
     addListItem: builder.mutation({
       query: (newListItem) => ({

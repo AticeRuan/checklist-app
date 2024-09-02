@@ -1,18 +1,26 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import { REHYDRATE } from 'redux-persist'
+import customBaseQuery from '../customBaseQuery'
+
+function isHydrateAction(action) {
+  return action.type === REHYDRATE
+}
 
 export const userApi = createApi({
   reducerPath: 'userApi',
-  baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_API_URL}/api`,
-    prepareHeaders: (headers) => {
-      const token = localStorage.getItem('token')
-      if (token) {
-        headers.set('Authorization', `Bearer ${token}`)
-      }
-      return headers
-    },
-  }),
+  baseQuery: customBaseQuery,
+  // // to prevent circular type issues, the return type needs to be annotated as any
+  // extractRehydrationInfo(action, { reducerPath }) {
+  //   if (isHydrateAction(action)) {
+  //     // when persisting the api reducer
+  //     if (action.key === 'root') {
+  //       return action.payload
+  //     }
 
+  //     // When persisting the root reducer
+  //     return action.payload[userApi.reducerPath]
+  //   }
+  // },
   endpoints: (builder) => ({
     addUser: builder.mutation({
       query: (newUser) => ({

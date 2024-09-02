@@ -4,15 +4,12 @@ import { useGetAllTemplatesQuery } from '../app/api/templateApi'
 import dateFormat, { masks } from 'dateformat'
 
 const Archive = () => {
-  const { data, error, isLoading } = useGetAllTemplatesQuery()
-
   const localtemplates = useSelector((state) => state.template.templates)
 
   const archived = localtemplates?.filter(
     (template) => template.status === 'archived',
   )
 
-  console.log(archived)
   const archiveYear = [
     ...new Set(
       archived
@@ -29,11 +26,11 @@ const Archive = () => {
 
       {archived?.length > 0 ? (
         <div className=" flex items-center flex-col gap-16 justify-center w-full ">
-          {archiveYear.map((year) => {
+          {archiveYear.map((year, index) => {
             masks.default = 'yyyy'
             const formatedyear = dateFormat(year, 'default')
             return (
-              <TileGrounp data={archived} key={year} title={formatedyear} />
+              <TileGrounp data={archived} key={index} title={formatedyear} />
             )
           })}{' '}
         </div>

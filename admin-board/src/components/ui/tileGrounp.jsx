@@ -13,12 +13,12 @@ const TileGrounp = ({
         {title}
       </h2>
       <div className="w-full flex pl-[2rem] flex-wrap gap-6">
-        {data?.map((item) => {
+        {data?.map((item, index) => {
           const isDraft = item.status === 'draft'
           const isArchived = item.status === 'archived'
           return (
             <Tile
-              key={item.template_id}
+              key={index}
               draft={isDraft}
               archived={isArchived}
               item={item}

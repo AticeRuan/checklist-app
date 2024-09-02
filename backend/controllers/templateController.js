@@ -7,11 +7,12 @@ const ListItem = db.ListItem
 const TemplateSite = db.TemplateSite
 
 const addTemplate = async (req, res) => {
+  const last_updated_by = req.user.user_name
   try {
     const template = await Template.create({
       title: 'New Template',
       status: 'draft',
-      last_updated_by: 'Admin',
+      last_updated_by: last_updated_by,
     })
 
     res.status(201).json(template)
@@ -25,9 +26,9 @@ const addTemplate = async (req, res) => {
 
 const updateTemplate = async (req, res) => {
   try {
-    const { title, description, category_id, last_updated_by, sites, status } =
-      req.body
+    const { title, description, category_id, sites, status } = req.body
 
+    const last_updated_by = req.user.user_name
     let id = req.params.id
     let seletedsites = sites || []
 
