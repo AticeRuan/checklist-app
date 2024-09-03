@@ -185,7 +185,7 @@ router.patch(
  *         description: Internal server error.
  */
 router.delete(
-  '/delete-user',
+  '/:id',
   checkRole,
   requireAuth,
   checkIPRange,
@@ -228,6 +228,83 @@ router.get(
   requireAuth,
   checkIPRange,
   userController.getAllUsers,
+)
+/**
+ * @swagger
+ * /api/users/{id}:
+ *   patch:
+ *     summary: Update user role
+ *     description: Update the role of a user by their ID.
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID of the user whose role is to be updated.
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               role:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: User role updated successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User updated successfully"
+ *       400:
+ *         description: Username is required.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Username is required"
+ *       404:
+ *         description: User not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User not found"
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 error:
+ *                   type: string
+ *                   example: "Internal server error"
+ *                 details:
+ *                   type: string
+ *                   example: "Error message details"
+ */
+router.patch(
+  '/:id',
+  checkRole,
+  requireAuth,
+  checkIPRange,
+  userController.updateUserRole,
 )
 
 module.exports = router

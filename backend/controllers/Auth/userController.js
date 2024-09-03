@@ -11,15 +11,15 @@ const createToken = (id) => {
 }
 
 const addUser = async (req, res) => {
-  const { username, password, role } = req.body
+  const { user_name, password, role } = req.body
 
-  if (!username || !password) {
+  if (!user_name || !password) {
     return res
       .status(400)
       .json({ message: 'Username and password are required' })
   }
 
-  const existingUser = await User.findOne({ where: { user_name: username } })
+  const existingUser = await User.findOne({ where: { user_name: user_name } })
 
   if (existingUser) {
     return res.status(400).json({ message: 'User already exists' })
@@ -33,11 +33,11 @@ const addUser = async (req, res) => {
 
   try {
     const user = await User.create({
-      user_name: username,
+      user_name: user_name,
       hashed_password: hashedPassword,
       role,
     })
-    res.status(201).json({ message: 'User created successfully' })
+    res.status(201).json(user)
   } catch (err) {
     console.error('Error creating user:', err)
     res
@@ -47,18 +47,13 @@ const addUser = async (req, res) => {
 }
 
 const deleteUser = async (req, res) => {
-  const { username } = req.body
-
-  if (!username) {
-    return res.status(400).json({ message: 'Username is required' })
-  }
-
+  const id = req.params.id
   try {
-    const user = await User.findOne({ where: { user_name: username } })
+    const user = await User.findOne({ where: { user_id: id } })
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
-    await User.destroy({ where: { user_name: username } })
+    await User.destroy({ where: { user_id: id } })
     res.status(200).json({ message: 'User deleted successfully' })
   } catch (err) {
     console.error('Error deleting user:', err)
@@ -67,18 +62,37 @@ const deleteUser = async (req, res) => {
       .json({ error: 'Internal server error', details: err.message })
   }
 }
+const updateUserRole = async (req, res) => {
+  const { role } = req.body
+  const id = req.params.id
 
-const loginUser = async (req, res) => {
-  const { username, password } = req.body
+  const user = await User.findOne({ where: { user_id: id } })
+  if (!user) {
+    return res.status(404).json({ message: 'User not found' })
+  }
 
   try {
-    if (!username || !password) {
+    await User.update({ role: role }, { where: { user_id: id } })
+    res.status(200).json({ message: 'User updated successfully' })
+  } catch (err) {
+    console.error('Error updating user:', err)
+    res
+      .status(500)
+      .json({ error: 'Internal server error', details: err.message })
+  }
+}
+
+const loginUser = async (req, res) => {
+  const { user_name, password } = req.body
+
+  try {
+    if (!user_name || !password) {
       return res
         .status(400)
         .json({ message: 'Username and password are required' })
     }
 
-    const user = await User.findOne({ where: { user_name: username } })
+    const user = await User.findOne({ where: { user_name: user_name } })
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
@@ -116,9 +130,9 @@ const logoutUser = async (req, res) => {
 }
 
 const changePassword = async (req, res) => {
-  const { username, password, newPassword } = req.body
+  const { user_name, password, newPassword } = req.body
   try {
-    const user = await User.findOne({ where: { user_name: username } })
+    const user = await User.findOne({ where: { user_name: user_name } })
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
@@ -132,7 +146,7 @@ const changePassword = async (req, res) => {
     const hashedPassword = await bcrypt.hash(newPassword, 10)
     await User.update(
       { hashed_password: hashedPassword },
-      { where: { user_name: username } },
+      { where: { user_name: user_name } },
     )
     res.status(200).json({ message: 'Password changed successfully' })
   } catch (error) {
@@ -156,4 +170,5 @@ module.exports = {
   changePassword,
   deleteUser,
   getAllUsers,
+  updateUserRole,
 }

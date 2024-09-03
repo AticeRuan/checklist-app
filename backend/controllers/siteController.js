@@ -18,9 +18,11 @@ const addSite = async (req, res) => {
 const getAllSites = async (req, res) => {
   try {
     let sites = await Site.findAll()
-    res.status(200).send(sites)
+    res.status(200).json(sites)
   } catch (err) {
-    res.status(500).send('Error:', err)
+    res
+      .status(500)
+      .json({ error: 'Internal server error', details: err.message })
   }
 }
 
@@ -30,7 +32,9 @@ const getOneSite = async (req, res) => {
     let site = await Site.findOne({ where: { site_id: id } })
     res.status(200).json(site)
   } catch (err) {
-    res.status(500).send('Error:', err)
+    res
+      .status(500)
+      .json({ error: 'Internal server error', details: err.message })
   }
 }
 
@@ -38,9 +42,11 @@ const updateSite = async (req, res) => {
   let id = req.params.id
   try {
     await Site.update(req.body, { where: { site_id: id } })
-    res.status(200).send('Site updated')
+    res.status(200).json('Site updated')
   } catch (err) {
-    res.status(500).send('Error:', err)
+    res
+      .status(500)
+      .json({ error: 'Internal server error', details: err.message })
   }
 }
 
@@ -48,9 +54,11 @@ const deleteSite = async (req, res) => {
   let id = req.params.id
   try {
     await Site.destroy({ where: { site_id: id } })
-    res.status(200).send('Site deleted')
+    res.status(200).json('Site deleted')
   } catch (err) {
-    res.status(500).send('Error:', err)
+    res
+      .status(500)
+      .json({ error: 'Internal server error', details: err.message })
   }
 }
 

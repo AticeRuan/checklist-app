@@ -20,6 +20,8 @@ import storage from 'redux-persist/lib/storage'
 
 import { encryptTransform } from 'redux-persist-transform-encrypt'
 
+import tokenMiddleware from './middleware/tokenMiddleware'
+
 import {
   FLUSH,
   REHYDRATE,

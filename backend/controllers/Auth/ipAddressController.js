@@ -1,18 +1,20 @@
-const { where } = require('sequelize')
 const db = require('../../models')
 
 const IPAddress = db.IPAddress
 
 const addIPAddress = async (req, res) => {
   try {
-    const { ip_address } = req.body
+    const { ip_address, site_name } = req.body
 
-    if (!ip_address) {
-      return res.status(400).json({ message: 'IP Address is required.' })
+    if (!ip_address || !site_name) {
+      return res
+        .status(400)
+        .json({ message: 'IP Address and site name is required.' })
     }
 
     const ipAddress = await IPAddress.create({
       ip_address,
+      site_name,
     })
 
     res.status(201).json(ipAddress)

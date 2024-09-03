@@ -1,15 +1,33 @@
 import Tile from '../components/ui/tile'
 import TileGrounp from '../components/ui/tileGrounp'
 import { useSelector, useDispatch } from 'react-redux'
-import { useGetAllTemplatesQuery } from '../app/api/templateApi'
-import { getTemplates } from '../app/features/template/templateSlice'
+
 import { useEffect, useState } from 'react'
+//import hook from apiSlices
+import { useGetAllCategoriesQuery } from '../app/api/categoryApi'
+import { useGetAllSitesQuery } from '../app/api/siteApi'
+import { useGetAllTemplatesQuery } from '../app/api/templateApi'
+import { useGetAllUsersQuery } from '../app/api/userApi'
+import { useGetAllIpAddressesQuery } from '../app/api/ipAddress'
+//import actions from slices
+import { getTemplates } from '../app/features/template/templateSlice'
+import { getCategories } from '../app/features/category/categorySlice'
+import { getSites } from '../app/features/site/siteSlice'
+import { getUsers } from '../app/features/user/userSlice'
+import { getIpAddresses } from '../app/features/ipAddress/ipAddressSlice'
 
 const Home = () => {
   const user = useSelector((state) => state.auth.user)
+
   const name = user.name
 
+  //fetch data on page load
   const { data: templates, error, isLoading } = useGetAllTemplatesQuery()
+
+  const { data: categories } = useGetAllCategoriesQuery()
+  const { data: sites } = useGetAllSitesQuery()
+  const { data: users } = useGetAllUsersQuery()
+  const { data: ipAddresses } = useGetAllIpAddressesQuery()
 
   const dispatch = useDispatch()
 
@@ -19,48 +37,35 @@ const Home = () => {
     }
   }, [templates, dispatch])
 
+  useEffect(() => {
+    if (categories) {
+      dispatch(getCategories(categories))
+    }
+  }, [categories, dispatch])
+
+  useEffect(() => {
+    if (sites) {
+      dispatch(getSites(sites))
+    }
+  }, [sites, dispatch])
+
+  useEffect(() => {
+    if (users) {
+      dispatch(getUsers(users))
+    }
+  }, [users, dispatch])
+
+  useEffect(() => {
+    if (ipAddresses) {
+      dispatch(getIpAddresses(ipAddresses))
+    }
+  }, [ipAddresses, dispatch])
+
   const localtemplates = useSelector((state) => state.template.templates)
 
   const activeTemplates = localtemplates?.filter(
-    (template) => template.status !== 'archived',
+    (template) => template.status === 'published',
   )
-
-  // const [activeTemplates, setActiveTemplates] = useState([])
-  // const [recentUpdatedTemplates, setRecentUpdatedTemplates] = useState([])
-  // const [recentCreatedTemplates, setRecentCreatedTemplates] = useState([])
-  // const [draftTemplates, setDraftTemplates] = useState([])
-
-  // useEffect(() => {
-  //   if (localtemplates?.length > 0) {
-  //     setActiveTemplates(
-  //       localtemplates?.filter((template) => template.status !== 'archived'),
-  //     )
-  //   }
-  // }, [localtemplates, activeTemplates])
-
-  // useEffect(() => {
-  //   if (activeTemplates?.length > 0) {
-  //     setDraftTemplates(
-  //       activeTemplates
-  //         ?.filter((template) => template.status === 'draft')
-  //         .slice(0, 5),
-  //     )
-  //     setRecentUpdatedTemplates(
-  //       activeTemplates
-  //         ?.slice()
-  //         .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
-  //         .slice(0, 3),
-  //     )
-  //     setRecentCreatedTemplates(
-  //       activeTemplates
-  //         ?.slice()
-  //         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-  //         .slice(0, 3),
-  //     )
-  //   }
-  // }, [activeTemplates])
-
-  // console.log(activeTemplates)
 
   const recentUpdatedTemplates = activeTemplates
     ?.slice()
@@ -72,7 +77,7 @@ const Home = () => {
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     .slice(0, 3)
 
-  const draftTemplates = activeTemplates
+  const draftTemplates = localtemplates
     ?.filter((template) => template.status === 'draft')
     .slice(0, 5)
 

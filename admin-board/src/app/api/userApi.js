@@ -24,7 +24,7 @@ export const userApi = createApi({
   endpoints: (builder) => ({
     addUser: builder.mutation({
       query: (newUser) => ({
-        url: '/users',
+        url: '/users/add-new-user',
         method: 'POST',
         body: newUser,
       }),
@@ -36,6 +36,13 @@ export const userApi = createApi({
       query: (id) => ({
         url: `/users/${id}`,
         method: 'DELETE',
+      }),
+    }),
+    updateUserRole: builder.mutation({
+      query: ({ id, role }) => ({
+        url: `/users/${id}`,
+        method: 'PATCH',
+        body: { role },
       }),
     }),
     changePassword: builder.mutation({
@@ -68,4 +75,5 @@ export const {
   useLoginUserMutation,
   useLogoutUserMutation,
   useGetAllUsersQuery,
+  useUpdateUserRoleMutation,
 } = userApi

@@ -47,7 +47,6 @@ require('./associations')(db)
 
 const syncDatabase = async () => {
   try {
-    // await db.sequelize.query('DROP TABLE Users')
     await db.sequelize.sync({ force: false })
     console.log('Drop and re-sync Checklist db.')
   } catch (err) {

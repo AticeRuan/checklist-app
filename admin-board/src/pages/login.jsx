@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux'
 import { login } from '../app/features/auth/authSlice'
 import { useNavigate } from 'react-router-dom'
 const Login = () => {
-  const [user, setUser] = useState({ username: '', password: '' })
+  const [user, setUser] = useState({ user_name: '', password: '' })
   const navigate = useNavigate()
 
   const handleChange = (e) => {
@@ -37,7 +37,7 @@ const Login = () => {
   }
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-b-mid-blue text-white flex-col gap-8">
+    <div className="w-screen h-screen flex items-center justify-center bg-b-mid-blue text-white flex-col gap-8 z-50 ">
       <div className="flex flex-col items-start w-[30.9rem] gap-[1.5rem]">
         <div className="flex flex-col items-start w-[30.9rem] gap-1">
           <h1 className="text-[2.215rem] font-bold w-full">

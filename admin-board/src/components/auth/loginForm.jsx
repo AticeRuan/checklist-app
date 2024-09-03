@@ -5,9 +5,9 @@ const LoginFrom = ({ user, handleLogin, handleChange }) => {
         <label>Username</label>
         <input
           type="text"
-          name="username"
+          name="user_name"
           className="w-full h-[2.75rem] text-lg p-4 rounded-md"
-          value={user.username}
+          value={user.user_name}
           onChange={handleChange}
         />
       </div>{' '}

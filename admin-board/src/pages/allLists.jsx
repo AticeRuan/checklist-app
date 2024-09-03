@@ -2,13 +2,21 @@ import SearchBox from '../components/ui/searchBox'
 import TileGrounp from '../components/ui/tileGrounp'
 import { useGetAllTemplatesQuery } from '../app/api/templateApi'
 import { useDispatch, useSelector } from 'react-redux'
-
+import { useEffect, useState } from 'react'
 const AllLists = () => {
   const localtemplates = useSelector((state) => state.template.templates)
 
   const published = localtemplates?.filter(
     (template) => template.status === 'published',
   )
+
+  const categories = useSelector((state) => state.category.categories)
+
+  const [selectedCategory, setSelectedCategory] = useState('')
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value)
+  }
 
   return (
     <div className="p-[3rem] flex flex-col items-start justify-start w-full ">
@@ -39,16 +47,24 @@ const AllLists = () => {
           </label>
           <select
             name="category"
-            className="h-[2.5rem] w-[15rem] px-2 border-2 border-b-light-grey rounded-lg"
+            className="h-[2.5rem] w-[15rem] px-2 border-2 border-b-light-grey rounded-lg capitalize font-bold "
             placeholder="Select Category"
+            onChange={handleCategoryChange}
+            value={selectedCategory}
           >
             <option value="" disabled selected>
               Select Category
             </option>
-
-            <option value="Category 1">Category 1</option>
-            <option value="Category 2">Category 2</option>
-            <option value="Category 3">Category 3</option>
+            {categories?.map((category, index) => (
+              <option
+                value={category.name}
+                key={index}
+                className="capitalize "
+                onChange={handleCategoryChange}
+              >
+                {category.name}
+              </option>
+            ))}
           </select>
         </div>
       </div>

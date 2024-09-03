@@ -3,7 +3,7 @@ import { LogoutIcon } from '../svg/logout'
 import { useLogoutUserMutation } from '../../app/api/userApi'
 import { useDispatch } from 'react-redux'
 import { logout } from '../../app/features/auth/authSlice'
-import { persistor } from '../../app/store'
+
 import { useNavigate } from 'react-router-dom'
 const Logout = () => {
   const [logoutUser] = useLogoutUserMutation()
@@ -15,7 +15,6 @@ const Logout = () => {
       navigate('/login')
       localStorage.removeItem('token')
       dispatch(logout())
-      persistor.purge()
     } catch (error) {
       console.error('Failed to logout:', error)
     }

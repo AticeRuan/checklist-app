@@ -16,12 +16,6 @@ const baseQuery = fetchBaseQuery({
 const customBaseQuery = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions)
 
-  if (result.error && result.error.status === 401) {
-    // Handle token expiration
-    alert('Your session has expired. Please log in again.')
-    window.location.href = '/login' // Redirect to login page
-  }
-
   return result
 }
 
