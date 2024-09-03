@@ -63,7 +63,6 @@ const deleteUser = async (req, res) => {
   }
 }
 const updateUserRole = async (req, res) => {
-  const { role } = req.body
   const id = req.params.id
 
   const user = await User.findOne({ where: { user_id: id } })
@@ -72,8 +71,14 @@ const updateUserRole = async (req, res) => {
   }
 
   try {
-    await User.update({ role: role }, { where: { user_id: id } })
-    res.status(200).json({ message: 'User updated successfully' })
+    await User.update(req.body, {
+      where: { user_id: id },
+    })
+
+    // Fetch the updated user data
+    const updatedUser = await User.findOne({ where: { user_id: id } })
+
+    res.status(200).json(updatedUser)
   } catch (err) {
     console.error('Error updating user:', err)
     res

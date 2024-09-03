@@ -19,7 +19,7 @@ import { getIpAddresses } from '../app/features/ipAddress/ipAddressSlice'
 const Home = () => {
   const user = useSelector((state) => state.auth.user)
 
-  const name = user.name
+  const name = user?.name || 'user'
 
   //fetch data on page load
   const { data: templates, error, isLoading } = useGetAllTemplatesQuery()

@@ -38,11 +38,11 @@ export const userApi = createApi({
         method: 'DELETE',
       }),
     }),
-    updateUserRole: builder.mutation({
-      query: ({ id, role }) => ({
+    updateUser: builder.mutation({
+      query: ({ id, ...user }) => ({
         url: `/users/${id}`,
         method: 'PATCH',
-        body: { role },
+        body: user,
       }),
     }),
     changePassword: builder.mutation({
@@ -75,5 +75,5 @@ export const {
   useLoginUserMutation,
   useLogoutUserMutation,
   useGetAllUsersQuery,
-  useUpdateUserRoleMutation,
+  useUpdateUserMutation,
 } = userApi

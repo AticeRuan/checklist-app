@@ -3,6 +3,7 @@ import Edit from '../svg/edit'
 import Delete from '../svg/delete'
 import Save from '../svg/save'
 import { useUpdateSiteMutation } from '../../app/api/siteApi'
+import { Restore } from '../svg/restore'
 
 const OptionItem = ({
   handleDelete,
@@ -10,6 +11,8 @@ const OptionItem = ({
   keys = [],
   item,
   id_key,
+  isUser = false,
+  handleReset = () => {},
 }) => {
   const [isEditing, setIsEditing] = useState(false)
 
@@ -58,6 +61,11 @@ const OptionItem = ({
         <button onClick={() => handleDelete(item[id_key])}>
           <Delete />
         </button>
+        {isUser && (
+          <button onClick={() => handleReset(item[id_key])}>
+            <Restore width="28" />
+          </button>
+        )}
       </div>
     </div>
   )

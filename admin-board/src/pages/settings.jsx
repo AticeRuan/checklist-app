@@ -26,7 +26,7 @@ import {
 import {
   useAddUserMutation,
   useDeleteUserMutation,
-  useUpdateUserRoleMutation,
+  useUpdateUserMutation,
 } from '../app/api/userApi'
 import {
   addUser as addUserAction,
@@ -98,7 +98,7 @@ const Settings = () => {
   const user_keys = ['user_name', 'role']
   const [addUser] = useAddUserMutation()
   const [deleteUser] = useDeleteUserMutation()
-  const [updateUserRole] = useUpdateUserRoleMutation()
+  const [updateUser] = useUpdateUserMutation()
 
   const handleUserCreate = async (newUser) => {
     const password = '1234Abc!'
@@ -124,7 +124,7 @@ const Settings = () => {
 
   const handleUserRoleUpdate = async (updatedItem) => {
     try {
-      await updateUserRole({
+      await updateUser({
         id: updatedItem.user_id,
         role: updatedItem.role,
       })
@@ -136,6 +136,24 @@ const Settings = () => {
       )
     } catch (error) {
       console.error('Error while updating user role:', error)
+    }
+  }
+
+  const handleUserResetPassword = async (id) => {
+    try {
+      const updatedItem = await updateUser({
+        id: id,
+        password: 'aBc1234!',
+      })
+
+      dispatch(
+        updateUserRoleAction({
+          id: id,
+          password: 'Abc1234!',
+        }),
+      )
+    } catch (error) {
+      console.error('Error while resetting user password:', error)
     }
   }
 
@@ -254,6 +272,8 @@ const Settings = () => {
           handleUpdate={(updatedItem) => handleUserRoleUpdate(updatedItem)}
           id_key="user_id"
           handleCreate={(newUser) => handleUserCreate(newUser)}
+          isUser={true}
+          handleReset={(id) => handleUserResetPassword(id)}
         />
         <OptionGroup
           title="Categories"

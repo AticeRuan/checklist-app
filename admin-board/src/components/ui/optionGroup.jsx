@@ -10,7 +10,9 @@ const OptionGroup = ({
   id_key,
   data,
   keys,
+  isUser = false,
   handleCreate = () => {},
+  handleReset,
 }) => {
   const [open, setOpen] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
@@ -112,6 +114,8 @@ const OptionGroup = ({
                 handleDelete={handleDelete}
                 handleUpdate={handleUpdate}
                 id_key={id_key}
+                isUser={isUser}
+                handleReset={handleReset}
               />
             )
           })}
