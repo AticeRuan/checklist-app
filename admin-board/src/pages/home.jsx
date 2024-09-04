@@ -21,13 +21,17 @@ const Home = () => {
 
   const name = user?.name || 'user'
 
+  const isAdmin = user?.role === 'admin'
+
   //fetch data on page load
   const { data: templates, error, isLoading } = useGetAllTemplatesQuery()
 
   const { data: categories } = useGetAllCategoriesQuery()
   const { data: sites } = useGetAllSitesQuery()
-  const { data: users } = useGetAllUsersQuery()
-  const { data: ipAddresses } = useGetAllIpAddressesQuery()
+  const { data: users } = useGetAllUsersQuery(undefined, { skip: !isAdmin })
+  const { data: ipAddresses } = useGetAllIpAddressesQuery(undefined, {
+    skip: !isAdmin,
+  })
 
   const dispatch = useDispatch()
 

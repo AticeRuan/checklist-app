@@ -27,6 +27,7 @@ import {
   useAddUserMutation,
   useDeleteUserMutation,
   useUpdateUserMutation,
+  useResetPasswordMutation,
 } from '../app/api/userApi'
 import {
   addUser as addUserAction,
@@ -99,10 +100,10 @@ const Settings = () => {
   const [addUser] = useAddUserMutation()
   const [deleteUser] = useDeleteUserMutation()
   const [updateUser] = useUpdateUserMutation()
+  const [resetPassword] = useResetPasswordMutation()
 
   const handleUserCreate = async (newUser) => {
-    const password = '1234Abc!'
-    const data = { ...newUser, password }
+    const data = newUser
 
     try {
       const newItem = await addUser(data)
@@ -141,15 +142,12 @@ const Settings = () => {
 
   const handleUserResetPassword = async (id) => {
     try {
-      const updatedItem = await updateUser({
-        id: id,
-        password: 'aBc1234!',
-      })
+      await resetPassword(id)
 
       dispatch(
         updateUserRoleAction({
-          id: id,
-          password: 'Abc1234!',
+          user_id: id,
+          password: '00000000',
         }),
       )
     } catch (error) {

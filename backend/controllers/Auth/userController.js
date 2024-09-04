@@ -11,12 +11,10 @@ const createToken = (id) => {
 }
 
 const addUser = async (req, res) => {
-  const { user_name, password, role } = req.body
+  const { user_name, role } = req.body
 
-  if (!user_name || !password) {
-    return res
-      .status(400)
-      .json({ message: 'Username and password are required' })
+  if (!user_name) {
+    return res.status(400).json({ message: 'Username is required' })
   }
 
   const existingUser = await User.findOne({ where: { user_name: user_name } })
@@ -25,10 +23,7 @@ const addUser = async (req, res) => {
     return res.status(400).json({ message: 'User already exists' })
   }
 
-  if (!validator.isStrongPassword(password)) {
-    return res.status(400).json({ message: 'Password is not strong enough' })
-  }
-
+  const password = '00000000'
   const hashedPassword = await bcrypt.hash(password, 10)
 
   try {
@@ -168,6 +163,25 @@ const getAllUsers = async (req, res) => {
   }
 }
 
+const resetPassword = async (req, res) => {
+  const user_id = req.params.id
+  try {
+    const user = await User.findOne({ where: { user_id: user_id } })
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+    const newPassword = '00000000'
+
+    const hashedPassword = await bcrypt.hash(newPassword, 10)
+    await User.update(
+      { hashed_password: hashedPassword },
+      { where: { user_id } },
+    )
+    res.status(200).json({ message: 'Password reset successfully' })
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+}
 module.exports = {
   addUser,
   loginUser,
@@ -176,4 +190,5 @@ module.exports = {
   deleteUser,
   getAllUsers,
   updateUserRole,
+  resetPassword,
 }

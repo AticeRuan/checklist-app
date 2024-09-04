@@ -107,7 +107,7 @@ router.post('/login', checkIPRange, userController.loginUser)
 router.post('/logout', requireAuth, checkIPRange, userController.logoutUser)
 /**
  * @swagger
- * /api/users/{id}/change-password:
+ * /api/users/change-password:
  *   patch:
  *     summary: Change password
  *     description: Change the password for an existing user.
@@ -115,12 +115,7 @@ router.post('/logout', requireAuth, checkIPRange, userController.logoutUser)
  *     security:
  *       - BearerAuth: []
  *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *         description: The ID of the user.
+ *
  *     requestBody:
  *       required: true
  *       content:
@@ -128,7 +123,7 @@ router.post('/logout', requireAuth, checkIPRange, userController.logoutUser)
  *           schema:
  *             type: object
  *             properties:
- *               username:
+ *               user_name:
  *                 type: string
  *                 description: The username of the account.
  *               password:
@@ -149,11 +144,7 @@ router.post('/logout', requireAuth, checkIPRange, userController.logoutUser)
  *       500:
  *         description: Internal server error.
  */
-router.patch(
-  '/:id/change-password',
-  checkIPRange,
-  userController.changePassword,
-)
+router.patch('/change-password', checkIPRange, userController.changePassword)
 /**
  * @swagger
  * /api/users/delete-user:
@@ -305,6 +296,66 @@ router.patch(
   requireAuth,
   checkIPRange,
   userController.updateUserRole,
+)
+
+/**
+ * @swagger
+ * /api/users/reset-password:
+ *   patch:
+ *     summary: Reset user password
+ *     description: Resets the password of a user to a default value ('00000000').
+ *     tags: [Users]
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               user_id:
+ *                 type: interger
+ *                 example: "2222"
+ *                 description: The user id of the user whose password is being reset.
+ *     responses:
+ *       200:
+ *         description: Password reset successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Password reset successfully"
+ *       404:
+ *         description: User not found.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "User not found"
+ *       500:
+ *         description: Internal server error.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: "Internal server error"
+ */
+router.patch(
+  '/reset-password/:id',
+  checkIPRange,
+  requireAuth,
+  checkRole,
+  userController.resetPassword,
 )
 
 module.exports = router

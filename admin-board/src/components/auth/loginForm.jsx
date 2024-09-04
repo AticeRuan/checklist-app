@@ -6,7 +6,7 @@ const LoginFrom = ({ user, handleLogin, handleChange }) => {
         <input
           type="text"
           name="user_name"
-          className="w-full h-[2.75rem] text-lg p-4 rounded-md"
+          className="w-full h-[2.75rem] text-lg p-4 rounded-md text-black"
           value={user.user_name}
           onChange={handleChange}
         />
@@ -16,7 +16,7 @@ const LoginFrom = ({ user, handleLogin, handleChange }) => {
         <input
           type="password"
           name="password"
-          className="w-full  h-[2.75rem] text-lg p-4 rounded-md"
+          className="w-full  h-[2.75rem] text-lg p-4 rounded-md text-black"
           value={user.password}
           onChange={handleChange}
         />

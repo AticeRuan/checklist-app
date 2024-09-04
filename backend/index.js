@@ -63,12 +63,6 @@ app.use('/api/users', userRouter)
 const ipAddressRouter = require('./routes/ipAddressRouter')
 app.use('/api/ip-addresses', ipAddressRouter)
 
-//testing api
-
-app.get('/', (req, res) => {
-  res.json({ message: 'Welcome to my application' })
-})
-
 //port
 
 const PORT = process.env.PORT || 8080
