@@ -24,7 +24,8 @@ var corsOptions = {
 //middlerware
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'https://checklist-app-gray.vercel.app'],
+    // origin: ['http://localhost:5173', 'https://checklist-app-gray.vercel.app'],
+    origin: '*',
     optionsSuccessStatus: 200,
     credentials: true,
     methods: ['GET', 'POST', 'HEAD', 'PUT', 'PATCH', 'DELETE'],
@@ -37,6 +38,18 @@ app.use(
     exposedHeaders: ['Authorization', 'X-Forwarded-For', 'X-Real-IP'],
   }),
 )
+
+app.use((req, res, next) => {
+  res.header(
+    'Access-Control-Allow-Origin',
+    'https://checklist-app-gray.vercel.app',
+  )
+  res.header(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+  )
+  next()
+})
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
