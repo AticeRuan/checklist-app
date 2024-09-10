@@ -22,8 +22,8 @@ var corsOptions = {
 }
 
 //middlerware
-app.use(express.json())
 app.use(cors(corsOptions))
+app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions)
