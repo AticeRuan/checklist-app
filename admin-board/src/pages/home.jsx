@@ -33,17 +33,17 @@ const Home = () => {
     data: templates,
     error: templateError,
     isLoading: templateLoading,
-  } = useGetAllTemplatesQuery()
+  } = useGetAllTemplatesQuery(undefined, { skip: !user })
   const {
     data: categories,
     error: categoriesError,
     isLoading: categoriesLoading,
-  } = useGetAllCategoriesQuery()
+  } = useGetAllCategoriesQuery(undefined, { skip: !user })
   const {
     data: sites,
     error: sitesError,
     isLoading: sitesLoading,
-  } = useGetAllSitesQuery()
+  } = useGetAllSitesQuery(undefined, { skip: !user })
   const {
     data: users,
     error: usersError,
