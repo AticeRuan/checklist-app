@@ -8,12 +8,17 @@ const swaggerUi = require('swagger-ui-express')
 const serverless = require('serverless-http')
 
 var corsOptions = {
-  origin: ['http://localhost:5173', 'https://checklist-app-gray.vercel.app/'],
+  origin: ['http://localhost:5173', 'https://checklist-app-gray.vercel.app'],
   optionsSuccessStatus: 200,
   credentials: true,
   methods: ['GET', 'POST', 'HEAD', 'PUT', 'PATCH', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  exposedHeaders: ['Authorization'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Forwarded-For',
+    'X-Real-IP',
+  ],
+  exposedHeaders: ['Authorization', 'X-Forwarded-For', 'X-Real-IP'],
 }
 
 //middlerware

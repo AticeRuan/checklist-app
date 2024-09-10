@@ -157,6 +157,7 @@ const ListItem = ({
       {isEditing ? (
         <div className="flex flex-col gap-7 mb-2">
           <div className="flex gap-8 items-end">
+            {/* Key word filed */}
             <div className="flex flex-col gap-4">
               <label className="text-lg font-bold uppercase">Key word</label>
               <input
@@ -166,6 +167,7 @@ const ListItem = ({
                 className="w-fit p-3 rounded-lg"
               />{' '}
             </div>
+            {/* site-listitem button */}
             <button
               className="whitespace-nowrap p-2 text-lg bg-b-mid-blue rounded-md text-white hover:bg-b-active-blue disabled:opacity-50 capitalize font-[500]  w-fit h-fit mb-3"
               onClick={handleItemSiteSettingOpen}
@@ -173,6 +175,7 @@ const ListItem = ({
               Site Visibilty To List Item
             </button>
           </div>
+          {/* description */}
           <label className="text-lg font-bold uppercase">Description</label>
           <textarea
             value={editableItem.description}
@@ -180,6 +183,7 @@ const ListItem = ({
             name="description"
             className="w-full p-3 rounded-lg min-h-[3rem]"
           />
+          {/* site-list pop-up */}
           {isItemSiteSettingOpen && (
             <div className="w-screen min-h-screen absolute top-0 left-0 flex items-center justify-center flex-col h-fit backdrop-brightness-75 z-50">
               <div className="w-fit bg-white rounded-xl p-8 shadow-2xl ">
