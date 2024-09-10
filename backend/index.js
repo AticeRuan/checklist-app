@@ -5,14 +5,15 @@ const app = express()
 const swaggerJsDoc = require('swagger-jsdoc')
 const swaggerOptions = require('./utils/swaggerConfig')
 const swaggerUi = require('swagger-ui-express')
+const serverless = require('serverless-http')
 
 var corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: ['http://localhost:5173', 'https://checklist-app-gray.vercel.app/'],
   optionsSuccessStatus: 200,
   credentials: true,
   methods: ['GET', 'POST', 'HEAD', 'PUT', 'PATCH', 'DELETE'],
-  // allowedHeaders: ['Content-Type', 'Authorization'],
-  // exposedHeaders: ['Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  exposedHeaders: ['Authorization'],
 }
 
 //middlerware
@@ -63,12 +64,25 @@ app.use('/api/users', userRouter)
 const ipAddressRouter = require('./routes/ipAddressRouter')
 app.use('/api/ip-addresses', ipAddressRouter)
 
+//error handling
+app.use((err, req, res, next) => {
+  console.error(err.stack)
+  res.status(500).send('Something went wrong!')
+})
+
 //port
 
 const PORT = process.env.PORT || 8080
+
+app.get('/', (req, res) => {
+  res.json({ message: 'Hello from ListSync!' })
+})
 
 //server
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`)
 })
+
+module.exports = app
+module.exports.handler = serverless(app)
