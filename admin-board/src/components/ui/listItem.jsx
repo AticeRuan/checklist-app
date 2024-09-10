@@ -18,11 +18,14 @@ import {
 
 import Loading from './loading'
 import Error from './error'
+import Cancel from '../svg/cancel'
 
 const ListItem = ({
   item,
   isEditting,
-
+  isDeleting,
+  handleDeleting,
+  cancelDelete,
   sites,
   is_environment_related,
 }) => {
@@ -148,7 +151,7 @@ const ListItem = ({
 
   return (
     <div
-      className="bg-gray-100 p-4 rounded-lg text-lg"
+      className="bg-gray-100 p-4 rounded-lg text-lg relative"
       style={{ border: isEditing ? '1px solid #A6D7F5' : '' }}
     >
       {isEditing ? (
@@ -252,10 +255,23 @@ const ListItem = ({
             <Edit />
           </button>
         )}
-        <button className="" onClick={handleDelete}>
+        <button className="" onClick={handleDeleting}>
           <Delete />
         </button>
       </div>
+      {isDeleting && (
+        <div className="w-full h-full absolute top-0 left-0 backdrop-blur-sm rounded-lg flex flex-col items-center justify-center gap-5">
+          <p className="text-xl font-[500]">Deleting item?</p>
+          <div className="flex gap-4 items-center justify-center ">
+            <button onClick={handleDelete}>
+              <Tick />
+            </button>
+            <button onClick={cancelDelete}>
+              <Cancel />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -5,23 +5,13 @@ import Add from './svg/add'
 import ListItem from './ui/listItem'
 import { useState } from 'react'
 import Popup from './ui/popup'
-import {
-  deleteListitem as deleteListItemAction,
-  updateListitem as updateListItemAction,
-  addListitem as addListItemAction,
-} from '../app/features/listitem/listitemSlice'
-import {
-  useAddListItemMutation,
-  useUpdateListItemMutation,
-  useDeleteListItemMutation,
-} from '../app/api/listitemApi'
+import { addListitem as addListItemAction } from '../app/features/listitem/listitemSlice'
+import { useAddListItemMutation } from '../app/api/listitemApi'
 import { Tick } from './svg/tick'
 import Archive from './svg/archive'
 import {
   updateTemplate as updateTemplateAction,
   deleteTemplate as deleteTemplateAction,
-  addTemplate as addTemplateAction,
-  getTemplates as getTemplatesAction,
 } from '../app/features/template/templateSlice'
 import {
   useUpdateTemplateMutation,
@@ -33,7 +23,7 @@ import Save from './svg/save'
 import { useNavigate } from 'react-router-dom'
 import Cancel from './svg/cancel'
 
-const Form = ({ data, listitems, handleUpdate, isCreateNew = false }) => {
+const Form = ({ data, listitems, isCreateNew = false }) => {
   const dispatch = useDispatch()
   const [newItem, setNewItem] = useState({
     title: '',
@@ -52,9 +42,9 @@ const Form = ({ data, listitems, handleUpdate, isCreateNew = false }) => {
   //     console.log('Form data:', newItem)
   //   }, [newItem])
 
-  useEffect(() => {
-    console.log('Data prop:', data)
-  }, [data])
+  //   useEffect(() => {
+  //     console.log('Data prop:', data)
+  //   }, [data])
 
   useEffect(() => {
     if (data) {
@@ -398,6 +388,15 @@ const Form = ({ data, listitems, handleUpdate, isCreateNew = false }) => {
     }
   }
 
+  const [itemBeingDeleted, setItemBeingDeleted] = useState(null)
+
+  const handleDelete = (id) => {
+    setItemBeingDeleted(id)
+  }
+
+  const cancelDelete = () => {
+    setItemBeingDeleted(null)
+  }
   return (
     <div className="bg-white rounded-lg shadow p-6 w-full">
       <div className="flex gap-8 w-full justify-end mb-24 -mt-24">
@@ -646,9 +645,10 @@ const Form = ({ data, listitems, handleUpdate, isCreateNew = false }) => {
             <ListItem
               key={index}
               item={item}
-              handleDelete={() => handleItemDelete(item.listitem_id)}
-              handleUpdate={handleUpdate}
               sites={newItem.sites}
+              isDeleting={itemBeingDeleted === item.listitem_id}
+              handleDeleting={() => handleDelete(item.listitem_id)}
+              cancelDelete={cancelDelete}
             />
           ))}
       </div>

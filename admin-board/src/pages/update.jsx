@@ -38,15 +38,6 @@ const Update = () => {
     }
   }, [listitems, dispatch])
 
-  const handleListItemUpdate = async (id, updatedItem) => {
-    try {
-      await updateListitem(id, updatedItem)
-      dispatch(updateListItemAction(updatedItem))
-    } catch (error) {
-      console.error('Error while updating list item:', error)
-    }
-  }
-
   if (isLoading)
     return (
       <div>
@@ -67,11 +58,7 @@ const Update = () => {
           Edit {template?.title}
         </h1>
       </div>
-      <Form
-        data={template}
-        listitems={listitems}
-        handleUpdate={handleListItemUpdate}
-      />
+      <Form data={template} listitems={listitems} />
     </div>
   )
 }
