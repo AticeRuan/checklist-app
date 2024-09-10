@@ -1,4 +1,5 @@
 const { Sequelize, DataTypes } = require('sequelize')
+const tedious = require('tedious')
 const sequelize = new Sequelize(
   process.env.DB_NAME,
   process.env.DB_USER,
@@ -6,6 +7,7 @@ const sequelize = new Sequelize(
   {
     host: process.env.DB_SERVER,
     dialect: 'mssql',
+    dialectModule: tedious,
     port: process.env.DB_PORT,
     dialectOptions: {
       encrypt: true,
