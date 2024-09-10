@@ -102,19 +102,18 @@ app.use((err, req, res, next) => {
   res.status(500).send('Something went wrong!')
 })
 
-//port
-
-const PORT = process.env.PORT || 8080
-
 app.get('/', (req, res) => {
   res.json({ message: 'Hello from ListSync!' })
 })
 
-//server
+// //port
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`)
-})
+// const PORT = process.env.PORT || 8080
+
+// //server
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}`)
+// })
 
 module.exports = app
 module.exports.handler = serverless(app)
