@@ -104,7 +104,7 @@ router.post('/login', checkIPRange, userController.loginUser)
  *       500:
  *         description: Internal server error.
  */
-router.post('/logout', requireAuth, checkIPRange, userController.logoutUser)
+router.post('/logout', checkIPRange, userController.logoutUser)
 /**
  * @swagger
  * /api/users/change-password:

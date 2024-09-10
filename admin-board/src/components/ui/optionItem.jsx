@@ -4,9 +4,10 @@ import Delete from '../svg/delete'
 import Save from '../svg/save'
 import { useUpdateSiteMutation } from '../../app/api/siteApi'
 import { Restore } from '../svg/restore'
+import Popup from './popup'
 
 const OptionItem = ({
-  handleDelete,
+  handleDelete = () => {},
   handleUpdate = () => {},
   keys = [],
   item,

@@ -6,20 +6,22 @@ export const templateApi = createApi({
 
   endpoints: (builder) => ({
     addTemplate: builder.mutation({
-      query: (newTemplate) => ({
+      query: () => ({
         url: '/templates',
         method: 'POST',
-        body: newTemplate,
       }),
+      invalidatesTags: ['TemplateList'],
     }),
     getAllTemplates: builder.query({
       query: () => '/templates',
+      providesTags: ['TemplateList'],
     }),
     deleteTemplate: builder.mutation({
       query: (id) => ({
         url: `/templates/${id}`,
         method: 'DELETE',
       }),
+      invalidatesTags: ['TemplateList'],
     }),
     updateTemplate: builder.mutation({
       query: ({ id, ...template }) => ({
@@ -27,9 +29,11 @@ export const templateApi = createApi({
         method: 'PATCH',
         body: template,
       }),
+      invalidatesTags: ['TemplateList'],
     }),
     getOneTemplate: builder.query({
       query: (id) => `/templates/${id}`,
+      providesTags: ['TemplateList'],
     }),
   }),
 })

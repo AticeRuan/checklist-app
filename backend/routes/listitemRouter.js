@@ -8,7 +8,7 @@ const checkIPRange = require('../middlewares/checkIPRange')
 
 /**
  * @swagger
- * /api/listitems:
+ * /api/list-items:
  *   post:
  *     summary: Add a new list item
  *     description: Create a new list item and associate it with specified sites.
@@ -53,7 +53,7 @@ const checkIPRange = require('../middlewares/checkIPRange')
 router.post('/', checkIPRange, requireAuth, listItemController.addListItem)
 /**
  * @swagger
- * /api/listitems/{id}:
+ * /api/list-items/{id}:
  *   get:
  *     summary: Get a list item by ID
  *     description: Retrieve a specific list item by its ID, including associated sites.
@@ -82,7 +82,7 @@ router.post('/', checkIPRange, requireAuth, listItemController.addListItem)
 router.get('/:id', checkIPRange, requireAuth, listItemController.getOneListItem)
 /**
  * @swagger
- * /api/listitems/{id}:
+ * /api/list-items/{id}:
  *   patch:
  *     summary: Update a list item
  *     description: Update an existing list item by its ID and manage its associated sites.
@@ -136,7 +136,7 @@ router.patch(
 )
 /**
  * @swagger
- * /api/listitems/{id}:
+ * /api/list-items/{id}:
  *   delete:
  *     summary: Delete a list item
  *     description: Delete a specific list item by its ID.
@@ -163,6 +163,57 @@ router.delete(
   checkIPRange,
   requireAuth,
   listItemController.deleteListItem,
+)
+
+/**
+ * @swagger
+ * /api/list-items/by-template/{id}:
+ *   get:
+ *     summary: Get List Items by Template ID
+ *     description: Retrieve all list items associated with a specific template using the template ID.
+ *     tags: [List Items]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: The ID of the template to fetch list items for.
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved list items associated with the specified template.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   list_item_id:
+ *                     type: integer
+ *                   item_name:
+ *                     type: string
+ *                   description:
+ *                     type: string
+ *                   sites:
+ *                     type: array
+ *                     items:
+ *                       type: object
+ *                       properties:
+ *                         site_name:
+ *                           type: string
+ *       400:
+ *         description: Bad request, possibly due to missing or invalid template ID.
+ *       500:
+ *         description: Internal server error.
+ */
+router.get(
+  '/by-template/:id',
+  checkIPRange,
+  requireAuth,
+  listItemController.getListItemsByTemplateId,
 )
 
 module.exports = router

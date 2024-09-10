@@ -120,9 +120,32 @@ const getOneListItem = async (req, res) => {
   }
 }
 
+const getListItemsByTemplateId = async (req, res) => {
+  let template_id = req.params.id
+  try {
+    let listItems = await ListItem.findAll({
+      where: { template_id: template_id },
+      include: [
+        {
+          model: Site,
+          through: { model: ListItemSite },
+          attributes: ['site_name'],
+        },
+      ],
+    })
+    res.status(200).json(listItems)
+  } catch (err) {
+    console.error('Error fetching list items:', err)
+    res
+      .status(500)
+      .json({ error: 'Internal server error', details: err.message })
+  }
+}
+
 module.exports = {
   addListItem,
   deleteListItem,
   updateListItem,
   getOneListItem,
+  getListItemsByTemplateId,
 }

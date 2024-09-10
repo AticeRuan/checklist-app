@@ -4,6 +4,9 @@ import { useLoginUserMutation } from '../app/api/userApi'
 import { useDispatch } from 'react-redux'
 import { login } from '../app/features/auth/authSlice'
 import { useNavigate } from 'react-router-dom'
+import Loading from '../components/ui/loading'
+import Error from '../components/ui/error'
+
 const Login = () => {
   const [user, setUser] = useState({ user_name: '', password: '' })
   const navigate = useNavigate()
@@ -37,6 +40,17 @@ const Login = () => {
     } catch (error) {
       console.error('Failed to login:', error)
     }
+  }
+
+  if (isLoading)
+    return (
+      <div>
+        <Loading text="Logging in..." />
+      </div>
+    )
+
+  if (error) {
+    return <Error text="Failed to login, refresh and try again" />
   }
 
   return (

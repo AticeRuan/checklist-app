@@ -3,12 +3,18 @@ import TileGrounp from '../components/ui/tileGrounp'
 import { useGetAllTemplatesQuery } from '../app/api/templateApi'
 import { useDispatch, useSelector } from 'react-redux'
 import { useEffect, useState } from 'react'
+import Loading from '../components/ui/loading'
+import Error from '../components/ui/error'
 const AllLists = () => {
-  const localtemplates = useSelector((state) => state.template.templates)
+  const localtemplates = useSelector((state) => state.template.templates || [])
 
-  const published = localtemplates?.filter(
-    (template) => template.status === 'published',
-  )
+  const { data: templates, error, isLoading } = useGetAllTemplatesQuery()
+
+  const published = Array.isArray(templates)
+    ? templates.filter((template) => template.status === 'published')
+    : []
+
+  console.log('publised Item', published)
 
   const categories = useSelector((state) => state.category.categories)
 
@@ -17,6 +23,19 @@ const AllLists = () => {
   const handleCategoryChange = (e) => {
     setSelectedCategory(e.target.value)
   }
+
+  if (isLoading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    )
+  if (error)
+    return (
+      <div>
+        <Error />
+      </div>
+    )
 
   return (
     <div className="p-[3rem] flex flex-col items-start justify-start w-full ">

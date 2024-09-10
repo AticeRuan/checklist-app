@@ -1,3 +1,4 @@
+const { where } = require('sequelize')
 const db = require('../models')
 
 const Template = db.Template
@@ -9,13 +10,43 @@ const TemplateSite = db.TemplateSite
 const addTemplate = async (req, res) => {
   const last_updated_by = req.user.user_name
   try {
+    const sites = await Site.findAll()
+
     const template = await Template.create({
       title: 'New Template',
       status: 'draft',
       last_updated_by: last_updated_by,
+      category_id: 1,
     })
 
-    res.status(201).json(template)
+    // Step 3: Link the new template to all sites
+    if (sites.length > 0) {
+      const sitePromises = sites.map((site) =>
+        TemplateSite.create({
+          template_id: template.template_id,
+          site_id: site.site_id,
+        }),
+      )
+      await Promise.all(sitePromises)
+    }
+
+    if (template) {
+      const newTemplate = await Template.findOne({
+        where: { template_id: template.template_id },
+        include: [
+          {
+            model: Category,
+            attributes: ['name'],
+          },
+          {
+            model: Site,
+            through: { model: TemplateSite },
+            attributes: ['site_name', 'site_id'],
+          },
+        ],
+      })
+      res.status(201).json(newTemplate)
+    }
   } catch (err) {
     console.error('Error creating template:', err)
     res
@@ -30,7 +61,6 @@ const updateTemplate = async (req, res) => {
 
     const last_updated_by = req.user.user_name
     let id = req.params.id
-    let seletedsites = sites || []
 
     await Template.update(
       {
@@ -55,7 +85,22 @@ const updateTemplate = async (req, res) => {
         await Promise.all(sitePromises)
       }
     }
-    res.status(200).json({ message: 'Template updated' })
+
+    const updatedTemplate = await Template.findOne({
+      where: { template_id: id },
+      include: [
+        {
+          model: Category,
+          attributes: ['name'],
+        },
+        {
+          model: Site,
+          through: { model: TemplateSite },
+          attributes: ['site_name', 'site_id'],
+        },
+      ],
+    })
+    res.status(200).json(updatedTemplate)
   } catch (err) {
     res
       .status(500)
@@ -113,10 +158,7 @@ const getOneTemplate = async (req, res) => {
         {
           model: Site,
           through: { model: TemplateSite },
-          attributes: ['site_name'],
-        },
-        {
-          model: ListItem,
+          attributes: ['site_name', 'site_id'],
         },
       ],
     })

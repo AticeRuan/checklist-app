@@ -21,6 +21,7 @@ const Tile = ({
   draft = false,
   archived = false,
 }) => {
+  // console.log('data in tile', item)
   const created_date = new Date(item.createdAt)
   const updated_date = new Date(item.updatedAt)
 
@@ -49,10 +50,14 @@ const Tile = ({
     }
   }
 
-  const handledRestore = async () => {
+  const handleRestore = async () => {
     try {
       // Call the RTK Query mutation to update the status to 'published'
-      await updateTemplate({ id: item.template_id, status: 'published' })
+      await updateTemplate({
+        id: item.template_id,
+        ...item,
+        status: 'published',
+      })
 
       // Dispatch a Redux action to update the state
       dispatch(
@@ -98,7 +103,7 @@ const Tile = ({
       )}
       {archived ? (
         <div className="w-full h-full backdrop-blur-sm absolute top-0 left-0 rounded-[1.25rem] group-hover:flex items-center justify-center gap-8 hidden ">
-          <button onClick={handledRestore}>
+          <button onClick={handleRestore}>
             <Restore />
           </button>
           <button onClick={handleDelete}>

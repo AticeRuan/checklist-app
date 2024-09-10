@@ -14,7 +14,7 @@ export const categorySlice = createSlice({
     },
     updateCategory: (state, action) => {
       const index = state.categories.findIndex(
-        (category) => category.category_id === action.payload,
+        (category) => category.category_id === action.payload.id,
       )
 
       if (index !== -1) {

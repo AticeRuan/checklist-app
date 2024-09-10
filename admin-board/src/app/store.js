@@ -87,29 +87,3 @@ export const store = configureStore({
       .concat(listitemApi.middleware),
 })
 export const persistor = persistStore(store)
-
-// export const store = configureStore({
-//   reducer: {
-//     [userApi.reducerPath]: userApi.reducer,
-//     [templateApi.reducerPath]: templateApi.reducer,
-//     [categoryApi.reducerPath]: categoryApi.reducer,
-//     [siteApi.reducerPath]: siteApi.reducer,
-//     [ipAddressApi.reducerPath]: ipAddressApi.reducer,
-//     [listitemApi.reducerPath]: listitemApi.reducer,
-//     auth: authReducer,
-//     user: userReducer,
-//     template: templateReducer,
-//     category: categoryReducer,
-//     site: siteReducer,
-//     ipAddress: ipAddressReducer,
-//     listitem: listitemReducer,
-//   },
-//   middleware: (getDefaultMiddleware) =>
-//     getDefaultMiddleware()
-//       .concat(userApi.middleware)
-//       .concat(templateApi.middleware)
-//       .concat(categoryApi.middleware)
-//       .concat(siteApi.middleware)
-//       .concat(ipAddressApi.middleware)
-//       .concat(listitemApi.middleware),
-// })

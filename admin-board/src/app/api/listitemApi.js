@@ -1,22 +1,24 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import customBaseQuery from '../customBaseQuery'
 export const listitemApi = createApi({
   reducerPath: 'listitemApi',
   baseQuery: customBaseQuery,
+
   endpoints: (builder) => ({
     addListItem: builder.mutation({
       query: (newListItem) => ({
-        url: '/listitems',
+        url: '/list-items',
         method: 'POST',
         body: newListItem,
       }),
+      invalidatesTags: ['ListItemList'],
     }),
-
     deleteListItem: builder.mutation({
       query: (id) => ({
-        url: `/listitems/${id}`,
+        url: `/list-items/${id}`,
         method: 'DELETE',
       }),
+      invalidatesTags: ['ListItemList'],
     }),
     updateListItem: builder.mutation({
       query: ({ id, ...listItem }) => ({
@@ -24,9 +26,15 @@ export const listitemApi = createApi({
         method: 'PATCH',
         body: listItem,
       }),
+      invalidatesTags: ['ListItemList'],
     }),
     getOneListItem: builder.query({
-      query: (id) => `/listitems/${id}`,
+      query: (id) => `/list-items/${id}`,
+      providesTags: ['ListItemList'],
+    }),
+    getListItemsByTemplateId: builder.query({
+      query: (templateId) => `/list-items/by-template/${templateId}`,
+      providesTags: ['ListItemList'],
     }),
   }),
 })
@@ -36,4 +44,5 @@ export const {
   useDeleteListItemMutation,
   useUpdateListItemMutation,
   useGetOneListItemQuery,
+  useGetListItemsByTemplateIdQuery,
 } = listitemApi

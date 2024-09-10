@@ -2,13 +2,16 @@ import TileGrounp from '../components/ui/tileGrounp'
 import { useSelector } from 'react-redux'
 import { useGetAllTemplatesQuery } from '../app/api/templateApi'
 import dateFormat, { masks } from 'dateformat'
+import Loading from '../components/ui/loading'
+import Error from '../components/ui/error'
 
 const Archive = () => {
-  const localtemplates = useSelector((state) => state.template.templates)
+  const { data: templates, error, isLoading } = useGetAllTemplatesQuery()
+  const localtemplates = useSelector((state) => state.template.templates || [])
 
-  const archived = localtemplates?.filter(
-    (template) => template.status === 'archived',
-  )
+  const archived = Array.isArray(templates)
+    ? templates?.filter((template) => template.status === 'archived')
+    : []
 
   const archiveYear = [
     ...new Set(
@@ -17,6 +20,19 @@ const Archive = () => {
         .sort((a, b) => new Date(b) - new Date(a)),
     ),
   ]
+
+  if (isLoading)
+    return (
+      <div>
+        <Loading />
+      </div>
+    )
+  if (error)
+    return (
+      <div>
+        <Error />
+      </div>
+    )
 
   return (
     <div className="p-[3rem] flex flex-col items-start justify-start w-full ">

@@ -1,5 +1,6 @@
 import OptionGroup from '../components/ui/optionGroup'
 import { useSelector, useDispatch } from 'react-redux'
+import { useState } from 'react'
 //import site related actions and hooks
 import {
   useUpdateSiteMutation,
@@ -46,6 +47,7 @@ import {
   deleteIpAddress as deleteIpAddressAction,
   updateIpAddress as updateIpAddressAction,
 } from '../app/features/ipAddress/ipAddressSlice'
+import Popup from '../components/ui/popup'
 
 const Settings = () => {
   const dispatch = useDispatch()
@@ -261,6 +263,15 @@ const Settings = () => {
           handleUpdate={(updatedItem) => handleSiteUpdate(updatedItem)}
           id_key="site_id"
           handleCreate={(newSite) => handleSiteCreate(newSite)}
+        />{' '}
+        <OptionGroup
+          title="Categories"
+          data={categories}
+          keys={category_keys}
+          handleDelete={(id) => handleCategoryDelete(id)}
+          handleUpdate={(updatedItem) => handleCategoryUpdate(updatedItem)}
+          id_key="category_id"
+          handleCreate={(newCategory) => handleCategoryCreate(newCategory)}
         />
         <OptionGroup
           title="Users"
@@ -274,15 +285,6 @@ const Settings = () => {
           handleReset={(id) => handleUserResetPassword(id)}
         />
         <OptionGroup
-          title="Categories"
-          data={categories}
-          keys={category_keys}
-          handleDelete={(id) => handleCategoryDelete(id)}
-          handleUpdate={(updatedItem) => handleCategoryUpdate(updatedItem)}
-          id_key="category_id"
-          handleCreate={(newCategory) => handleCategoryCreate(newCategory)}
-        />
-        <OptionGroup
           title="IP Address Range"
           data={ipAddresses}
           keys={ip_keys}
@@ -291,9 +293,6 @@ const Settings = () => {
           id_key="ip_address_id"
           handleCreate={(newIpAddress) => handleIpAddressCreate(newIpAddress)}
         />
-      </div>
-      <div className="w-screen h-screen flex items-center justify-center">
-        Processing
       </div>
     </div>
   )

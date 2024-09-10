@@ -1,6 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = { templates: [] }
+const initialState = {
+  templates: [],
+}
 
 const templateSlice = createSlice({
   name: 'template',
@@ -11,7 +13,7 @@ const templateSlice = createSlice({
     },
     deleteTemplate(state, action) {
       state.templates = state.templates.filter(
-        (template) => template.template_id !== action.payload,
+        (template) => template.id !== action.payload.id,
       )
     },
     addTemplate(state, action) {
@@ -19,7 +21,7 @@ const templateSlice = createSlice({
     },
     updateTemplate(state, action) {
       const index = state.templates.findIndex(
-        (template) => template.template_id === action.payload.id,
+        (template) => template.template_id === action.payload.template_id,
       )
 
       if (index !== -1) {

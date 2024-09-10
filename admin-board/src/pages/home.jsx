@@ -15,6 +15,8 @@ import { getCategories } from '../app/features/category/categorySlice'
 import { getSites } from '../app/features/site/siteSlice'
 import { getUsers } from '../app/features/user/userSlice'
 import { getIpAddresses } from '../app/features/ipAddress/ipAddressSlice'
+import Loading from '../components/ui/loading'
+import Error from '../components/ui/error'
 
 const Home = () => {
   const user = useSelector((state) => state.auth.user)
@@ -23,21 +25,80 @@ const Home = () => {
 
   const isAdmin = user?.role === 'admin'
 
-  //fetch data on page load
-  const { data: templates, error, isLoading } = useGetAllTemplatesQuery()
+  const [isDataLoading, setIsDataLoading] = useState(true)
+  const [isDataError, setIsDataError] = useState(false)
 
-  const { data: categories } = useGetAllCategoriesQuery()
-  const { data: sites } = useGetAllSitesQuery()
-  const { data: users } = useGetAllUsersQuery(undefined, { skip: !isAdmin })
-  const { data: ipAddresses } = useGetAllIpAddressesQuery(undefined, {
-    skip: !isAdmin,
-  })
+  //fetch data on page load
+  const {
+    data: templates,
+    error: templateError,
+    isLoading: templateLoading,
+  } = useGetAllTemplatesQuery()
+  const {
+    data: categories,
+    error: categoriesError,
+    isLoading: categoriesLoading,
+  } = useGetAllCategoriesQuery()
+  const {
+    data: sites,
+    error: sitesError,
+    isLoading: sitesLoading,
+  } = useGetAllSitesQuery()
+  const {
+    data: users,
+    error: usersError,
+    isLoading: usersLoading,
+  } = useGetAllUsersQuery(undefined, { skip: !isAdmin })
+  const {
+    data: ipAddresses,
+    error: ipAddressesError,
+    isLoading: ipAddressesLoading,
+  } = useGetAllIpAddressesQuery(undefined, { skip: !isAdmin })
+
+  useEffect(() => {
+    if (
+      !templateLoading &&
+      !categoriesLoading &&
+      !sitesLoading &&
+      !usersLoading &&
+      !ipAddressesLoading
+    ) {
+      setIsDataLoading(false)
+    }
+  }, [
+    isDataLoading,
+    templateLoading,
+    categoriesLoading,
+    sitesLoading,
+    usersLoading,
+    ipAddressesLoading,
+  ])
+
+  useEffect(() => {
+    if (
+      templateError ||
+      categoriesError ||
+      sitesError ||
+      usersError ||
+      ipAddressesError
+    ) {
+      setIsDataError(true)
+    }
+  }, [
+    isDataError,
+    templateError,
+    categoriesError,
+    sitesError,
+    usersError,
+    ipAddressesError,
+  ])
 
   const dispatch = useDispatch()
 
   useEffect(() => {
     if (templates) {
       dispatch(getTemplates(templates))
+      // console.log('Fetched templates:', templates)
     }
   }, [templates, dispatch])
 
@@ -65,25 +126,45 @@ const Home = () => {
     }
   }, [ipAddresses, dispatch])
 
-  const localtemplates = useSelector((state) => state.template.templates)
+  const localtemplates = useSelector((state) => state.template.templates || [])
 
-  const activeTemplates = localtemplates?.filter(
-    (template) => template.status === 'published',
-  )
+  // useEffect(() => {
+  //   console.log('localtemplates:', localtemplates)
+  //   console.log('templates:', templates)
+  // }, [localtemplates, templates])
+
+  // useEffect(() => {
+  //   console.log(
+  //     'localtemplates:',
+  //     localtemplates,
+  //     'Type:',
+  //     typeof localtemplates,
+  //   )
+  // }, [localtemplates])
+
+  const activeTemplates = Array.isArray(localtemplates)
+    ? localtemplates.filter((template) => template.status === 'published')
+    : []
 
   const recentUpdatedTemplates = activeTemplates
     ?.slice()
     .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
-    .slice(0, 3)
+    .slice(0, 5)
 
   const recentCreatedTemplates = activeTemplates
     ?.slice()
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
-    .slice(0, 3)
-
-  const draftTemplates = localtemplates
-    ?.filter((template) => template.status === 'draft')
     .slice(0, 5)
+
+  const draftTemplates = Array.isArray(localtemplates)
+    ? localtemplates
+        .filter((template) => template.status === 'draft')
+        .slice(0, 5)
+    : []
+
+  if (isDataLoading) return <Loading />
+
+  if (isDataError) return <Error />
 
   return (
     <>

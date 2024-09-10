@@ -1,4 +1,7 @@
 const ipRangeCheck = require('ip-range-check')
+const db = require('../models')
+
+const ipAddress = db.IPAddress
 
 // Utility function to get the client's IP address
 const getClientIp = (req) => {
@@ -13,9 +16,15 @@ const getClientIp = (req) => {
   return req.headers['x-real-ip'] || req.ip || req.connection.remoteAddress
 }
 
-const checkIPRange = (req, res, next) => {
-  const allowedRange = process.env.IP_RANGE.split(',')
+const checkIPRange = async (req, res, next) => {
+  // const allowedRange = process.env.IP_RANGE.split(',')
   const clientIp = getClientIp(req)
+
+  const ipAddresses = await db.IPAddress.findAll({
+    attributes: ['ip_address'],
+  })
+
+  const allowedRange = ipAddresses.map((ip) => ip.ip_address)
 
   if (ipRangeCheck(clientIp, allowedRange)) {
     next()

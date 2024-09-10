@@ -7,7 +7,7 @@ const User = db.User
 const BlackListedToken = db.BlacklistedToken
 
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.SECRET, { expiresIn: '1h' })
+  return jwt.sign({ id }, process.env.SECRET, { expiresIn: '3h' })
 }
 
 const addUser = async (req, res) => {

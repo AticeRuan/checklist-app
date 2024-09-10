@@ -14,7 +14,9 @@ const TileGrounp = ({
       </h2>
       <div className="w-full flex pl-[2rem] flex-wrap gap-6">
         {data?.length === 0 && (
-          <p className="text-lg font-bold">No template available. </p>
+          <p className="w-full flex items-center justify-center font-[500] text-xl mt-5">
+            No Template Available Under {title}
+          </p>
         )}
         {data?.map((item, index) => {
           const isDraft = item.status === 'draft'

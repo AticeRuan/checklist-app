@@ -47,7 +47,9 @@ require('./associations')(db)
 
 const syncDatabase = async () => {
   try {
-    // await db.sequelize.query('DROP TABLE IF EXISTS Categories')
+    // await db.sequelize.query(
+    //   ` DELETE FROM templates  WHERE title = 'New Template'`,
+    // )
     await db.sequelize.sync({ force: false })
     console.log('Drop and re-sync Checklist db.')
   } catch (err) {
