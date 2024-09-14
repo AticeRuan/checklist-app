@@ -48,6 +48,10 @@ import {
   updateIpAddress as updateIpAddressAction,
 } from '../app/features/ipAddress/ipAddressSlice'
 import Popup from '../components/ui/popup'
+import { useEffect } from 'react'
+import Loading from '../components/ui/loading'
+import Error from '../components/ui/error'
+import Loader from '../components/svg/loader'
 
 const Settings = () => {
   const dispatch = useDispatch()
@@ -55,12 +59,26 @@ const Settings = () => {
   //handle site settings logic
   const site = useSelector((state) => state.site.sites)
   const site_keys = ['site_name', 'region']
-  const [updateSite] = useUpdateSiteMutation()
-  const [deleteSite] = useDeleteSiteMutation()
-  const [addSite] = useAddSiteMutation()
+  const [
+    updateSite,
+    { isLoading: isUpdateSiteLoading, isError: isUpdateSiteError },
+  ] = useUpdateSiteMutation()
+  const [
+    deleteSite,
+    { isLoading: isDeletingSiteLoading, isError: isDeletingSiteError },
+  ] = useDeleteSiteMutation()
+
+  const [addSite, { isLoading: isAddSiteLoading, isError: isAddSiteError }] =
+    useAddSiteMutation()
+  const [isLoading, setIsLoading] = useState(false)
+  const [isError, setIsError] = useState(false)
+  const [errorMessage, setErrorMessage] = useState('')
 
   const handleSiteUpdate = async (updatedItem) => {
     try {
+      setIsLoading(true)
+      setIsError(false)
+      setErrorMessage('')
       await updateSite({
         id: updatedItem.site_id,
         site_name: updatedItem.site_name,
@@ -75,58 +93,104 @@ const Settings = () => {
       )
     } catch (error) {
       console.error('Error while updating site:', error)
+      setIsError(true)
+      setErrorMessage('Failed to update the site. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const handleSiteDelete = async (id) => {
     try {
+      setIsLoading(true)
+      setIsError(false)
+      setErrorMessage('')
       await deleteSite(id)
       dispatch(deleteSiteAction(id))
     } catch (error) {
       console.error('Error while deleting site:', error)
+
+      setIsError(true)
+      setErrorMessage('Failed to delete the site. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const handleSiteCreate = async (newSite) => {
     try {
+      setIsLoading(true)
+      setIsError(false)
+      setErrorMessage('')
       const newItem = await addSite(newSite)
       dispatch(addSiteAction(newItem.data))
     } catch (error) {
       console.error('Error while adding site:', error)
+      setIsError(true)
+      setErrorMessage('Failed to create the site. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   //handle user settings logic
   const users = useSelector((state) => state.user.users)
   const user_keys = ['user_name', 'role']
-  const [addUser] = useAddUserMutation()
-  const [deleteUser] = useDeleteUserMutation()
-  const [updateUser] = useUpdateUserMutation()
-  const [resetPassword] = useResetPasswordMutation()
+  const [addUser, { isLoading: isAddUserLoading, isError: isAddUserError }] =
+    useAddUserMutation()
+  const [
+    deleteUser,
+    { isLoading: isDeleteUserLoading, isError: isDeleteUserError },
+  ] = useDeleteUserMutation()
+  const [
+    updateUser,
+    { isLoading: isUpdateUserLoading, isError: isUpdateUserError },
+  ] = useUpdateUserMutation()
+  const [
+    resetPassword,
+    { isLoading: isResetPasswordLoading, isError: isResetPasswordError },
+  ] = useResetPasswordMutation()
 
   const handleUserCreate = async (newUser) => {
     const data = newUser
 
     try {
+      setIsLoading(true)
+      setIsError(false)
+      setErrorMessage('')
       const newItem = await addUser(data)
 
       dispatch(addUserAction(newItem.data))
     } catch (error) {
       console.error('Error while adding user:', error)
+      setIsError(true)
+      setErrorMessage('Failed to create user. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const handleUserDelete = async (id) => {
     try {
+      setIsLoading(true)
+      setIsError(false)
+      setErrorMessage('')
       await deleteUser(id)
       dispatch(deleteUserAction(id))
     } catch (error) {
       console.error('Error while deleting user:', error)
+      setIsError(true)
+      setErrorMessage('Failed to delete the user. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const handleUserRoleUpdate = async (updatedItem) => {
     try {
+      setIsLoading(true)
+      setIsError(false)
+      setErrorMessage('')
       await updateUser({
         id: updatedItem.user_id,
         role: updatedItem.role,
@@ -139,11 +203,18 @@ const Settings = () => {
       )
     } catch (error) {
       console.error('Error while updating user role:', error)
+      setIsError(true)
+      setErrorMessage('Failed to update the user. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const handleUserResetPassword = async (id) => {
     try {
+      setIsLoading(true)
+      setIsError(false)
+      setErrorMessage('')
       await resetPassword(id)
 
       dispatch(
@@ -154,17 +225,34 @@ const Settings = () => {
       )
     } catch (error) {
       console.error('Error while resetting user password:', error)
+      setIsError(true)
+      setErrorMessage('Failed to reset password. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   //handle category settings logic
   const categories = useSelector((state) => state.category.categories)
   const category_keys = ['name', 'duration']
-  const [updateCategory] = useUpdateCategoryMutation()
-  const [deleteCategory] = useDeleteCategoryMutation()
-  const [addCategory] = useAddCategoryMutation()
+  const [
+    updateCategory,
+    { isLoading: isUpdateCategoryLoading, isError: isUpdateCategoryError },
+  ] = useUpdateCategoryMutation()
+  const [
+    deleteCategory,
+    { isLoading: isDeleteCategoryLoading, isError: isDeleteCategoryError },
+  ] = useDeleteCategoryMutation()
+  const [
+    addCategory,
+    { isLoading: isAddCategoryLoading, isError: isAddCategoryError },
+  ] = useAddCategoryMutation()
+
   const handleCategoryUpdate = async (updatedItem) => {
     try {
+      setIsLoading(true)
+      setIsError(false)
+      setErrorMessage('')
       await updateCategory({
         id: updatedItem.category_id,
         category_name: updatedItem.category_name,
@@ -179,11 +267,18 @@ const Settings = () => {
       )
     } catch (error) {
       console.error('Error while updating category:', error)
+      setIsError(true)
+      setErrorMessage('Failed to udpate the category. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const handleCategoryDelete = async (id) => {
     try {
+      setIsLoading(true)
+      setIsError(false)
+      setErrorMessage('')
       if (id) {
         await deleteCategory(id)
       } else {
@@ -193,46 +288,83 @@ const Settings = () => {
       dispatch(deleteCategoryAction(id))
     } catch (error) {
       console.error('Error while deleting category:', error)
+      setIsError(true)
+      setErrorMessage('Failed to delete the category. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const handleCategoryCreate = async (newCategory) => {
     try {
-      const newItem = await addCategory(newCategory)
+      setIsLoading(true)
+      setIsError(false)
+      setErrorMessage('')
+      const newItem = await addCategory(newCategory).unwrap()
 
-      dispatch(addCategoryAction(newItem.data))
+      dispatch(addCategoryAction(newItem))
     } catch (error) {
       console.error('Error while adding category:', error)
+      setIsError(true)
+      setErrorMessage('Failed to create the category. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   //handle ip address settings logic
   const ipAddresses = useSelector((state) => state.ipAddress.ipAddresses)
   const ip_keys = ['site_name', 'ip_address']
-  const [addIpAddress] = useAddIpAddressMutation()
-  const [deleteIpAddress] = useDeleteIpAddressMutation()
-  const [updateIpAddress] = useUpdateIpAddressMutation()
+  const [
+    addIpAddress,
+    { isLoading: isAddIpAddressLoading, isError: isAddIpAddressError },
+  ] = useAddIpAddressMutation()
+  const [
+    deleteIpAddress,
+    { isLoading: isDeleteIpAddressLoading, isError: isDeleteIpAddressError },
+  ] = useDeleteIpAddressMutation()
+  const [
+    updateIpAddress,
+    { isLoading: isUpdateIpAddressLoading, isError: isUpdateIpAddressError },
+  ] = useUpdateIpAddressMutation()
 
   const handleIpAddressCreate = async (newIpAddress) => {
     try {
+      setIsLoading(true)
+      setIsError(false)
+      setErrorMessage('')
       const newItem = await addIpAddress(newIpAddress)
       dispatch(addIpAddressAction(newItem.data))
     } catch (error) {
       console.error('Error while adding ip address:', error)
+      setIsError(true)
+      setErrorMessage('Failed to add IP address. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const handleIpAddressDelete = async (id) => {
     try {
+      setIsLoading(true)
+      setIsError(false)
+      setErrorMessage('')
       await deleteIpAddress(id)
       dispatch(deleteIpAddressAction(id))
     } catch (error) {
       console.error('Error while deleting ip address:', error)
+      setIsError(true)
+      setErrorMessage('Failed to delete IP address. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const handleIpAddressUpdate = async (updatedItem) => {
     try {
+      setIsLoading(true)
+      setIsError(false)
+      setErrorMessage('')
       await updateIpAddress({
         id: updatedItem.ip_address_id,
         ip_address: updatedItem.ip_address,
@@ -246,11 +378,100 @@ const Settings = () => {
       )
     } catch (error) {
       console.error('Error while updating ip address:', error)
+      setIsError(true)
+      setErrorMessage('Failed to update IP address. Please try again.')
+    } finally {
+      setIsLoading(false)
     }
   }
+  useEffect(() => {
+    if (
+      isUpdateSiteError ||
+      isDeletingSiteError ||
+      isAddSiteError ||
+      isUpdateCategoryError ||
+      isDeleteCategoryError ||
+      isAddCategoryError ||
+      isAddUserError ||
+      isDeleteUserError ||
+      isUpdateUserError ||
+      isResetPasswordError ||
+      isAddIpAddressError ||
+      isDeleteIpAddressError ||
+      isUpdateIpAddressError
+    ) {
+      setIsError(true)
+    }
+    if (
+      isUpdateSiteLoading ||
+      isDeletingSiteLoading ||
+      isAddSiteLoading ||
+      isUpdateCategoryLoading ||
+      isDeleteCategoryLoading ||
+      isAddCategoryLoading ||
+      isAddUserLoading ||
+      isDeleteUserLoading ||
+      isUpdateUserLoading ||
+      isResetPasswordLoading ||
+      isAddIpAddressLoading ||
+      isDeleteIpAddressLoading ||
+      isUpdateIpAddressLoading
+    )
+      setIsLoading(true)
+    else setIsLoading(false)
+  }, [
+    isUpdateSiteError,
+    isDeletingSiteError,
+    isAddSiteError,
+    isUpdateCategoryError,
+    isDeleteCategoryError,
+    isAddCategoryError,
+    isAddUserError,
+    isDeleteUserError,
+    isUpdateUserError,
+    isResetPasswordError,
+    isAddIpAddressError,
+    isDeleteIpAddressError,
+    isUpdateIpAddressError,
+    isUpdateSiteLoading,
+    isDeletingSiteLoading,
+    isAddSiteLoading,
+    isUpdateCategoryLoading,
+    isDeleteCategoryLoading,
+    isAddCategoryLoading,
+    isAddUserLoading,
+    isDeleteUserLoading,
+    isUpdateUserLoading,
+    isResetPasswordLoading,
+    isAddIpAddressLoading,
+    isDeleteIpAddressLoading,
+    isUpdateIpAddressLoading,
+  ])
+
+  if (isError)
+    return (
+      <Error
+        text={
+          errorMessage != ''
+            ? errorMessage
+            : 'Something went wrong, refresh and try again'
+        }
+      />
+    )
 
   return (
     <div className="p-[3rem] flex flex-col items-start justify-start w-full ">
+      {isLoading && (
+        <div className=" w-[80vw] h-20 fixed top-15 flex items-center justify-center    z-40 backdrop-blur-sm">
+          <div className="flex text-b-mid-blue font-[500] gap-4 items-center justify-center text-lg">
+            <div className="animate-spin">
+              <Loader />
+            </div>
+            <p>Processing</p>
+          </div>
+        </div>
+      )}
+
       <h1 className="text-[1.875rem] font-[600] leading-[1.5rem] mb-[3.5rem]">
         Settings
       </h1>

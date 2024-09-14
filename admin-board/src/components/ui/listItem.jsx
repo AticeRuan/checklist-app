@@ -146,13 +146,21 @@ const ListItem = ({
     }
   }
 
-  if (isLoading) return <Loading text="Processing" />
   if (error) return <Error text="Failed to update, refresh and try again" />
 
   return (
     <div
-      className="bg-gray-100 p-4 rounded-lg text-lg relative"
-      style={{ border: isEditing ? '1px solid #A6D7F5' : '' }}
+      className="bg-gray-100 p-4 rounded-lg text-lg hover:shadow-lg hover:-translate-y-1 transform duration-300"
+      style={
+        isEditing
+          ? {
+              border: '1px solid #A6D7F5',
+              boxShadow:
+                '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+              transform: 'translateY(-1px)',
+            }
+          : {}
+      }
     >
       {isEditing ? (
         <div className="flex flex-col gap-7 mb-2">
@@ -185,7 +193,7 @@ const ListItem = ({
           />
           {/* site-list pop-up */}
           {isItemSiteSettingOpen && (
-            <div className="w-screen min-h-screen absolute top-0 left-0 flex items-center justify-center flex-col h-fit backdrop-brightness-75 z-50">
+            <div className="w-screen min-h-screen absolute top-0 left-0 flex items-center justify-center flex-col h-fit backdrop-brightness-75 z-[100]">
               <div className="w-fit bg-white rounded-xl p-8 shadow-2xl ">
                 <div className="flex justify-around items-center gap-7">
                   <h2 className="text-2xl tracking-wider font-bold text-b-active-blue uppercase">

@@ -132,6 +132,7 @@ const getListItemsByTemplateId = async (req, res) => {
           attributes: ['site_name'],
         },
       ],
+      order: [['updatedAt', 'DESC']],
     })
     res.status(200).json(listItems)
   } catch (err) {

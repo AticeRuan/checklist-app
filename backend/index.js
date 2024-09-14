@@ -106,14 +106,14 @@ app.get('/', (req, res) => {
   res.json({ message: 'Hello from ListSync!' })
 })
 
-// //port
+//port
 
-// const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT || 8080
 
-// //server
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`)
-// })
+//server
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`)
+})
 
 module.exports = app
 module.exports.handler = serverless(app)

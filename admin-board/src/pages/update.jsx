@@ -16,8 +16,6 @@ import {
   useDeleteListItemMutation,
 } from '../app/api/listitemApi'
 
-import { Tick } from '../components/svg/tick'
-import Archive from '../components/svg/archive'
 import Loading from '../components/ui/loading'
 import Error from '../components/ui/error'
 
@@ -29,8 +27,6 @@ const Update = () => {
 
   //handle listitem crud logic
   const { data: listitems } = useGetListItemsByTemplateIdQuery(id)
-
-  const [updateListitem] = useUpdateListItemMutation()
 
   useEffect(() => {
     if (listitems) {

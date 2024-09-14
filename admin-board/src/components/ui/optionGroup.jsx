@@ -4,6 +4,7 @@ import OptionItem from './optionItem'
 import { Tick } from '../svg/tick'
 import Cancel from '../svg/cancel'
 import Popup from './popup'
+import Loader from '../svg/loader'
 const OptionGroup = ({
   title = 'group',
   handleDelete,
@@ -32,7 +33,18 @@ const OptionGroup = ({
   }
 
   return (
-    <div className="flex flex-col w-full 2xl:w-[60vw] justify-center  items-center p-4 border-t-2 border-b-2 hover:cursor-pointer py-9 shadow-sm">
+    <div
+      className="flex flex-col w-full 2xl:w-[60vw] justify-center  items-center p-4 border-t-2 border-b-2 hover:cursor-pointer py-9 shadow-sm hover:shadow-lg hover:-translate-y-1 transform duration-300"
+      style={
+        open
+          ? {
+              boxShadow:
+                '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+              transform: 'translateY(-1px)',
+            }
+          : {}
+      }
+    >
       <div
         className="flex w-full justify-between items-center "
         onClick={handleOpen}

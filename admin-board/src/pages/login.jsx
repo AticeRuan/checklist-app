@@ -54,7 +54,7 @@ const Login = () => {
   }
 
   return (
-    <div className="w-screen h-screen flex items-center justify-center bg-b-mid-blue text-white flex-col gap-8 z-50 ">
+    <div className="w-screen h-screen flex items-center justify-center bg-b-mid-blue text-white flex-col gap-8 z-[55] ">
       <div className="flex flex-col items-start w-[30.9rem] gap-[1.5rem]">
         <div className="flex flex-col items-start w-[30.9rem] gap-1">
           <h1 className="text-[2.215rem] font-bold w-full">

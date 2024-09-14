@@ -39,7 +39,7 @@ db.ListItem = require('./listitemModel')(sequelize, DataTypes)
 db.ListItemSite = require('./listitemSiteModel')(sequelize, DataTypes)
 db.User = require('./Auth/userModel')(sequelize, DataTypes)
 db.IPAddress = require('./Auth/ipAddressModel')(sequelize, DataTypes)
-
+db.RefreshToken = require('./Auth/refreshTokenModel')(sequelize, DataTypes)
 db.BlacklistedToken = require('./Auth/blacklistedTokenModel')(
   sequelize,
   DataTypes,
@@ -49,9 +49,7 @@ require('./associations')(db)
 
 const syncDatabase = async () => {
   try {
-    // await db.sequelize.query(
-    //   ` DELETE FROM templates  WHERE title = 'New Template'`,
-    // )
+    // await db.sequelize.query(` DROP TABLE refresh_tokens`)
     await db.sequelize.sync({ force: false })
     console.log('Drop and re-sync Checklist db.')
   } catch (err) {

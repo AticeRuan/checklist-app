@@ -23,7 +23,9 @@ const CreateNew = () => {
   const hasCreatedRef = useRef(false)
 
   const id = templateToEdit.template_id
-  const { data: listitems } = useGetListItemsByTemplateIdQuery(id)
+  const { data: listitems } = useGetListItemsByTemplateIdQuery(id, {
+    skip: id === undefined,
+  })
 
   useEffect(() => {
     const createTemplate = async () => {
@@ -71,7 +73,7 @@ const CreateNew = () => {
   }
 
   return (
-    <div className="p-[3rem] flex flex-col items-start justify-start w-full  flex-1 ">
+    <div className="p-[3rem] flex flex-col items-start justify-start w-full 2xl:w-[70vw]  flex-1 ">
       <h1 className="text-[1.875rem] font-[600] leading-[1.5rem] mb-[3.5rem]">
         Create New Template
       </h1>

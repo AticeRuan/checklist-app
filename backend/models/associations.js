@@ -90,4 +90,11 @@ module.exports = (db) => {
     foreignKey: 'user_check_id',
     onUpdate: 'CASCADE',
   })
+
+  // RefreshToken Associations
+  db.RefreshToken.belongsTo(db.User, {
+    foreignKey: 'user_id',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
 }

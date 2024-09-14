@@ -86,7 +86,7 @@ const Tile = ({
   //   const isDraft = draft ? true : false
   //   const isArchived = archived ? true : false
   return (
-    <div className="w-[11.8rem] h-[11.8rem] rounded-[1.25rem] bg-b-background-grey px-[1.25rem] py-[2.19rem] flex flex-col items-start shadow-lg justify-center gap-2 relative group whitespace-nowrap ">
+    <div className="w-[11.8rem] h-[11.8rem] rounded-[1.25rem] bg-b-background-grey px-[1.25rem] py-[2.19rem] flex flex-col items-start shadow-lg justify-center gap-2 relative group whitespace-nowrap hover:shadow-lg hover:-translate-y-1 transform duration-300">
       <h2 className="text-[1.25rem] font-[600] text-b-active-blue">
         {item.title}
       </h2>

@@ -31,11 +31,13 @@ const Logout = () => {
   }
   return (
     <button
-      className="absolute top-0 right-0 flex gap-2 p-8 lg:mr-28 xl:mr-48 2xl:mr-80 z-30"
+      className="absolute top-0 right-0 flex gap-2 p-8 lg:mr-28 xl:mr-48 2xl:mr-80 z-30 group"
       onClick={handleLogout}
     >
       <p className="text-b-mid-blue capitalize font-bold text-lg">log out</p>
-      <LogoutIcon />
+      <div className="group-hover:animate-bounce-right">
+        <LogoutIcon />
+      </div>
     </button>
   )
 }

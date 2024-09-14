@@ -22,6 +22,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import Save from './svg/save'
 import { useNavigate } from 'react-router-dom'
 import Cancel from './svg/cancel'
+import Error from './ui/error'
+import Loading from './ui/loading'
+import Loader from './svg/loader'
 
 const Form = ({ data, listitems, isCreateNew = false }) => {
   const dispatch = useDispatch()
@@ -37,6 +40,9 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
   const [isDraft, setIsDraft] = useState(false)
 
   const navigate = useNavigate()
+
+  const [isLoading, setIsLoading] = useState(false)
+  const [isError, setIsError] = useState(false)
 
   //   useEffect(() => {
   //     console.log('Form data:', newItem)
@@ -60,8 +66,14 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
     }
   }, [data])
 
-  const [updateTemplate] = useUpdateTemplateMutation()
-  const [deleteTemplate] = useDeleteTemplateMutation()
+  const [
+    updateTemplate,
+    { isLoading: isUpdateTemplateLoading, isError: isUpdateTemplateError },
+  ] = useUpdateTemplateMutation()
+  const [
+    deleteTemplate,
+    { isLoading: isDeleteTemplateLoading, isError: isDeleteTemplateError },
+  ] = useDeleteTemplateMutation()
 
   const localtemplates = useSelector((state) => state.template.templates)
 
@@ -212,12 +224,6 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
     setIsCreating(!isCreating)
   }
 
-  const [isDeletingItem, setIsDeletingItem] = useState(false)
-  const [itemToDelete, setItemToDelete] = useState(null)
-  const handleItemDelete = (itemID) => {
-    setItemToDelete(itemID)
-    setIsDeletingItem(true)
-  }
   const [isTemplateUpdated, setIsTemplateUpdated] = useState(false)
   const [isTemplateSaved, setIsTemplateSaved] = useState(false)
   const [isTemplateArchived, setIsTemplateArchived] = useState(false)
@@ -360,7 +366,10 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
     }))
   }
 
-  const [addListItem] = useAddListItemMutation()
+  const [
+    addListItem,
+    { isLoading: isListItemLoading, isError: isListItemError },
+  ] = useAddListItemMutation()
 
   const handItemCreate = async () => {
     try {
@@ -379,7 +388,6 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
           is_environment_related: isEnvironmentRelated,
         })
         setItemSites([])
-        setIsCreating(false)
       } else {
         console.error('Failed to add list item: No item returned from API')
       }
@@ -397,6 +405,28 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
   const cancelDelete = () => {
     setItemBeingDeleted(null)
   }
+
+  useEffect(() => {
+    if (isDeleteTemplateLoading || isUpdateTemplateLoading) {
+      setIsLoading(true)
+    } else {
+      setIsLoading(false)
+    }
+  }, [isLoading, isDeleteTemplateLoading, isUpdateTemplateLoading])
+
+  useEffect(() => {
+    if (isDeleteTemplateError || isUpdateTemplateError || isListItemError) {
+      setIsError(true)
+    } else {
+      setIsError(false)
+    }
+  }, [isError, isDeleteTemplateError, isUpdateTemplateError, isListItemError])
+
+  if (isError)
+    return <Error text="Failed to update template, refresh and try again" />
+
+  if (isLoading) return <Loading text="Updating Database..." />
+
   return (
     <div className="bg-white rounded-lg shadow p-6 w-full">
       <div className="flex gap-8 w-full justify-end mb-24 -mt-24">
@@ -628,12 +658,18 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
                 name="description"
               ></textarea>
               <div className="absolute bottom-2 right-2 flex gap-4 items-center justify-center">
-                <button
-                  className=" text-white rounded-full p-1 w-[3rem] hover:bg-b-dark-green"
-                  onClick={handItemCreate}
-                >
-                  <Add width="100%" height="100%" />
-                </button>
+                {isListItemLoading ? (
+                  <div className="animate-spin w-[2.5rem] mr-3 mb-3">
+                    <Loader width="100%" height="100%" />
+                  </div>
+                ) : (
+                  <button
+                    className=" text-white rounded-full p-1 w-[3rem] hover:scale-110 transform duration-300"
+                    onClick={handItemCreate}
+                  >
+                    <Add width="100%" height="100%" />{' '}
+                  </button>
+                )}
               </div>
             </div>
           </div>

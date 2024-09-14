@@ -3,8 +3,10 @@ import { Tick } from '../components/svg/tick'
 import Cancel from '../components/svg/cancel'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
-import { changePassword as changePasswordAction } from '../app/features/auth/authSlice'
+
 import { useChangePasswordMutation } from '../app/api/userApi'
+import Loading from '../components/ui/loading'
+import Error from '../components/ui/error'
 const User = () => {
   const user = useSelector((state) => state.auth.user)
 
@@ -20,7 +22,7 @@ const User = () => {
   })
   const [passwordsMatch, setPasswordsMatch] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [changePassword] = useChangePasswordMutation()
+  const [changePassword, { isLoading, isError }] = useChangePasswordMutation()
 
   useEffect(() => {
     const checkPasswordMatch = () => {
@@ -80,6 +82,10 @@ const User = () => {
       setIsSubmitting(false)
     }
   }
+  if (isLoading) return <Loading text="Changing Password..." />
+  if (isError)
+    return <Error text="Error Changing Password, refresh and try again" />
+
   return (
     <div className="p-[3rem] flex flex-col items-start justify-start w-full ">
       <h1 className="text-[1.875rem] font-[600] leading-[1rem] mb-5">

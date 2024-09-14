@@ -46,7 +46,7 @@ const RootLayout = () => {
   // const isloading = templateLoading || categoryLoading || siteLoading
 
   return (
-    <div className="w-screen min-h-screen flex overflow-x-hidden">
+    <div className="w-screen min-h-screen flex overflow-x-hidden ">
       {user && (
         <>
           <Logout /> <Navbar />

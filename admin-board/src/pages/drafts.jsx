@@ -28,11 +28,15 @@ const Drafts = () => {
       <h1 className="text-[1.875rem] font-[600] leading-[1.5rem] mb-[3.5rem]">
         Drafts
       </h1>
-      <SearchBox placeholder="Search draft by keywords" />
+
       {drafts.length > 0 ? (
-        <div className=" flex items-center flex-col gap-16 justify-center w-full">
-          <TileGrounp title="" draft={true} data={drafts} />
-        </div>
+        <>
+          {' '}
+          <SearchBox placeholder="Search draft by keywords" />
+          <div className=" flex items-center flex-col gap-16 justify-center w-full">
+            <TileGrounp title="" draft={true} data={drafts} />
+          </div>
+        </>
       ) : (
         <div className=" flex items-center flex-col  justify-center w-full h-full gap-4">
           <h3 className="flex items-center justify-center capitalize text-xl font-bold">
