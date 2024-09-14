@@ -51,7 +51,7 @@ const Login = () => {
     )
 
   if (error) {
-    return <Error text="Failed to login, refresh and try again" />
+    return <Error text={`${error.data.message}, refresh and try again`} />
   }
 
   return (

@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom'
 import Error from '../ui/error'
 import Loading from '../ui/loading'
 const Logout = () => {
-  const [logoutUser, { isLoading, isError }] = useLogoutUserMutation()
+  const [logoutUser, { isLoading, isError, error }] = useLogoutUserMutation()
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const handleLogout = async () => {
@@ -21,6 +21,7 @@ const Logout = () => {
 
     try {
       await logoutUser(refreshToken).unwrap()
+
       localStorage.removeItem('token')
       localStorage.removeItem('refreshToken')
       dispatch(logout())

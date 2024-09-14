@@ -19,6 +19,8 @@ const OptionItem = ({
 
   const [editableItem, setEditableItem] = useState({ ...item })
 
+  const [errors, setErrors] = useState({})
+
   const handleEdit = () => {
     setIsEditing(!isEditing)
   }
@@ -31,11 +33,13 @@ const OptionItem = ({
     <div className="flex items-center border-t-2 w-full py-1">
       {keys?.map((key) => (
         <div key={key} className="flex-1">
-          {isEditing ? (
+          {isEditing && key != 'user_name' ? (
             <input
               value={editableItem[key]}
               onChange={(e) => handleChange(key, e.target.value)}
               className="text-xl text-b-active-blue font-[500]  border-2"
+              required
+              type={key === 'duration' ? 'text' : 'number'}
             />
           ) : (
             <p className="text-xl capitalize font-[500] ">

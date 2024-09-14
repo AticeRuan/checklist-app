@@ -100,7 +100,7 @@ const loginUser = async (req, res) => {
     const user = await User.findOne({ where: { user_name: user_name } })
 
     if (!user) {
-      return res.status(404).json({ message: 'User not found' })
+      return res.status(404).json({ message: 'Invalid username' })
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.hashed_password)
@@ -122,7 +122,7 @@ const loginUser = async (req, res) => {
       expires_at: expiredAt,
     })
 
-    res.status(200).json({ token, role, name })
+    res.status(200).json({ token, role, name, refreshToken })
   } catch (error) {
     res.status(400).json({ message: error.message })
   }
