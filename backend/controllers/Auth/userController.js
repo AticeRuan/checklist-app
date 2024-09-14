@@ -5,9 +5,14 @@ const jwt = require('jsonwebtoken')
 
 const User = db.User
 const BlackListedToken = db.BlacklistedToken
+const RefreshToken = db.RefreshToken
 
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.SECRET, { expiresIn: '3h' })
+  return jwt.sign({ id }, process.env.SECRET, { expiresIn: '15m' })
+}
+
+const createRefreshToken = (id) => {
+  return jwt.sign({ id }, process.env.REFRESH_SECRET, { expiresIn: '7d' })
 }
 
 const addUser = async (req, res) => {
@@ -105,8 +110,17 @@ const loginUser = async (req, res) => {
     }
 
     const token = createToken(user.user_id)
+    const refreshToken = createRefreshToken(user.user_id)
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET)
+    const expiredAt = new Date(decoded.exp * 1000)
     const role = user.role
     const name = user.user_name
+
+    await RefreshToken.create({
+      user_id: user.user_id,
+      token: refreshToken,
+      expires_at: expiredAt,
+    })
 
     res.status(200).json({ token, role, name })
   } catch (error) {
@@ -116,13 +130,26 @@ const loginUser = async (req, res) => {
 
 const logoutUser = async (req, res) => {
   const { authorization } = req.headers
+  const { refreshToken } = req.body
+
+  // Ensure authorization token exists
+  if (!authorization) {
+    return res.status(401).json({ message: 'Authorization token required' })
+  }
 
   const token = authorization.split(' ')[1]
-  const decoded = jwt.verify(token, process.env.SECRET)
-  const expiredAt = new Date(decoded.exp * 1000)
+
+  // Ensure refresh token is provided
+  if (!refreshToken) {
+    return res.status(400).json({ message: 'Refresh token required' })
+  }
 
   try {
+    const decoded = jwt.verify(token, process.env.SECRET)
+    const expiredAt = new Date(decoded.exp * 1000)
+
     await BlackListedToken.create({ token, expires_at: expiredAt })
+    await RefreshToken.destroy({ where: { token: refreshToken } })
     res.status(200).json({ message: 'Logged out successfully' })
   } catch (error) {
     res.status(400).json({ message: error.message })
@@ -182,6 +209,38 @@ const resetPassword = async (req, res) => {
     res.status(500).json({ message: error.message })
   }
 }
+
+const refreshToken = async (req, res) => {
+  const { refreshToken } = req.body
+
+  if (!refreshToken) {
+    return res.status(401).json({ message: 'Refresh token required' })
+  }
+
+  try {
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET)
+    const storedToken = await RefreshToken.findOne({
+      where: { token: refreshToken },
+    })
+
+    if (!storedToken) {
+      return res.status(403).json({ message: 'Invalid refresh token' })
+    }
+
+    const newToken = createToken(decoded.id)
+    const user = await User.findOne({ where: { user_id: decoded.id } })
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+
+    res
+      .status(200)
+      .json({ token: newToken, role: user.role, name: user.user_name })
+  } catch (error) {
+    res.status(403).json({ message: 'Invalid refresh token' })
+  }
+}
 module.exports = {
   addUser,
   loginUser,
@@ -191,4 +250,5 @@ module.exports = {
   getAllUsers,
   updateUserRole,
   resetPassword,
+  refreshToken,
 }

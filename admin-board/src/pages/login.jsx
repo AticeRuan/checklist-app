@@ -31,6 +31,7 @@ const Login = () => {
 
       if (loggedInUser && loggedInUser.token) {
         localStorage.setItem('token', loggedInUser.token)
+        localStorage.setItem('refreshToken', loggedInUser.refreshToken)
         dispatch(login(loggedInUser))
 
         navigate('/')

@@ -17,17 +17,14 @@ import { getUsers } from '../app/features/user/userSlice'
 import { getIpAddresses } from '../app/features/ipAddress/ipAddressSlice'
 import Loading from '../components/ui/loading'
 import Error from '../components/ui/error'
+import { useLogoutUserMutation } from '../app/api/userApi'
 
 const Home = () => {
   const user = useSelector((state) => state.auth.user)
-
   const name = user?.name || 'user'
-
   const isAdmin = user?.role === 'admin'
-
   const [isDataLoading, setIsDataLoading] = useState(true)
   const [isDataError, setIsDataError] = useState(false)
-
   //fetch data on page load
   const {
     data: templates,
@@ -54,7 +51,6 @@ const Home = () => {
     error: ipAddressesError,
     isLoading: ipAddressesLoading,
   } = useGetAllIpAddressesQuery(undefined, { skip: !isAdmin })
-
   useEffect(() => {
     if (
       !templateLoading &&
@@ -73,7 +69,6 @@ const Home = () => {
     usersLoading,
     ipAddressesLoading,
   ])
-
   useEffect(() => {
     if (
       templateError ||
@@ -92,47 +87,38 @@ const Home = () => {
     usersError,
     ipAddressesError,
   ])
-
   const dispatch = useDispatch()
-
   useEffect(() => {
     if (templates) {
       dispatch(getTemplates(templates))
       // console.log('Fetched templates:', templates)
     }
   }, [templates, dispatch])
-
   useEffect(() => {
     if (categories) {
       dispatch(getCategories(categories))
     }
   }, [categories, dispatch])
-
   useEffect(() => {
     if (sites) {
       dispatch(getSites(sites))
     }
   }, [sites, dispatch])
-
   useEffect(() => {
     if (users) {
       dispatch(getUsers(users))
     }
   }, [users, dispatch])
-
   useEffect(() => {
     if (ipAddresses) {
       dispatch(getIpAddresses(ipAddresses))
     }
   }, [ipAddresses, dispatch])
-
   const localtemplates = useSelector((state) => state.template.templates || [])
-
   // useEffect(() => {
   //   console.log('localtemplates:', localtemplates)
   //   console.log('templates:', templates)
   // }, [localtemplates, templates])
-
   // useEffect(() => {
   //   console.log(
   //     'localtemplates:',
@@ -141,31 +127,25 @@ const Home = () => {
   //     typeof localtemplates,
   //   )
   // }, [localtemplates])
-
+  const tokenTodelete = localStorage.getItem('refreshToken')
   const activeTemplates = Array.isArray(localtemplates)
     ? localtemplates.filter((template) => template.status === 'published')
     : []
-
   const recentUpdatedTemplates = activeTemplates
     ?.slice()
     .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
     .slice(0, 5)
-
   const recentCreatedTemplates = activeTemplates
     ?.slice()
     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
     .slice(0, 5)
-
   const draftTemplates = Array.isArray(localtemplates)
     ? localtemplates
         .filter((template) => template.status === 'draft')
         .slice(0, 5)
     : []
-
   if (isDataLoading) return <Loading />
-
   if (isDataError) return <Error />
-
   return (
     <>
       <div className="p-[3rem] flex flex-col items-start justify-start w-full mb-20">

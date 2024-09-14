@@ -84,6 +84,7 @@ export const store = configureStore({
       .concat(categoryApi.middleware)
       .concat(siteApi.middleware)
       .concat(ipAddressApi.middleware)
-      .concat(listitemApi.middleware),
+      .concat(listitemApi.middleware)
+      .concat(tokenMiddleware),
 })
 export const persistor = persistStore(store)

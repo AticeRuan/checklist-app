@@ -12,11 +12,19 @@ const Logout = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const handleLogout = async () => {
+    const refreshToken = localStorage.getItem('refreshToken')
+
+    if (!refreshToken) {
+      console.error('Refresh token not found')
+      return
+    }
+
     try {
-      await logoutUser()
-      navigate('/login')
+      await logoutUser(refreshToken).unwrap()
       localStorage.removeItem('token')
+      localStorage.removeItem('refreshToken')
       dispatch(logout())
+      navigate('/login')
     } catch (error) {
       console.error('Failed to logout:', error)
     }

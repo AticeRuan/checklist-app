@@ -5,6 +5,7 @@ const router = require('express').Router()
 const requireAuth = require('../middlewares/requireAuth')
 const checkRole = require('../middlewares/checkRole')
 const checkIPRange = require('../middlewares/checkIPRange')
+const verifyREfreshToken = require('../middlewares/verifyRefreshToken')
 
 /**
  * @swagger
@@ -356,6 +357,14 @@ router.patch(
   requireAuth,
   checkRole,
   userController.resetPassword,
+)
+
+router.post(
+  'refresh-token',
+  checkIPRange,
+  verifyREfreshToken,
+
+  userController.refreshToken,
 )
 
 module.exports = router

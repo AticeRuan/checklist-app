@@ -58,12 +58,22 @@ export const userApi = createApi({
         method: 'POST',
         body: user,
       }),
+      transformResponse: (response) => {
+        localStorage.setItem('token', response.token)
+        localStorage.setItem('refreshToken', response.refreshToken)
+        return response
+      },
     }),
     logoutUser: builder.mutation({
-      query: () => ({
+      query: (refreshToken) => ({
         url: '/users/logout',
         method: 'POST',
+        body: { refreshToken },
       }),
+      transformResponse: () => {
+        localStorage.removeItem('token')
+        localStorage.removeItem('refreshToken')
+      },
     }),
     resetPassword: builder.mutation({
       query: (id) => ({
@@ -71,6 +81,27 @@ export const userApi = createApi({
         method: 'PATCH',
         body: JSON.stringify({ user_id: id }),
       }),
+    }),
+    refreshToken: builder.mutation({
+      query: () => {
+        const refreshToken = localStorage.getItem('refreshToken')
+        if (!refreshToken) {
+          throw new Error('Refresh token not found in local storage')
+        }
+        return {
+          url: '/users/refresh-token',
+          method: 'POST',
+          body: { refreshToken },
+        }
+      },
+      transformResponse: (response) => {
+        if (response.token) {
+          localStorage.setItem('token', response.token)
+        } else {
+          throw new Error('Failed to refresh token')
+        }
+        return response
+      },
     }),
   }),
 })
@@ -84,4 +115,5 @@ export const {
   useGetAllUsersQuery,
   useUpdateUserMutation,
   useResetPasswordMutation,
+  useRefreshTokenMutation,
 } = userApi
