@@ -25,6 +25,8 @@ import Cancel from './svg/cancel'
 import Error from './ui/error'
 import Loading from './ui/loading'
 import Loader from './svg/loader'
+import { updateListitem as updateListItemAction } from '../app/features/listitem/listitemSlice'
+import { useUpdateListItemMutation } from '../app/api/listitemApi'
 
 const Form = ({ data, listitems, isCreateNew = false }) => {
   const dispatch = useDispatch()
@@ -76,6 +78,10 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
   ] = useDeleteTemplateMutation()
 
   const localtemplates = useSelector((state) => state.template.templates)
+  const [
+    updateListItem,
+    { isLoading: isUpdateListItemLoading, isError: isUpdateListItemError },
+  ] = useUpdateListItemMutation()
 
   const handTemplateUpdate = async () => {
     try {
@@ -91,6 +97,22 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
       }
 
       const updatedTemplate = await updateTemplate(payload).unwrap()
+
+      if (listitems) {
+        // Create an array of promises for updating each list item
+        const updatePromises = listitems.map(async (item) => {
+          const itemPayload = {
+            ...item,
+            sites: newItem.sites,
+            id: item.listitem_id,
+            is_environment_related: isEnvironmentRelated,
+          }
+          const updatedItem = await updateListItem(itemPayload).unwrap()
+          dispatch(updateListItemAction(updatedItem))
+        })
+
+        await Promise.all(updatePromises)
+      }
 
       if (updatedTemplate) {
         dispatch(updateTemplateAction(updatedTemplate))
@@ -125,9 +147,41 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
         ...newItem,
         status: 'draft',
       }
-      await updateTemplate(payload)
-      dispatch(updateTemplateAction(payload))
-      setIsTemplateSaved(true)
+      const updatedTemplate = await updateTemplate(payload).unwrap()
+
+      if (listitems) {
+        // Create an array of promises for updating each list item
+        const updatePromises = listitems.map(async (item) => {
+          const itemPayload = {
+            ...item,
+            sites: newItem.sites,
+            id: item.listitem_id,
+            is_environment_related: isEnvironmentRelated,
+          }
+          const updatedItem = await updateListItem(itemPayload).unwrap()
+          dispatch(updateListItemAction(updatedItem))
+        })
+
+        await Promise.all(updatePromises)
+      }
+
+      if (updatedTemplate) {
+        dispatch(updateTemplateAction(updatedTemplate))
+
+        setIsTemplateSaved(true)
+        setNewItem({
+          title: '',
+          category_id: 1,
+          description: '',
+          sites: [],
+          status: 'draft',
+        })
+        setSelectedSites([])
+      } else {
+        console.error(
+          'Failed to update template: No template returned from API',
+        )
+      }
     } catch (error) {
       console.error('Error while updating template:', error)
     }
@@ -144,8 +198,8 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
         ...newItem,
         status: 'archived',
       }
-      await updateTemplate(payload)
-      dispatch(updateTemplateAction(payload))
+      const updatedTemplate = await updateTemplate(payload)
+      dispatch(updateTemplateAction(updatedTemplate))
       setIsTemplateArchived(true)
     } catch (error) {
       console.error('Error while updating template:', error)
@@ -297,7 +351,6 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
     description: '',
     sites: [],
     template_id: data?.template_id,
-    is_environment_related: isEnvironmentRelated,
   })
   const [itemSites, setItemSites] = useState([])
   useEffect(() => {
@@ -307,7 +360,6 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
         description: '',
         sites: newItem.sites,
         template_id: data.template_id,
-        is_environment_related: isEnvironmentRelated,
       })
       setItemSites(newItem.sites)
     }
@@ -334,6 +386,7 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
         sites: [],
       }))
     }
+    setItemSiteSelectedAll((prev) => !prev)
   }
 
   const handleItemSiteCheck = (e) => {
@@ -407,20 +460,41 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
   }
 
   useEffect(() => {
-    if (isDeleteTemplateLoading || isUpdateTemplateLoading) {
+    if (
+      isDeleteTemplateLoading ||
+      isUpdateTemplateLoading ||
+      isUpdateListItemLoading
+    ) {
       setIsLoading(true)
     } else {
       setIsLoading(false)
     }
-  }, [isLoading, isDeleteTemplateLoading, isUpdateTemplateLoading])
+  }, [
+    isLoading,
+    isDeleteTemplateLoading,
+    isUpdateTemplateLoading,
+    isUpdateListItemLoading,
+  ])
 
   useEffect(() => {
-    if (isDeleteTemplateError || isUpdateTemplateError || isListItemError) {
+    if (
+      isDeleteTemplateError ||
+      isUpdateTemplateError ||
+      isListItemError ||
+      isUpdateListItemError
+    ) {
       setIsError(true)
     } else {
       setIsError(false)
     }
-  }, [isError, isDeleteTemplateError, isUpdateTemplateError, isListItemError])
+  }, [
+    isError,
+    isDeleteTemplateError,
+    isUpdateTemplateError,
+    isListItemError,
+    isUpdateListItemError,
+  ])
+  const newItemSites = data.sites.map((site) => site.site_id)
 
   if (isError)
     return <Error text="Failed to update template, refresh and try again" />
@@ -453,7 +527,7 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
       </div>
       <div className="flex items-end justify-start  w-full gap-8">
         {/* title */}
-        <div className="flex-1">
+        <div className="flex-1 ">
           <label className="block text-lg font-medium text-gray-700 mb-1">
             Title
           </label>
@@ -487,66 +561,67 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
           </select>
         </div>
         {/* site setting */}
-
-        <button
-          className="whitespace-nowrap p-2 text-lg bg-b-mid-blue rounded-md text-white hover:bg-b-active-blue disabled:opacity-50 capitalize font-[500] flex-2 w-fit "
-          onClick={handleSiteSettingOpen}
-        >
-          Site Visibilty to Checklist
-        </button>
-        {isSettingSiteVisibility && (
-          <div className="w-screen min-h-screen absolute top-0 left-0 flex items-center justify-center flex-col h-fit backdrop-brightness-75 z-50">
-            <div className="w-fit bg-white rounded-xl p-8 shadow-2xl ">
-              <div className="flex justify-around items-center gap-7">
-                <h2 className="text-2xl tracking-wider font-bold text-b-active-blue uppercase">
-                  Set Site Visibility
-                </h2>
-                <button
-                  className="whitespace-nowrap p-2 text-lg bg-b-mid-blue rounded-md text-white hover:bg-b-active-blue disabled:opacity-50 capitalize font-[500]  tracking-wider"
-                  onClick={handleSiteSettingClose}
-                >
-                  Done
-                </button>
-              </div>
-              <div className="flex gap-2 mt-3 items-center">
-                <input
-                  type="checkbox"
-                  className="scale-[1.5]"
-                  checked={selectAll}
-                  onChange={handleSelectAll}
-                />
-                <label className="text-xl font-[500] text-b-mid-grey ">
-                  All
-                </label>
-              </div>
-              {regions.map((region, index) => (
-                <div key={index} className="my-6 ">
-                  <h4 className="font-[500] uppercase text-lg text-b-mid-grey mb-1">
-                    {region}
-                  </h4>
-                  <div className=" flex gap-6 flex-wrap">
-                    {Sites.filter((site) => site.region === region).map(
-                      (site) => (
-                        <div key={site.site_id} className="flex gap-2">
-                          <input
-                            type="checkbox"
-                            value={site.site_id}
-                            checked={selectedSites.includes(site.site_id)}
-                            onChange={handleSiteCheck}
-                            className="scale-[1.5]"
-                          />
-                          <label className="text-xl capitalize">
-                            {site.site_name}
-                          </label>
-                        </div>
-                      ),
-                    )}
-                  </div>
+        <div className="flex flex-col flex-1 basis-1/4">
+          <button
+            className="whitespace-nowrap p-2 text-lg bg-b-mid-blue rounded-md text-white hover:bg-b-active-blue disabled:opacity-50 capitalize font-[500] flex-2 w-fit "
+            onClick={handleSiteSettingOpen}
+          >
+            Site Visibilty to Checklist
+          </button>
+          {isSettingSiteVisibility && (
+            <div className="flex items-center justify-center flex-col h-fit  z-50">
+              <div className="w-fit bg-white rounded-xl p-8 shadow-2xl ">
+                <div className="flex justify-around items-center gap-7">
+                  <h2 className="text-2xl tracking-wider font-bold text-b-active-blue uppercase">
+                    Set Site Visibility
+                  </h2>
+                  <button
+                    className="whitespace-nowrap p-2 text-lg bg-b-mid-blue rounded-md text-white hover:bg-b-active-blue disabled:opacity-50 capitalize font-[500]  tracking-wider"
+                    onClick={handleSiteSettingClose}
+                  >
+                    Done
+                  </button>
                 </div>
-              ))}
+                <div className="flex gap-2 mt-3 items-center">
+                  <input
+                    type="checkbox"
+                    className="scale-[1.5]"
+                    checked={selectAll}
+                    onChange={handleSelectAll}
+                  />
+                  <label className="text-xl font-[500] text-b-mid-grey ">
+                    All
+                  </label>
+                </div>
+                {regions.map((region, index) => (
+                  <div key={index} className="my-6 ">
+                    <h4 className="font-[500] uppercase text-lg text-b-mid-grey mb-1">
+                      {region}
+                    </h4>
+                    <div className=" flex gap-6 flex-wrap">
+                      {Sites.filter((site) => site.region === region).map(
+                        (site) => (
+                          <div key={site.site_id} className="flex gap-2">
+                            <input
+                              type="checkbox"
+                              value={site.site_id}
+                              checked={selectedSites.includes(site.site_id)}
+                              onChange={handleSiteCheck}
+                              className="scale-[1.5]"
+                            />
+                            <label className="text-xl capitalize">
+                              {site.site_name}
+                            </label>
+                          </div>
+                        ),
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
 
         {/* enviro */}
         <button
@@ -585,14 +660,14 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
                 name="keyword"
               />
             </div>
-            <button
-              className="whitespace-nowrap p-2 text-lg bg-b-mid-blue rounded-md text-white hover:bg-b-active-blue disabled:opacity-50 capitalize font-[500] flex-2 w-fit "
-              onClick={handleItemSiteSettingOpen}
-            >
-              Site Visibilty To List Item
-            </button>
-            {isItemSiteSettingOpen && (
-              <div className="w-screen min-h-screen absolute top-0 left-0 flex items-center justify-center flex-col h-fit backdrop-brightness-75 z-50">
+            <div className="flex flex-col">
+              <button
+                className="whitespace-nowrap p-2 text-lg bg-b-mid-blue rounded-md text-white hover:bg-b-active-blue disabled:opacity-50 capitalize font-[500] flex-2 w-fit "
+                onClick={handleItemSiteSettingOpen}
+              >
+                Site Visibilty To List Item
+              </button>
+              {isItemSiteSettingOpen && (
                 <div className="w-fit bg-white rounded-xl p-8 shadow-2xl ">
                   <div className="flex justify-around items-center gap-7">
                     <h2 className="text-2xl tracking-wider font-bold text-b-active-blue uppercase">
@@ -622,28 +697,30 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
                         {region}
                       </h4>
                       <div className=" flex gap-6 flex-wrap">
-                        {Sites.filter((site) => site.region === region).map(
-                          (site) => (
-                            <div key={site.site_id} className="flex gap-2">
-                              <input
-                                type="checkbox"
-                                value={site.site_id}
-                                checked={itemSites.includes(site.site_id)}
-                                onChange={handleItemSiteCheck}
-                                className="scale-[1.5]"
-                              />
-                              <label className="text-xl capitalize">
-                                {site.site_name}
-                              </label>
-                            </div>
-                          ),
-                        )}
+                        {Sites.filter(
+                          (site) =>
+                            site.region === region &&
+                            newItem.sites.includes(site.site_id),
+                        ).map((site) => (
+                          <div key={site.site_id} className="flex gap-2">
+                            <input
+                              type="checkbox"
+                              value={site.site_id}
+                              checked={itemSites.includes(site.site_id)}
+                              onChange={handleItemSiteCheck}
+                              className="scale-[1.5]"
+                            />
+                            <label className="text-xl capitalize">
+                              {site.site_name}
+                            </label>
+                          </div>
+                        ))}
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
           <div className="flex-1">
             <label className="block  font-medium text-gray-700 mb-1">
