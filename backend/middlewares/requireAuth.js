@@ -7,7 +7,7 @@ const User = db.User
 const RefreshToken = db.RefreshToken
 
 const createToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.SECRET, { expiresIn: '15m' })
+  return jwt.sign({ id: userId }, process.env.SECRET, { expiresIn: '10d' })
 }
 
 const requireAuth = async (req, res, next) => {
@@ -61,12 +61,10 @@ const requireAuth = async (req, res, next) => {
 
           // Generate a new access token
           const newToken = createToken(refreshDecoded.id)
-          res
-            .status(401)
-            .json({
-              message: 'Token has expired, new token issued.',
-              token: newToken,
-            })
+          res.status(401).json({
+            message: 'Token has expired, new token issued.',
+            token: newToken,
+          })
         } catch (refreshError) {
           return res.status(403).json({ message: 'Invalid refresh token' })
         }

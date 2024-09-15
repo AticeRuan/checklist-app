@@ -8,7 +8,7 @@ const BlackListedToken = db.BlacklistedToken
 const RefreshToken = db.RefreshToken
 
 const createToken = (id) => {
-  return jwt.sign({ id }, process.env.SECRET, { expiresIn: '15m' })
+  return jwt.sign({ id }, process.env.SECRET, { expiresIn: '10d' })
 }
 
 const createRefreshToken = (id) => {

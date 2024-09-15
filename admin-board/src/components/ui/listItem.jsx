@@ -19,6 +19,7 @@ import {
 import Loading from './loading'
 import Error from './error'
 import Cancel from '../svg/cancel'
+import SiteListDropDown from './siteSettingDropDown'
 
 const ListItem = ({
   item,
@@ -28,6 +29,7 @@ const ListItem = ({
   cancelDelete,
   sites,
   is_environment_related,
+  onItemSiteUpdate,
 }) => {
   const [editableItem, setEditableItem] = useState({
     template_id: item?.template_id || '',
@@ -99,12 +101,16 @@ const ListItem = ({
 
   const handleItemSiteCheck = (e) => {
     const siteId = parseInt(e.target.value)
+
     if (itemSites.includes(siteId)) {
       setItemSites((prev) => prev.filter((id) => id !== siteId))
       setEditableItem((prev) => ({
         ...prev,
         sites: prev.sites.filter((id) => id !== siteId),
       }))
+      if (onItemSiteUpdate) {
+        onItemSiteUpdate(true, item.listitem_id)
+      }
     } else {
       setItemSites((prev) => [...prev, siteId])
       setEditableItem((prev) => ({
@@ -188,7 +194,7 @@ const ListItem = ({
               />{' '}
             </div>
             {/* site-listitem button */}
-            <div className="flex flex-col">
+            <div className="flex flex-col relative">
               <button
                 className="whitespace-nowrap p-2 text-lg bg-b-mid-blue rounded-md text-white hover:bg-b-active-blue disabled:opacity-50 capitalize font-[500]  w-fit h-fit mb-3"
                 onClick={handleItemSiteSettingOpen}
@@ -197,67 +203,75 @@ const ListItem = ({
               </button>
               {/* site-list pop-up */}
               {isItemSiteSettingOpen && (
-                <div className="flex items-center justify-center flex-col h-fit  z-[100] text-sm">
-                  <div className="w-fit bg-white rounded-xl p-8 shadow-2xl ">
-                    <div className="flex justify-around items-center gap-7">
-                      <button
-                        className="whitespace-nowrap p-2 text-lg bg-b-mid-blue rounded-md text-white hover:bg-b-active-blue disabled:opacity-50 capitalize font-[500]  tracking-wider"
-                        onClick={handleItemSiteSettingClose}
-                      >
-                        Done
-                      </button>
-                    </div>
-                    <div className="flex gap-2 mt-3 items-center">
-                      <input
-                        type="checkbox"
-                        className="scale-[1.5]"
-                        checked={isItemSiteSelectedAll}
-                        onChange={handleSelectAllItemSites}
-                      />
-                      <label className="text-xl font-[500] text-b-mid-grey ">
-                        All
-                      </label>
-                    </div>
-                    {regions.map((region, index) => {
-                      // Filter sites for the current region and check if there are any sites
-                      const filteredSites = Sites.filter(
-                        (site) =>
-                          site.region === region &&
-                          sites.includes(site.site_id),
-                      )
+                // <div className="flex items-center justify-center flex-col h-fit  z-[100] text-sm">
+                //   <div className="w-fit bg-white rounded-xl p-8 shadow-2xl ">
+                //     <div className="flex justify-around items-center gap-7">
+                //       <button
+                //         className="whitespace-nowrap p-2 text-lg bg-b-mid-blue rounded-md text-white hover:bg-b-active-blue disabled:opacity-50 capitalize font-[500]  tracking-wider"
+                //         onClick={handleItemSiteSettingClose}
+                //       >
+                //         Done
+                //       </button>
+                //     </div>
+                //     <div className="flex gap-2 mt-3 items-center">
+                //       <input
+                //         type="checkbox"
+                //         className="scale-[1.5]"
+                //         checked={isItemSiteSelectedAll}
+                //         onChange={handleSelectAllItemSites}
+                //       />
+                //       <label className="text-xl font-[500] text-b-mid-grey ">
+                //         All
+                //       </label>
+                //     </div>
+                //     {regions.map((region, index) => {
+                //       // Filter sites for the current region and check if there are any sites
+                //       const filteredSites = Sites.filter(
+                //         (site) =>
+                //           site.region === region &&
+                //           sites.includes(site.site_id),
+                //       )
 
-                      // Only render the region if there are filtered sites
-                      if (filteredSites.length > 0) {
-                        return (
-                          <div key={index} className="my-6">
-                            <h4 className="font-[500] uppercase text-lg text-b-mid-grey mb-1">
-                              {region}
-                            </h4>
-                            <div className="flex gap-6 flex-wrap">
-                              {filteredSites.map((site) => (
-                                <div key={site.site_id} className="flex gap-2">
-                                  <input
-                                    type="checkbox"
-                                    value={site.site_id}
-                                    checked={itemSites.includes(site.site_id)}
-                                    onChange={handleItemSiteCheck}
-                                    className="scale-[1.5]"
-                                  />
-                                  <label className="text-xl capitalize">
-                                    {site.site_name}
-                                  </label>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )
-                      }
+                //       // Only render the region if there are filtered sites
+                //       if (filteredSites.length > 0) {
+                //         return (
+                //           <div key={index} className="my-6">
+                //             <h4 className="font-[500] uppercase text-lg text-b-mid-grey mb-1">
+                //               {region}
+                //             </h4>
+                //             <div className="flex gap-6 flex-wrap">
+                //               {filteredSites.map((site) => (
+                //                 <div key={site.site_id} className="flex gap-2">
+                //                   <input
+                //                     type="checkbox"
+                //                     value={site.site_id}
+                //                     checked={itemSites.includes(site.site_id)}
+                //                     onChange={handleItemSiteCheck}
+                //                     className="scale-[1.5]"
+                //                   />
+                //                   <label className="text-xl capitalize">
+                //                     {site.site_name}
+                //                   </label>
+                //                 </div>
+                //               ))}
+                //             </div>
+                //           </div>
+                //         )
+                //       }
 
-                      // Return null if there are no sites for this region
-                      return null
-                    })}
-                  </div>
-                </div>
+                //       // Return null if there are no sites for this region
+                //       return null
+                //     })}
+                //   </div>
+                // </div>
+                <SiteListDropDown
+                  isItemSiteSelectedAll={isItemSiteSelectedAll}
+                  handleSelectAllItemSites={handleSelectAllItemSites}
+                  itemSites={itemSites}
+                  handleItemSiteCheck={handleItemSiteCheck}
+                  handleItemSiteSettingClose={handleItemSiteSettingClose}
+                  sites={sites}
+                />
               )}
             </div>
           </div>

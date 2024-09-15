@@ -8,6 +8,7 @@ const sequelize = new Sequelize(
     host: process.env.DB_SERVER,
     dialect: 'mssql',
     dialectModule: tedious,
+    dialectOptions: {options:{reqestTimeout: 300000}},
     port: process.env.DB_PORT,
     dialectOptions: {
       encrypt: true,

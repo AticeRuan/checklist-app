@@ -17,9 +17,16 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
     },
+    
     {
       tableName: 'IP_Addresses',
       timestamps: false,
+    indexes:[
+      {
+        unique: true,
+        fields: ['ip_address', 'site_name']
+      }
+    ]
     },
   )
 

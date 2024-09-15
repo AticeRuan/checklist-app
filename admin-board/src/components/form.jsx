@@ -83,6 +83,14 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
     { isLoading: isUpdateListItemLoading, isError: isUpdateListItemError },
   ] = useUpdateListItemMutation()
 
+  const [updatedListItemIds, setUpdatedListItemIds] = useState(new Set())
+
+  const handleItemSiteUpdate = (isUpdated, listItemId) => {
+    if (isUpdated) {
+      setUpdatedListItemIds((prev) => new Set(prev.add(listItemId)))
+    }
+  }
+
   const handTemplateUpdate = async () => {
     try {
       if (!data || !data.template_id) {
@@ -97,16 +105,28 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
       }
 
       const updatedTemplate = await updateTemplate(payload).unwrap()
+      const shouldOverrideAll =
+        updatedListItemIds.size > 0
+          ? window.confirm(
+              'Some list items have been updated individually. Do you want to override their site visibility with the template’s site array?',
+              'ok',
+            )
+          : true
 
       if (listitems) {
         // Create an array of promises for updating each list item
         const updatePromises = listitems.map(async (item) => {
           const itemPayload = {
             ...item,
-            sites: newItem.sites,
+            sites:
+              shouldOverrideAll || !updatedListItemIds.has(item.listitem_id)
+                ? newItem.sites
+                : item.sites.map((site) => site.site_id),
             id: item.listitem_id,
             is_environment_related: isEnvironmentRelated,
           }
+
+          console.log('Item payload:', itemPayload)
           const updatedItem = await updateListItem(itemPayload).unwrap()
           dispatch(updateListItemAction(updatedItem))
         })
@@ -149,12 +169,22 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
       }
       const updatedTemplate = await updateTemplate(payload).unwrap()
 
+      const shouldOverrideAll =
+        updatedListItemIds.size > 0
+          ? window.confirm(
+              'Some list items have been updated individually. Do you want to override their site visibility with the template’s site array?',
+            )
+          : true
+
       if (listitems) {
         // Create an array of promises for updating each list item
         const updatePromises = listitems.map(async (item) => {
           const itemPayload = {
             ...item,
-            sites: newItem.sites,
+            sites:
+              shouldOverrideAll || !updatedListItemIds.has(item.listitem_id)
+                ? newItem.sites
+                : item.sites,
             id: item.listitem_id,
             is_environment_related: isEnvironmentRelated,
           }
@@ -494,7 +524,6 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
     isListItemError,
     isUpdateListItemError,
   ])
-  const newItemSites = data.sites.map((site) => site.site_id)
 
   if (isError)
     return <Error text="Failed to update template, refresh and try again" />
@@ -762,6 +791,7 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
               isDeleting={itemBeingDeleted === item.listitem_id}
               handleDeleting={() => handleDelete(item.listitem_id)}
               cancelDelete={cancelDelete}
+              onItemSiteUpdate={handleItemSiteUpdate}
             />
           ))}
       </div>
