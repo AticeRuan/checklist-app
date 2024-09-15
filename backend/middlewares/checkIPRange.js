@@ -31,7 +31,7 @@ const checkIPRange = async (req, res, next) => {
   } else {
     res.status(403).json({
       message:
-        'Access restricted: Device is outside the permitted network range.',
+        'Access restricted: Device is outside the permitted network range',
     })
   }
 }
