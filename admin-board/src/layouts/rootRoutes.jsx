@@ -14,6 +14,7 @@ const RootRoutes = () => {
   const location = useLocation()
   return (
     <Routes>
+      <Route path="/login" element={<Login />} />
       <Route path="/" element={<RootLayout />}>
         <Route index element={<Home />} />
         <Route path="/all-lists" element={<AllLists />} />
@@ -24,7 +25,6 @@ const RootRoutes = () => {
         <Route path="/user" element={<User />} />
         <Route path="/update/:id" element={<Update />} />
         <Route path="/drafts/:id" element={<Update />} />
-        <Route path="/login" element={<Login />} />
       </Route>
     </Routes>
   )

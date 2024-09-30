@@ -3,35 +3,15 @@ import { logout } from '../features/auth/authSlice'
 import { userApi } from '../api/userApi'
 
 const tokenMiddleware = (store) => (next) => async (action) => {
-  if (action.error?.status === 401) {
+  if (action.error?.status === 401 || action.error?.status === 400) {
     // Handle token refresh
     const { dispatch } = store
 
     // Attempt to refresh the token
     try {
-      // Call the refresh token endpoint
-      const refreshResponse = await dispatch(
-        userApi.endpoints.refreshToken.initiate(),
-      ).unwrap()
-
-      // Update local storage with new token
-      localStorage.setItem('token', refreshResponse.token)
-
-      // Retry the original request with the new token
-      // Find the original request action
-      const originalRequestAction = action.meta.arg
-      const newToken = refreshResponse.token
-
-      // Retry the original request
-      dispatch(
-        userApi.util.updateQueryData(
-          originalRequestAction.endpoint,
-          originalRequestAction.originalArgs,
-          (draft) => {
-            draft.token = newToken
-          },
-        ),
-      )
+      dispatch(logout())
+      alert('Invalid token, please log in again.')
+      window.location.href = '/login'
     } catch (refreshError) {
       // Logout user if refresh fails
       dispatch(logout())

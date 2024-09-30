@@ -1,15 +1,25 @@
 import LoginFrom from '../components/auth/loginForm'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useLoginUserMutation } from '../app/api/userApi'
 import { useDispatch } from 'react-redux'
 import { login } from '../app/features/auth/authSlice'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import Loading from '../components/ui/loading'
 import Error from '../components/ui/error'
 
 const Login = () => {
   const [user, setUser] = useState({ user_name: '', password: '' })
+  const existingUSer = localStorage.getItem('user')
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (existingUSer !== null) {
+      navigate('/')
+    }
+  }, [existingUSer, navigate])
+
+  const [loginUser, { isLoading, error }] = useLoginUserMutation()
+  const dispatch = useDispatch()
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -18,9 +28,6 @@ const Login = () => {
       [name]: value,
     }))
   }
-
-  const [loginUser, { isLoading, error }] = useLoginUserMutation()
-  const dispatch = useDispatch()
 
   const handleLogin = async (e) => {
     e.preventDefault()
@@ -31,9 +38,7 @@ const Login = () => {
 
       if (loggedInUser && loggedInUser.token) {
         localStorage.setItem('token', loggedInUser.token)
-        localStorage.setItem('refreshToken', loggedInUser.refreshToken)
         dispatch(login(loggedInUser))
-
         navigate('/')
       } else {
         console.error('Login failed: No token received')

@@ -2,25 +2,26 @@ import { Outlet } from 'react-router-dom'
 import Navbar from '../components/navbar'
 import { useEffect } from 'react'
 import Login from '../pages/login'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Logout from '../components/auth/logout'
+import { logout } from '../app/features/auth/authSlice'
+
 import { useNavigate } from 'react-router-dom'
 import { useLocation } from 'react-router-dom'
+
 const RootLayout = () => {
   const user = useSelector((state) => state.auth.user)
+
   const navigate = useNavigate()
-  const { pathname } = useLocation()
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (!user) {
       navigate('/login')
       localStorage.removeItem('token')
+      dispatch(logout())
     }
-
-    // if (user && pathname === '/login') {
-    //   navigate('/')
-    // }
-  }, [user, navigate, pathname])
+  }, [navigate, user, dispatch])
 
   // const { data: templates, isLoading: templateLoading } =
   //   useGetAllTemplatesQuery()
@@ -47,12 +48,7 @@ const RootLayout = () => {
 
   return (
     <div className="w-screen min-h-screen flex overflow-x-hidden ">
-      {user && (
-        <>
-          <Logout /> <Navbar />
-        </>
-      )}
-
+      <Logout /> <Navbar />
       <Outlet />
     </div>
   )
