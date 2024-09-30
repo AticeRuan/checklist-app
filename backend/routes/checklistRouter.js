@@ -35,7 +35,7 @@ const checkIPRange = require('../middlewares/checkIPRange')
  */
 router.post(
   '/create/:id',
-  checkIPRange,
+
   checklistController.initializeChecklist,
 )
 /**
@@ -70,7 +70,7 @@ router.post(
  */
 router.get(
   '/all/:id',
-  checkIPRange,
+
   checklistController.getAllChecklistsBySiteId,
 )
 /**
@@ -101,6 +101,6 @@ router.get(
  *       500:
  *         description: Internal server error.
  */
-router.get('/:id', checkIPRange, checklistController.getOneChecklist)
+router.get('/:id', checklistController.getOneChecklist)
 
 module.exports = router

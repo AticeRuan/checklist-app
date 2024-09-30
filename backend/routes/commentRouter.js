@@ -44,5 +44,5 @@ const checkIPRange = require('../middlewares/checkIPRange')
  *       500:
  *         description: Internal server error.
  */
-router.post('/:id', checkIPRange, commentController.addComment)
+router.post('/:id', commentController.addComment)
 module.exports = router

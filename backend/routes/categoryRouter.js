@@ -34,7 +34,7 @@ const checkIPRange = require('../middlewares/checkIPRange')
  */
 router.post(
   '/',
-  checkIPRange,
+
   requireAuth,
   checkRole,
   categoryController.addCategory,
@@ -60,7 +60,7 @@ router.post(
  *       500:
  *         description: Internal server error.
  */
-router.get('/', checkIPRange, categoryController.getAllCategory)
+router.get('/', categoryController.getAllCategory)
 /**
  * @swagger
  * /api/categories/{id}:
@@ -89,7 +89,7 @@ router.get('/', checkIPRange, categoryController.getAllCategory)
  *       500:
  *         description: Internal server error.
  */
-router.get('/:id', checkIPRange, categoryController.getOneCategory)
+router.get('/:id', categoryController.getOneCategory)
 /**
  * @swagger
  * /api/categories/{id}:
@@ -126,7 +126,7 @@ router.get('/:id', checkIPRange, categoryController.getOneCategory)
  */
 router.patch(
   '/:id',
-  checkIPRange,
+
   requireAuth,
   categoryController.updateCategory,
 )
@@ -183,7 +183,7 @@ router.patch(
  */
 router.delete(
   '/:id',
-  checkIPRange,
+
   requireAuth,
   checkRole,
   categoryController.deleteCategory,

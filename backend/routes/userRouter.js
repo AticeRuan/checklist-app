@@ -42,8 +42,8 @@ const checkIPRange = require('../middlewares/checkIPRange')
 router.post(
   '/add-new-user',
   checkRole,
+
   requireAuth,
-  checkIPRange,
   userController.addUser,
 )
 /**
@@ -86,7 +86,7 @@ router.post(
  *       500:
  *         description: Internal server error.
  */
-router.post('/login', checkIPRange, userController.loginUser)
+router.post('/login', userController.loginUser)
 /**
  * @swagger
  * /api/users/logout:
@@ -104,7 +104,7 @@ router.post('/login', checkIPRange, userController.loginUser)
  *       500:
  *         description: Internal server error.
  */
-router.post('/logout', checkIPRange, userController.logoutUser)
+router.post('/logout', userController.logoutUser)
 /**
  * @swagger
  * /api/users/change-password:
@@ -144,7 +144,7 @@ router.post('/logout', checkIPRange, userController.logoutUser)
  *       500:
  *         description: Internal server error.
  */
-router.patch('/change-password', checkIPRange, userController.changePassword)
+router.patch('/change-password', userController.changePassword)
 /**
  * @swagger
  * /api/users/delete-user:
@@ -179,7 +179,7 @@ router.delete(
   '/:id',
   checkRole,
   requireAuth,
-  checkIPRange,
+
   userController.deleteUser,
 )
 /**
@@ -217,7 +217,7 @@ router.get(
   '/',
   checkRole,
   requireAuth,
-  checkIPRange,
+
   userController.getAllUsers,
 )
 /**
@@ -294,7 +294,7 @@ router.patch(
   '/:id',
   checkRole,
   requireAuth,
-  checkIPRange,
+
   userController.updateUserRole,
 )
 
@@ -352,12 +352,10 @@ router.patch(
  */
 router.patch(
   '/reset-password/:id',
-  checkIPRange,
+
   requireAuth,
   checkRole,
   userController.resetPassword,
 )
-
-router.post('/refresh-token', userController.refreshToken)
 
 module.exports = router

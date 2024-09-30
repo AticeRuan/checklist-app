@@ -47,6 +47,11 @@ const Login = () => {
       console.error('Failed to login:', error)
     }
   }
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      handleLogin(e) // Call the login handler when Enter is pressed
+    }
+  }
 
   if (isLoading)
     return (
@@ -78,6 +83,7 @@ const Login = () => {
         user={user}
         handleChange={handleChange}
         handleLogin={handleLogin}
+        handleKeyDown={handleKeyDown}
       />
     </div>
   )

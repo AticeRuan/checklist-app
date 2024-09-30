@@ -190,37 +190,6 @@ const resetPassword = async (req, res) => {
   }
 }
 
-const refreshToken = async (req, res) => {
-  const { refreshToken } = req.body
-
-  if (!refreshToken) {
-    return res.status(401).json({ message: 'Refresh token required' })
-  }
-
-  try {
-    const decoded = jwt.verify(refreshToken, process.env.REFRESH_SECRET)
-    const storedToken = await RefreshToken.findOne({
-      where: { token: refreshToken },
-    })
-
-    if (!storedToken) {
-      return res.status(403).json({ message: 'Invalid refresh token' })
-    }
-
-    const newToken = createToken(decoded.id)
-    const user = await User.findOne({ where: { user_id: decoded.id } })
-
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' })
-    }
-
-    res
-      .status(200)
-      .json({ token: newToken, role: user.role, name: user.user_name })
-  } catch (error) {
-    res.status(403).json({ message: 'Invalid refresh token' })
-  }
-}
 module.exports = {
   addUser,
   loginUser,
@@ -230,5 +199,4 @@ module.exports = {
   getAllUsers,
   updateUserRole,
   resetPassword,
-  refreshToken,
 }

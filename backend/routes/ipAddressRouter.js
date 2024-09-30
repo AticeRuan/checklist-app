@@ -39,7 +39,7 @@ const checkIPRange = require('../middlewares/checkIPRange')
  */
 router.post(
   '/',
-  checkIPRange,
+
   requireAuth,
   checkRole,
   ipAddressController.addIPAddress,
@@ -67,7 +67,7 @@ router.post(
  */
 router.get(
   '/',
-  checkIPRange,
+
   requireAuth,
   checkRole,
   ipAddressController.getIPAddresses,
@@ -102,7 +102,7 @@ router.get(
  */
 router.get(
   '/:id',
-  checkIPRange,
+
   requireAuth,
   checkRole,
   ipAddressController.getIPAddressById,
@@ -148,7 +148,7 @@ router.get(
  */
 router.patch(
   '/:id',
-  checkIPRange,
+
   requireAuth,
   checkRole,
   ipAddressController.updateIPAddress,
@@ -179,7 +179,7 @@ router.patch(
  */
 router.delete(
   '/:id',
-  checkIPRange,
+
   requireAuth,
   checkRole,
   ipAddressController.deleteIPAddress,

@@ -25,7 +25,7 @@ const requireAuth = require('../middlewares/requireAuth')
  *       500:
  *         description: Internal server error.
  */
-router.post('/', requireAuth, checkIPRange, templateController.addTemplate)
+router.post('/', requireAuth, templateController.addTemplate)
 /**
  * @swagger
  * /api/templates:
@@ -56,7 +56,7 @@ router.post('/', requireAuth, checkIPRange, templateController.addTemplate)
  *       500:
  *         description: Internal server error.
  */
-router.get('/', requireAuth, checkIPRange, templateController.getAllTemplates)
+router.get('/', requireAuth, templateController.getAllTemplates)
 /**
  * @swagger
  * /api/templates/{id}:
@@ -85,7 +85,7 @@ router.get('/', requireAuth, checkIPRange, templateController.getAllTemplates)
  *       500:
  *         description: Internal server error.
  */
-router.get('/:id', requireAuth, checkIPRange, templateController.getOneTemplate)
+router.get('/:id', requireAuth, templateController.getOneTemplate)
 /**
  * @swagger
  * /api/templates/{id}:
@@ -132,7 +132,7 @@ router.get('/:id', requireAuth, checkIPRange, templateController.getOneTemplate)
 router.patch(
   '/:id',
   requireAuth,
-  checkIPRange,
+
   templateController.updateTemplate,
 )
 /**
@@ -162,7 +162,7 @@ router.patch(
 router.delete(
   '/:id',
   requireAuth,
-  checkIPRange,
+
   templateController.deleteTemplate,
 )
 

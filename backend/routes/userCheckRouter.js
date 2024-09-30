@@ -5,6 +5,6 @@ const router = require('express').Router()
 // Middleware
 const checkIPRange = require('../middlewares/checkIPRange')
 
-router.patch('/:id', checkIPRange, userCheckController.updateUserCheck)
+router.patch('/:id', userCheckController.updateUserCheck)
 
 module.exports = router

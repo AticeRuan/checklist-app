@@ -1,10 +1,7 @@
-import React from 'react'
 import { useState } from 'react'
 import OptionItem from './optionItem'
 import { Tick } from '../svg/tick'
-import Cancel from '../svg/cancel'
-import Popup from './popup'
-import Loader from '../svg/loader'
+
 const OptionGroup = ({
   title = 'group',
   handleDelete,

@@ -32,7 +32,7 @@ const checkIPRange = require('../middlewares/checkIPRange')
  *       500:
  *         description: Internal server error.
  */
-router.post('/', checkIPRange, requireAuth, checkRole, siteController.addSite)
+router.post('/', requireAuth, checkRole, siteController.addSite)
 /**
  * @swagger
  * /api/sites:
@@ -54,7 +54,7 @@ router.post('/', checkIPRange, requireAuth, checkRole, siteController.addSite)
  *       500:
  *         description: Internal server error.
  */
-router.get('/', checkIPRange, requireAuth, siteController.getAllSites)
+router.get('/', requireAuth, siteController.getAllSites)
 /**
  * @swagger
  * /api/sites/{id}:
@@ -83,7 +83,7 @@ router.get('/', checkIPRange, requireAuth, siteController.getAllSites)
  *       500:
  *         description: Internal server error.
  */
-router.get('/:id', checkIPRange, requireAuth, siteController.getOneSite)
+router.get('/:id', requireAuth, siteController.getOneSite)
 /**
  * @swagger
  * /api/sites/{id}:
@@ -120,7 +120,7 @@ router.get('/:id', checkIPRange, requireAuth, siteController.getOneSite)
  */
 router.patch(
   '/:id',
-  checkIPRange,
+
   requireAuth,
   checkRole,
   siteController.updateSite,
@@ -151,7 +151,7 @@ router.patch(
  */
 router.delete(
   '/:id',
-  checkIPRange,
+
   requireAuth,
   checkRole,
   siteController.deleteSite,

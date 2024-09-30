@@ -39,7 +39,7 @@ const OptionItem = ({
               onChange={(e) => handleChange(key, e.target.value)}
               className="text-xl text-b-active-blue font-[500]  border-2"
               required
-              type={key === 'duration' ? 'text' : 'number'}
+              // type={key === 'duration' ? 'text' : 'number'}
             />
           ) : (
             <p className="text-xl capitalize font-[500] ">

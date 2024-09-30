@@ -1,4 +1,4 @@
-const LoginFrom = ({ user, handleLogin, handleChange }) => {
+const LoginFrom = ({ user, handleLogin, handleChange, handleKeyDown }) => {
   return (
     <div className="flex flex-col w-[30.9rem] gap-6">
       <div className="flex flex-col w-full gap-1">
@@ -24,6 +24,7 @@ const LoginFrom = ({ user, handleLogin, handleChange }) => {
       <button
         className="w-full h-[2.75rem] text-black bg-b-light-blue rounded-md hover:bg-b-active-blue hover:text-white font-[500] text-lg"
         onClick={handleLogin}
+        onKeyDown={handleKeyDown}
       >
         Sign in
       </button>

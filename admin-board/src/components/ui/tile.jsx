@@ -13,6 +13,8 @@ import {
   updateTemplate as updateTemplateAction,
   deleteTemplate as deleteTemplateAction,
 } from '../../app/features/template/templateSlice'
+import { useState } from 'react'
+import Loader from '../svg/loader'
 
 const Tile = ({
   item,
@@ -24,6 +26,7 @@ const Tile = ({
   // console.log('data in tile', item)
   const created_date = new Date(item.createdAt)
   const updated_date = new Date(item.updatedAt)
+  const [isUpdating, setIsUpdating] = useState(false)
 
   masks.default = 'dd-mm-yyyy'
   createdAt = dateFormat(created_date, 'default')
@@ -34,6 +37,7 @@ const Tile = ({
   const dispatch = useDispatch()
 
   const handledArchive = async () => {
+    setIsUpdating(true)
     try {
       // Call the RTK Query mutation to update the status to 'archived'
       await updateTemplate({ id: item.template_id, status: 'archived' })
@@ -47,10 +51,13 @@ const Tile = ({
       )
     } catch (err) {
       console.error('Failed to archive template:', err)
+    } finally {
+      setIsUpdating(false)
     }
   }
 
   const handleRestore = async () => {
+    setIsUpdating(true)
     try {
       // Call the RTK Query mutation to update the status to 'published'
       await updateTemplate({
@@ -68,10 +75,13 @@ const Tile = ({
       )
     } catch (err) {
       console.error('Failed to restore template:', err)
+    } finally {
+      setIsUpdating(false)
     }
   }
 
   const handleDelete = async () => {
+    setIsUpdating(true)
     try {
       // Call the RTK Query mutation to delete the template
       await deleteTemplate(item.template_id)
@@ -80,13 +90,15 @@ const Tile = ({
       dispatch(deleteTemplateAction(item.template_id))
     } catch (err) {
       console.error('Failed to delete template:', err)
+    } finally {
+      setIsUpdating(false)
     }
   }
 
   //   const isDraft = draft ? true : false
   //   const isArchived = archived ? true : false
   return (
-    <div className="w-[11.8rem] h-[11.8rem] rounded-[1.25rem] bg-b-background-grey px-[1.25rem] py-[2.19rem] flex flex-col items-start shadow-lg justify-center gap-2 relative group whitespace-nowrap hover:shadow-lg hover:-translate-y-1 transform duration-300">
+    <div className="w-[11.8rem] h-[11.8rem] rounded-[1.25rem] bg-white px-[1.25rem] py-[2.19rem] flex flex-col items-start shadow-lg justify-center gap-2 relative group whitespace-nowrap hover:shadow-lg hover:-translate-y-1 transform duration-300">
       <h2 className="text-[1.25rem] font-[600] text-b-active-blue">
         {item.title}
       </h2>
@@ -96,6 +108,7 @@ const Tile = ({
       <p className="text-b-light-grey font-[400] text-[0.75rem]">
         Last Updated at {updatedAt}
       </p>
+
       {draft && (
         <span className="absolute bg-b-dark-green text-white text-[1rem] py-[2px] top-0 right-0 w-[5rem] text-center rounded-bl-xl rounded-tr-xl capitalize font-bold">
           in draft{' '}
@@ -131,6 +144,13 @@ const Tile = ({
             </button>
           )}
         </div>
+      )}
+      {isUpdating && (
+        <span className="absolute w-full h-full flex items-center justify-center backdrop-blur-lg text-sm text-black  left-0 top-0 rounded-[1.25rem]">
+          <span className="animate-spin">
+            <Loader />
+          </span>
+        </span>
       )}
     </div>
   )
