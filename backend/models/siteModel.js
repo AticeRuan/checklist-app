@@ -18,6 +18,16 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
+      hooks: {
+        beforeCreate: (site) => {
+          site.site_name = site.site_name.toLowerCase()
+          site.region = site.region.toLowerCase()
+        },
+        beforeUpdate: (site) => {
+          site.site_name = site.site_name.toLowerCase()
+          site.region = site.region.toLowerCase()
+        },
+      },
       tableName: 'Sites',
       timestamps: false, // Disable createdAt and updatedAt fields
     },

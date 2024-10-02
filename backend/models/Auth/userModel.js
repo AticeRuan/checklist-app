@@ -22,6 +22,14 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
+      hooks: {
+        beforeCreate: (user) => {
+          user.role = user.role.toLowerCase()
+        },
+        beforeUpdate: (user) => {
+          user.role = user.role.toLowerCase()
+        },
+      },
       tableName: 'Users',
       timestamps: false,
     },

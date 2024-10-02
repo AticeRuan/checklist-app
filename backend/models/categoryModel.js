@@ -18,8 +18,16 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
     {
+      hooks: {
+        beforeCreate: (category) => {
+          category.name = category.name.toLowerCase()
+        },
+        beforeUpdate: (category) => {
+          category.name = category.name.toLowerCase()
+        },
+      },
       tableName: 'Categories',
-      timestamps: false,
+      timestamps: false, // Move timestamps here, within the same object as hooks and tableName
     },
   )
 

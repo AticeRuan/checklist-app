@@ -8,11 +8,16 @@ const sequelize = new Sequelize(
     host: process.env.DB_SERVER,
     dialect: 'mssql',
     dialectModule: tedious,
-    dialectOptions: {options:{reqestTimeout: 300000}},
-    port: process.env.DB_PORT,
     dialectOptions: {
-      encrypt: true,
+      options: { requestTimeout: 300000, connectTimeout: 30000 },
+      ssl: 'Amazon RDS',
     },
+    port: process.env.DB_PORT,
+    pool: {
+      max: 5,
+      idle: 30000,
+    },
+    language: 'en',
   },
 )
 
@@ -50,7 +55,7 @@ require('./associations')(db)
 
 const syncDatabase = async () => {
   try {
-    // await db.sequelize.query(` DROP TABLE refresh_tokens`)
+    // await db.sequelize.query(` DROP TABLE categories;`)
     await db.sequelize.sync({ force: false })
     console.log('Drop and re-sync Checklist db.')
   } catch (err) {
