@@ -113,6 +113,7 @@ const initializeChecklist = async (req, res) => {
       if (!checklist) {
         const dueDate = new Date()
         dueDate.setDate(dueDate.getDate() + category.duration)
+        dueDate.setHours(0, 0, 0, 0)
 
         checklist = await Checklist.create({
           template_id: template.template_id,

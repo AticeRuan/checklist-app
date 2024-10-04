@@ -68,7 +68,7 @@ router.post(
  *       500:
  *         description: Internal server error.
  */
-router.get('/all/:id', checklistController.getAllChecklistsByUserAndSite)
+router.get('/', checklistController.getAllChecklistsByUserAndSite)
 /**
  * @swagger
  * /api/checklists/{id}:
