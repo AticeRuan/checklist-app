@@ -65,6 +65,7 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
       })
       setSelectedSites(data?.sites?.map((site) => site.site_id))
       setIsDraft(data.status === 'draft')
+      setIsEnvironmentRelated(data.is_environment_related)
     }
   }, [data])
 
@@ -102,6 +103,7 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
         ...newItem,
         id: data.template_id,
         status: 'published',
+        is_environment_related: isEnvironmentRelated,
       }
 
       const updatedTemplate = await updateTemplate(payload).unwrap()
@@ -667,11 +669,19 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
         className="whitespace-nowrap p-2 text-lg bg-b-mid-blue rounded-md text-white hover:bg-b-active-blue disabled:opacity-50 capitalize font-[500]  my-6"
         onClick={handleCreating}
         style={{
-          backgroundColor: isCreating ? '#C24500' : '',
+          backgroundColor: isCreating
+            ? isListItemLoading
+              ? '#9A8700'
+              : '#C24500'
+            : '',
           marginBottom: isCreating ? 10 : 20,
         }}
       >
-        {isCreating ? 'cancel ' : 'Add list item'}
+        {isCreating
+          ? isListItemLoading
+            ? 'creating...'
+            : 'cancel '
+          : 'Add list item'}
       </button>
       {isCreating && (
         <div className="flex w-full items-center gap-5 mb-10">

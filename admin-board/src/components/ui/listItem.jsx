@@ -20,6 +20,7 @@ import Loading from './loading'
 import Error from './error'
 import Cancel from '../svg/cancel'
 import SiteListDropDown from './siteSettingDropDown'
+import Loader from '../svg/loader'
 
 const ListItem = ({
   item,
@@ -129,6 +130,7 @@ const ListItem = ({
   const [error, setError] = useState(null)
 
   const handleUpdate = async () => {
+    setIsLoading(true)
     try {
       const payload = {
         id: item.listitem_id,
@@ -136,27 +138,25 @@ const ListItem = ({
       }
       const udpatedItem = await updateListItem(payload)
       dispatch(updateListItemAction(udpatedItem))
+      setIsEditing(false)
     } catch (error) {
       console.error('Error while updating list item:', error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
   const handleDelete = async () => {
+    setIsLoading(true)
     try {
       await deleteListItem(item.listitem_id)
       dispatch(deleteListItemAction(item.listitem_id))
     } catch (error) {
       console.error('Error while deleting list item:', error)
-    }
-  }
-
-  useEffect(() => {
-    if (updateLoading || deleteLoading) {
-      setIsLoading(true)
-    } else {
+    } finally {
       setIsLoading(false)
     }
-  }, [updateLoading, deleteLoading])
+  }
 
   useEffect(() => {
     if (updateError || deleteError) {
@@ -294,7 +294,6 @@ const ListItem = ({
         {isEditing ? (
           <button
             onClick={() => {
-              setIsEditing(false)
               handleUpdate()
             }}
           >
@@ -320,6 +319,14 @@ const ListItem = ({
               <Cancel />
             </button>
           </div>
+        </div>
+      )}
+      {isLoading && (
+        <div className=" absolute top-0 left-0 w-full h-full backdrop-blur-sm flex items-center justify-center gap-2">
+          <span className="animate-spin">
+            <Loader />
+          </span>
+          <p className="text-b-active-blue font-semibold">Processing...</p>
         </div>
       )}
     </div>

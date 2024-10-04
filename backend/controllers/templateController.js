@@ -17,6 +17,7 @@ const addTemplate = async (req, res) => {
       status: 'draft',
       last_updated_by: last_updated_by,
       category_id: 1,
+      is_environment_related: false,
     })
 
     // Step 3: Link the new template to all sites
@@ -57,7 +58,14 @@ const addTemplate = async (req, res) => {
 
 const updateTemplate = async (req, res) => {
   try {
-    const { title, description, category_id, sites, status } = req.body
+    const {
+      title,
+      description,
+      category_id,
+      sites,
+      status,
+      is_environment_related,
+    } = req.body
 
     const last_updated_by = req.user.user_name
     let id = req.params.id
@@ -69,6 +77,7 @@ const updateTemplate = async (req, res) => {
         category_id: category_id,
         last_updated_by: last_updated_by,
         status: status,
+        is_environment_related: is_environment_related,
       },
       { where: { template_id: id } },
     )

@@ -26,7 +26,11 @@ const Update = () => {
   const { data: template, error, isLoading } = useGetOneTemplateQuery(id)
 
   //handle listitem crud logic
-  const { data: listitems } = useGetListItemsByTemplateIdQuery(id)
+  const {
+    data: listitems,
+    error: listItemsError,
+    isLoading: isListItemsLoading,
+  } = useGetListItemsByTemplateIdQuery(id)
 
   useEffect(() => {
     if (listitems) {
@@ -34,13 +38,13 @@ const Update = () => {
     }
   }, [listitems, dispatch])
 
-  if (isLoading)
+  if (isLoading || isListItemsLoading)
     return (
       <div>
         <Loading text="Preparing..." />
       </div>
     )
-  if (error)
+  if (error || listItemsError)
     return (
       <div>
         <Error />
