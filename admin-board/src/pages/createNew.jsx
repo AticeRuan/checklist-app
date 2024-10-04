@@ -73,10 +73,12 @@ const CreateNew = () => {
   }
 
   return (
-    <div className="p-[3rem] flex flex-col items-start justify-start w-full 2xl:w-[70vw]  flex-1 ">
-      <h1 className="text-[1.875rem] font-[600] leading-[1.5rem] mb-[3.5rem]">
-        Create New Template
-      </h1>
+    <div className="p-[3rem] flex flex-col items-start justify-start w-full 2xl:w-[80vw]">
+      <div className="flex items-center justify-between my-[3.5rem] w-full pr-[3.5rem]">
+        <h1 className="text-[1.875rem] font-[600] leading-[1.5rem] ">
+          Create New Template
+        </h1>
+      </div>
 
       <Form isCreateNew={true} data={templateToEdit} listitems={listitems} />
     </div>

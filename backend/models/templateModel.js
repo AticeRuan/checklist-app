@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.BOOLEAN,
         defaultValue: false,
       },
+      access_level: {
+        type: DataTypes.INTEGER,
+        defaultValue: 3,
+      },
     },
     {
       tableName: 'Templates',

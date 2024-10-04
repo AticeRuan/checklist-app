@@ -36,6 +36,7 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
     description: '',
     sites: [],
     status: '',
+    access_level: 3,
   })
   const [selectAll, setSelectAll] = useState(false)
 
@@ -46,13 +47,13 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
 
-  //   useEffect(() => {
-  //     console.log('Form data:', newItem)
-  //   }, [newItem])
+  useEffect(() => {
+    console.log('Form data:', newItem)
+  }, [newItem])
 
-  //   useEffect(() => {
-  //     console.log('Data prop:', data)
-  //   }, [data])
+  useEffect(() => {
+    console.log('Data prop:', data)
+  }, [data])
 
   useEffect(() => {
     if (data) {
@@ -62,6 +63,7 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
         description: data.description,
         sites: data.sites.map((site) => site.site_id),
         status: data.status,
+        access_level: data.access_level,
       })
       setSelectedSites(data?.sites?.map((site) => site.site_id))
       setIsDraft(data.status === 'draft')
@@ -104,6 +106,7 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
         id: data.template_id,
         status: 'published',
         is_environment_related: isEnvironmentRelated,
+        access_level: newItem.access_level,
       }
 
       const updatedTemplate = await updateTemplate(payload).unwrap()
@@ -146,6 +149,7 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
           description: '',
           sites: [],
           status: 'draft',
+          access_level: null,
         })
         setSelectedSites([])
       } else {
@@ -207,6 +211,7 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
           description: '',
           sites: [],
           status: 'draft',
+          access_level: null,
         })
         setSelectedSites([])
       } else {
@@ -302,6 +307,15 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
     setNewItem((prevItem) => ({
       ...prevItem,
       category_id: value,
+    }))
+  }
+
+  const handleAccessLevelChange = (e) => {
+    const { value } = e.target
+    const intValue = parseInt(value, 10)
+    setNewItem((prevItem) => ({
+      ...prevItem,
+      access_level: intValue,
     }))
   }
 
@@ -534,32 +548,45 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
 
   return (
     <div className="bg-white rounded-lg shadow p-6 w-full">
-      <div className="flex gap-8 w-full justify-end mb-24 -mt-24">
+      <div className="flex gap-8 w-full justify-start my-10  ">
         {(isDraft || isCreateNew) && (
           <button
-            className="w-[3rem]"
+            className=" flex items-center justify-center gap-2 hover:bg-b-active-blue hover:text-white border-2 border-b-active-blue p-2 rounded-md text-b-active-blue font-semibold"
             onClick={() => handTemplateSaveToDraft()}
           >
-            <Save width="100%" height="100%" />
+            <Save width="1rem" height="1rem" />
+            <p>Save to Draft</p>
           </button>
         )}
-        <button className="w-[3rem]" onClick={() => handTemplateUpdate()}>
-          <Tick width="100%" height="100%" />
+        <button
+          className=" flex items-center justify-center gap-2 hover:bg-b-active-blue hover:text-white border-2 border-b-active-blue p-2 rounded-md text-b-active-blue font-semibold"
+          onClick={() => handTemplateUpdate()}
+        >
+          <Tick width="1rem" height="1rem" />{' '}
+          <p className="font-semibold">{isDraft ? 'Publish' : 'Save'}</p>
         </button>
         {isCreateNew ? (
-          <button className="w-[3rem]" onClick={() => handleTemplateDelete()}>
-            <Cancel width="100%" height="100%" />
+          <button
+            className=" flex items-center justify-center gap-2 hover:bg-b-active-blue hover:text-white border-2 border-b-active-blue p-2 rounded-md text-b-active-blue font-semibold"
+            onClick={() => handleTemplateDelete()}
+          >
+            <Cancel width="1rem" height="1rem" />
+            <p className="font-semibold">Discard</p>
           </button>
         ) : (
-          <button className="w-[3rem]" onClick={() => handleTemplateArchive()}>
-            <Archive width="100%" height="100%" />
+          <button
+            className=" flex items-center justify-center gap-2 hover:bg-b-active-blue hover:text-white border-2 border-b-active-blue p-2 rounded-md text-b-active-blue font-semibold"
+            onClick={() => handleTemplateArchive()}
+          >
+            <Archive width="1rem" height="1rem" />
+            <p className="font-semibold">Archive</p>
           </button>
         )}
       </div>
-      <div className="flex items-end justify-start  w-full gap-8">
-        {/* title */}
-        <div className="flex-1 ">
-          <label className="block text-lg font-medium text-gray-700 mb-1">
+      {/* title */}
+      <div className="flex gap-4 items-center justify-center">
+        <div className="flex-1 w-10/12 mb-10 ">
+          <label className="block text-lg font-medium text-gray-700 mb-1 ">
             Title
           </label>
           <input
@@ -572,6 +599,18 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
             }
           />
         </div>
+        {/* enviro */}
+        <button
+          className="whitespace-nowrap p-2 text-lg rounded-md text-white  disabled:opacity-50 capitalize font-[500] flex-2 w-fit mb-[0.5rem] hover:opacity-70"
+          style={{
+            backgroundColor: isEnvironmentRelated ? '#066F10' : '#BDBDBD',
+          }}
+          onClick={handleEnvironmentRelated}
+        >
+          {isEnvironmentRelated ? 'environmental' : 'non-Environmental'}
+        </button>
+      </div>
+      <div className="flex items-end justify-start  w-full gap-8">
         {/* category */}
         <div className="flex-1">
           <label className="block text-lg font-medium text-gray-700 mb-1">
@@ -589,6 +628,23 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
                   {category.name}
                 </option>
               ))}
+          </select>
+        </div>
+        {/* access level */}
+        <div className="flex-1">
+          <label className="block text-lg font-medium text-gray-700 mb-1">
+            Access Level
+          </label>
+          <select
+            className="w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-sky-500 focus:border-sky-500 capitalize"
+            value={newItem?.access_level || 1}
+            onChange={handleAccessLevelChange}
+          >
+            <option disabled>Select a Access level</option>
+
+            <option value={1}>Manager</option>
+            <option value={2}>Supervisor</option>
+            <option value={3}>Staff member</option>
           </select>
         </div>
         {/* site setting */}
@@ -653,17 +709,6 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
             </div>
           )}
         </div>
-
-        {/* enviro */}
-        <button
-          className="whitespace-nowrap p-2 text-lg rounded-md text-white  disabled:opacity-50 capitalize font-[500] flex-2 w-fit "
-          style={{
-            backgroundColor: isEnvironmentRelated ? '#066F10' : '#BDBDBD',
-          }}
-          onClick={handleEnvironmentRelated}
-        >
-          {isEnvironmentRelated ? 'environmental' : 'non-Environmental'}
-        </button>
       </div>
       <button
         className="whitespace-nowrap p-2 text-lg bg-b-mid-blue rounded-md text-white hover:bg-b-active-blue disabled:opacity-50 capitalize font-[500]  my-6"

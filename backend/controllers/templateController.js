@@ -65,6 +65,7 @@ const updateTemplate = async (req, res) => {
       sites,
       status,
       is_environment_related,
+      access_level,
     } = req.body
 
     const last_updated_by = req.user.user_name
@@ -78,6 +79,7 @@ const updateTemplate = async (req, res) => {
         last_updated_by: last_updated_by,
         status: status,
         is_environment_related: is_environment_related,
+        access_level: access_level,
       },
       { where: { template_id: id } },
     )
