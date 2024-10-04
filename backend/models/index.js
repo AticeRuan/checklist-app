@@ -39,13 +39,14 @@ db.Site = require('./siteModel')(sequelize, DataTypes)
 db.Template = require('./templateModel')(sequelize, DataTypes)
 db.TemplateSite = require('./templateSiteModel')(sequelize, DataTypes)
 db.Comment = require('./commentModel')(sequelize, DataTypes)
+db.Action = require('./actionModel')(sequelize, DataTypes)
 db.Checklist = require('./checklistModel')(sequelize, DataTypes)
 db.UserCheck = require('./userCheckModel')(sequelize, DataTypes)
 db.ListItem = require('./listitemModel')(sequelize, DataTypes)
 db.ListItemSite = require('./listitemSiteModel')(sequelize, DataTypes)
 db.User = require('./Auth/userModel')(sequelize, DataTypes)
 db.IPAddress = require('./Auth/ipAddressModel')(sequelize, DataTypes)
-db.RefreshToken = require('./Auth/refreshTokenModel')(sequelize, DataTypes)
+
 db.BlacklistedToken = require('./Auth/blacklistedTokenModel')(
   sequelize,
   DataTypes,

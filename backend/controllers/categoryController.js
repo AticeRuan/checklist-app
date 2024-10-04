@@ -5,7 +5,7 @@ const Category = db.Category
 const addCategory = async (req, res) => {
   try {
     const category = await Category.create(req.body)
-    console.log('Category created successfully:', category)
+
     res.status(201).json(category)
   } catch (err) {
     console.error('Error creating category:', err)

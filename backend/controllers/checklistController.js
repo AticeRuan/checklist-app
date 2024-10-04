@@ -8,12 +8,13 @@ const ListItemSite = db.ListItemSite
 const UserCheck = db.UserCheck
 const TemplateSite = db.TemplateSite
 const Category = db.Category
-const Comment = db.Comment
+const Action = db.Action
 
 const initializeChecklist = async (req, res) => {
   try {
     const site_id = req.params.id
     const currentDate = new Date()
+    const { access_level, username } = req.body
 
     // 1. Get all templateSites for the site
     const templateSites = await TemplateSite.findAll({
@@ -25,7 +26,11 @@ const initializeChecklist = async (req, res) => {
     // 2. For each templateSite, check if there is a checklist for the site and template
     for (const templateSite of templateSites) {
       const template = await Template.findOne({
-        where: { template_id: templateSite.template_id },
+        where: {
+          template_id: templateSite.template_id,
+          access_level: access_level,
+          status: 'published',
+        },
       })
 
       if (!template) {
@@ -113,6 +118,7 @@ const initializeChecklist = async (req, res) => {
           template_id: template.template_id,
           site_id: site_id,
           due_date: dueDate,
+          checked_by: username,
         })
 
         // 4. For each listItemSite, create a new UserCheck
@@ -151,23 +157,23 @@ const initializeChecklist = async (req, res) => {
 }
 
 //for history tab
-const getAllChecklistsBySiteId = async (req, res) => {
+const getAllChecklistsByUserAndSite = async (req, res) => {
   try {
-    const site_id = req.params.id
+    const { username, site_id } = req.body
 
     if (!site_id) {
       return res.status(400).json({ error: 'Site ID is required' })
     }
 
     let checklists = await Checklist.findAll({
-      where: { site_id: site_id },
+      where: { site_id: site_id, checked_by: username },
       order: [['createdAt', 'DESC']],
       include: [
         {
           model: UserCheck,
           include: [
             {
-              model: Comment,
+              model: Action,
               // attributes: ['content', 'createAt']
             },
           ],
@@ -195,7 +201,7 @@ const getOneChecklist = async (req, res) => {
 
           include: [
             {
-              model: Comment,
+              model: Action,
             },
           ],
         },
@@ -216,6 +222,6 @@ const getOneChecklist = async (req, res) => {
 
 module.exports = {
   initializeChecklist,
-  getAllChecklistsBySiteId,
+  getAllChecklistsByUserAndSite,
   getOneChecklist,
 }

@@ -1,29 +1,41 @@
 module.exports = (sequelize, DataTypes) => {
-  const UserCheck = sequelize.define(
-    'user_check',
+  const Action = sequelize.define(
+    'action',
     {
-      user_check_id: {
+      action_id: {
         type: DataTypes.INTEGER,
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
       },
-      is_checked: {
+      content: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      image_url: {
+        type: DataTypes.TEXT,
+        allowNull: true,
+      },
+      sender: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      completed: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,
       },
-      has_action: {
+      is_read: {
         type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,
       },
     },
     {
-      tableName: 'UserChecks',
+      tableName: 'Actions',
       timestamps: true,
     },
   )
 
-  return UserCheck
+  return Action
 }

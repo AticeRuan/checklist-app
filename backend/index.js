@@ -71,6 +71,10 @@ app.use('/api/sites', siteRouter)
 const commentRouter = require('./routes/commentRouter')
 app.use('/api/add-comment', commentRouter)
 
+//Action
+const actionRouter = require('./routes/actionRouter')
+app.use('/api/actions', actionRouter)
+
 //Checklist
 const checklistRouter = require('./routes/checklistRouter')
 app.use('/api/checklists', checklistRouter)

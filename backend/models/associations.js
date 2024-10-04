@@ -80,20 +80,26 @@ module.exports = (db) => {
     foreignKey: 'checklist_id',
     onUpdate: 'CASCADE',
   })
-  db.UserCheck.hasMany(db.Comment, {
+
+  db.UserCheck.hasOne(db.Action, {
     foreignKey: 'user_check_id',
     onUpdate: 'CASCADE',
   })
 
   // Comment Associations
-  db.Comment.belongsTo(db.UserCheck, {
+  db.Comment.belongsTo(db.Action, {
+    foreignKey: 'action_id',
+    onUpdate: 'CASCADE',
+    onDelete: 'CASCADE',
+  })
+
+  //Action Associations
+  db.Action.belongsTo(db.UserCheck, {
     foreignKey: 'user_check_id',
     onUpdate: 'CASCADE',
   })
-
-  // RefreshToken Associations
-  db.RefreshToken.belongsTo(db.User, {
-    foreignKey: 'user_id',
+  db.Action.hasMany(db.Comment, {
+    foreignKey: 'action_id',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
   })
