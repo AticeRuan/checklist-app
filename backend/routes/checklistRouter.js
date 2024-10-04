@@ -7,7 +7,7 @@ const router = require('express').Router()
 const checkIPRange = require('../middlewares/checkIPRange')
 /**
  * @swagger
- * /api/checklists/create/{id}:
+ * /api/checklists/create:
  *   post:
  *     summary: Initialize checklist for a site
  *     description: Initializes checklists for a specific site based on templates, categories, and list items. If a checklist already exists, it updates the checklist with any new list items.
@@ -33,11 +33,7 @@ const checkIPRange = require('../middlewares/checkIPRange')
  *       500:
  *         description: Internal server error.
  */
-router.post(
-  '/create/:id',
-
-  checklistController.initializeChecklist,
-)
+router.post('/create', checklistController.initializeChecklist)
 /**
  * @swagger
  * /api/checklists/all/{id}:

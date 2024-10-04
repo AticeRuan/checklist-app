@@ -12,9 +12,8 @@ const Action = db.Action
 
 const initializeChecklist = async (req, res) => {
   try {
-    const site_id = req.params.id
     const currentDate = new Date()
-    const { access_level, username } = req.body
+    const { site_id, access_level, username } = req.body
 
     // 1. Get all templateSites for the site
     const templateSites = await TemplateSite.findAll({
