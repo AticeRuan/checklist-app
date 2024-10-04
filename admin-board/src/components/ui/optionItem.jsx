@@ -5,6 +5,7 @@ import Save from '../svg/save'
 import { useUpdateSiteMutation } from '../../app/api/siteApi'
 import { Restore } from '../svg/restore'
 import Popup from './popup'
+import Loader from '../svg/loader'
 
 const OptionItem = ({
   handleDelete = () => {},
@@ -20,6 +21,7 @@ const OptionItem = ({
   const [editableItem, setEditableItem] = useState({ ...item })
 
   const [errors, setErrors] = useState({})
+  const [loading, setLoading] = useState(false)
 
   const handleEdit = () => {
     setIsEditing(!isEditing)
@@ -29,8 +31,20 @@ const OptionItem = ({
     setEditableItem({ ...editableItem, [key]: value })
   }
 
+  const handleUpdateClick = async () => {
+    setLoading(true) // Start loading
+    await handleUpdate(editableItem)
+    setLoading(false) // End loading
+  }
+
+  const handleDeleteClick = async () => {
+    setLoading(true) // Start loading
+    await handleDelete(item[id_key])
+    setLoading(false) // End loading
+  }
+
   return (
-    <div className="flex items-center border-t-2 w-full py-1">
+    <div className="flex items-center border-t-2 w-full py-1 relative">
       {keys?.map((key) => (
         <div key={key} className="flex-1">
           {isEditing && key != 'user_name' ? (
@@ -51,9 +65,10 @@ const OptionItem = ({
       <div className="flex items-center gap-3 justify-start flex-1">
         {isEditing ? (
           <button
+            disabled={loading}
             onClick={() => {
               setIsEditing(false)
-              handleUpdate(editableItem)
+              handleUpdateClick()
             }}
           >
             <Save width="30" />
@@ -63,7 +78,7 @@ const OptionItem = ({
             <Edit />
           </button>
         )}
-        <button onClick={() => handleDelete(item[id_key])}>
+        <button onClick={() => handleDeleteClick()}>
           <Delete />
         </button>
         {isUser && (
@@ -72,6 +87,15 @@ const OptionItem = ({
           </button>
         )}
       </div>
+
+      {loading && (
+        <div className="flex text-b-mid-blue font-[500] gap-4 items-center justify-center text-lg absolute top-0 left-0 w-full backdrop-blur-sm h-full">
+          <div className="animate-spin">
+            <Loader />
+          </div>
+          <p>Processing</p>
+        </div>
+      )}
     </div>
   )
 }

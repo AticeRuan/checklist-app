@@ -461,17 +461,6 @@ const Settings = () => {
 
   return (
     <div className="p-[3rem] flex flex-col items-start justify-start w-full ">
-      {isLoading && (
-        <div className=" w-[80vw] h-20 fixed top-15 flex items-center justify-center    z-40 backdrop-blur-sm">
-          <div className="flex text-b-mid-blue font-[500] gap-4 items-center justify-center text-lg">
-            <div className="animate-spin">
-              <Loader />
-            </div>
-            <p>Processing</p>
-          </div>
-        </div>
-      )}
-
       <h1 className="text-[1.875rem] font-[600] leading-[1.5rem] mb-[3.5rem]">
         Settings
       </h1>

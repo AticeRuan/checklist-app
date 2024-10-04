@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import OptionItem from './optionItem'
 import { Tick } from '../svg/tick'
+import Loader from '../svg/loader'
 
 const OptionGroup = ({
   title = 'group',
@@ -15,6 +16,7 @@ const OptionGroup = ({
 }) => {
   const [open, setOpen] = useState(false)
   const [isCreating, setIsCreating] = useState(false)
+  const [isCreatingLoading, setIsCreatingLoading] = useState(false)
 
   const handleOpen = () => {
     setOpen(!open)
@@ -27,6 +29,14 @@ const OptionGroup = ({
 
   const handleChange = (key, value) => {
     setNewItem({ ...newItem, [key]: value })
+  }
+
+  const handleCreateClick = async () => {
+    setIsCreatingLoading(true) // Start creating loading state
+    await handleCreate(newItem)
+    setNewItem({}) // Reset new item
+    setIsCreatingLoading(false) // End creating loading state
+    setIsCreating(false) // Close creating form
   }
 
   return (
@@ -61,7 +71,7 @@ const OptionGroup = ({
       </div>
 
       {open && (
-        <div className="w-full flex pl-[2rem] flex-col gap-3 mt-7 bg-white justify-center">
+        <div className="w-full flex p-[2rem] flex-col gap-3 mt-7 bg-white justify-center">
           <div
             className="w-full "
             style={{
@@ -69,13 +79,27 @@ const OptionGroup = ({
             }}
           >
             <button
-              className="whitespace-nowrap p-2 text-lg bg-b-mid-blue rounded-md text-white hover:bg-b-active-blue disabled:opacity-50 uppercase font-[500] "
+              className="whitespace-nowrap p-2 text-lg bg-b-mid-blue rounded-md text-white hover:bg-b-active-blue disabled:opacity-50 uppercase font-[500] flex items-center justify-center gap-2 disabled:text-grey-500"
+              disabled={isCreatingLoading}
               style={{
-                backgroundColor: isCreating ? '#C24500' : '',
+                backgroundColor: isCreating
+                  ? isCreatingLoading
+                    ? '#9A8700'
+                    : '#C24500'
+                  : '',
               }}
               onClick={handleIsCreating}
             >
-              {isCreating ? 'cancel ' : 'create new'}
+              {isCreating
+                ? isCreatingLoading
+                  ? 'creating'
+                  : 'cancel '
+                : 'create new'}
+              {isCreatingLoading && (
+                <span className="animate-spin">
+                  <Loader />
+                </span>
+              )}
             </button>
           </div>
           {isCreating && (
@@ -94,7 +118,7 @@ const OptionGroup = ({
                 <button
                   onClick={() => {
                     setNewItem({})
-                    handleCreate(newItem)
+                    handleCreateClick()
                   }}
                 >
                   <Tick width="28" />
