@@ -224,11 +224,28 @@ const getAllChecklistsByUserAndSite = async (req, res) => {
       order: [['createdAt', 'DESC']],
       include: [
         {
+          model: Template,
+          attributes: ['title', 'is_environment_related'],
+          include: [{ model: Category, attributes: ['name'] }],
+        },
+        {
           model: UserCheck,
+          attributes: ['user_check_id', 'is_checked', 'has_action'],
           include: [
             {
               model: Action,
-              // attributes: ['content', 'createAt']
+              attributes: [
+                'action_id',
+                'content',
+                'image_url',
+                'completed',
+                'updatedAt',
+              ],
+              include: [{ model: Comment }],
+            },
+            {
+              model: ListItem,
+              attributes: ['keyword', 'description'],
             },
           ],
         },
@@ -251,11 +268,27 @@ const getOneChecklist = async (req, res) => {
       where: { checklist_id: id },
       include: [
         {
+          model: Template,
+          attributes: ['title', 'is_environment_related'],
+        },
+        {
           model: UserCheck,
-
+          attributes: ['user_check_id', 'is_checked', 'has_action'],
           include: [
             {
               model: Action,
+              attributes: [
+                'action_id',
+                'content',
+                'image_url',
+                'completed',
+                'updatedAt',
+              ],
+              include: [{ model: Comment }],
+            },
+            {
+              model: ListItem,
+              attributes: ['keyword', 'description'],
             },
           ],
         },

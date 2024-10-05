@@ -9,8 +9,12 @@ const sequelize = new Sequelize(
     dialect: 'mssql',
     dialectModule: tedious,
     dialectOptions: {
-      options: { requestTimeout: 300000, connectTimeout: 30000 },
-      ssl: 'Amazon RDS',
+      // options: { requestTimeout: 300000, connectTimeout: 30000 },
+      // ssl: 'Amazon RDS',
+      options: {
+        encrypt: true,
+        trustServerCertificate: false,
+      },
     },
     port: process.env.DB_PORT,
     pool: {
