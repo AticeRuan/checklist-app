@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      machine_id: {
+        type: DataTypes.STRING,
+      },
     },
     {
       tableName: 'Checklists',

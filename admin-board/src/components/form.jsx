@@ -68,6 +68,7 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
       setSelectedSites(data?.sites?.map((site) => site.site_id))
       setIsDraft(data.status === 'draft')
       setIsEnvironmentRelated(data.is_environment_related)
+      setIsMachineRelated(data.is_machine_related)
     }
   }, [data])
 
@@ -106,6 +107,7 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
         id: data.template_id,
         status: 'published',
         is_environment_related: isEnvironmentRelated,
+        is_machine_related: isMachineRelated,
         access_level: newItem.access_level,
       }
 
@@ -172,6 +174,8 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
         id: data.template_id,
         ...newItem,
         status: 'draft',
+        is_environment_related: isEnvironmentRelated,
+        is_machine_related: isMachineRelated,
       }
       const updatedTemplate = await updateTemplate(payload).unwrap()
 
@@ -234,6 +238,8 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
         id: data.template_id,
         ...newItem,
         status: 'archived',
+        is_environment_related: isEnvironmentRelated,
+        is_machine_related: isMachineRelated,
       }
       const updatedTemplate = await updateTemplate(payload)
       dispatch(updateTemplateAction(updatedTemplate))
@@ -385,9 +391,15 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
     setIsSettingSiteVisibility(false)
   }
 
+  //environment related
   const [isEnvironmentRelated, setIsEnvironmentRelated] = useState(false)
-  const handleEnvironmentRelated = () => {
-    setIsEnvironmentRelated(!isEnvironmentRelated)
+  const handleEnvironmentRelated = (e) => {
+    setIsEnvironmentRelated(e.target.checked)
+  }
+  //machine related
+  const [isMachineRelated, setIsMachineRelated] = useState(false)
+  const handleMachineRelated = (e) => {
+    setIsMachineRelated(e.target.checked)
   }
 
   //create new list item logic
@@ -599,16 +611,29 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
             }
           />
         </div>
-        {/* enviro */}
-        <button
-          className="whitespace-nowrap p-2 text-lg rounded-md text-white  disabled:opacity-50 capitalize font-[500] flex-2 w-fit mb-[0.5rem] hover:opacity-70"
-          style={{
-            backgroundColor: isEnvironmentRelated ? '#066F10' : '#BDBDBD',
-          }}
-          onClick={handleEnvironmentRelated}
-        >
-          {isEnvironmentRelated ? 'environmental' : 'non-Environmental'}
-        </button>
+        <div className="flex flex-col items-start justify-center">
+          {/* enviro */}
+
+          <label className="flex-1 items-center  mb-[0.5rem] flex text-b-active-blue font-semibold ">
+            <input
+              type="checkbox"
+              checked={isEnvironmentRelated}
+              onChange={handleEnvironmentRelated}
+              className="mr-2"
+            />
+            Enviromental
+          </label>
+          {/* machine related */}
+          <label className="flex-1 items-center flex mb-[0.5rem] text-b-active-blue font-semibold ">
+            <input
+              type="checkbox"
+              checked={isMachineRelated}
+              onChange={handleMachineRelated}
+              className="mr-2"
+            />
+            For Machine
+          </label>
+        </div>
       </div>
       <div className="flex items-end justify-start  w-full gap-8">
         {/* category */}

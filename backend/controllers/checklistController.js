@@ -171,7 +171,11 @@ const initializeChecklist = async (req, res) => {
         include: [
           {
             model: Template,
-            attributes: ['title', 'is_environment_related'],
+            attributes: [
+              'title',
+              'is_environment_related',
+              'is_machine_related',
+            ],
             include: [{ model: Category, attributes: ['name'] }],
           },
           {
@@ -225,7 +229,7 @@ const getAllChecklistsByUserAndSite = async (req, res) => {
       include: [
         {
           model: Template,
-          attributes: ['title', 'is_environment_related'],
+          attributes: ['title', 'is_environment_related', 'is_machine_related'],
           include: [{ model: Category, attributes: ['name'] }],
         },
         {
@@ -269,7 +273,7 @@ const getOneChecklist = async (req, res) => {
       include: [
         {
           model: Template,
-          attributes: ['title', 'is_environment_related'],
+          attributes: ['title', 'is_environment_related', 'is_machine_related'],
         },
         {
           model: UserCheck,
@@ -307,8 +311,61 @@ const getOneChecklist = async (req, res) => {
   }
 }
 
+const updateMachineId = async (req, res) => {
+  const checklist_id = req.params.id
+  const { machine_id } = req.body
+  try {
+    const checklist = await Checklist.findOne({
+      where: { checklist_id: checklist_id },
+    })
+    if (!checklist) {
+      return res.status(404).json({ error: 'Checklist not found' })
+    }
+    await Checklist.update(
+      { machine_id: machine_id },
+      { where: { checklist_id: checklist_id } },
+    )
+    checklist = await Checklist.findOne({
+      where: { checklist_id: id },
+      include: [
+        {
+          model: Template,
+          attributes: ['title', 'is_environment_related', 'is_machine_related'],
+        },
+        {
+          model: UserCheck,
+          attributes: ['user_check_id', 'is_checked', 'has_action'],
+          include: [
+            {
+              model: Action,
+              attributes: [
+                'action_id',
+                'content',
+                'image_url',
+                'completed',
+                'updatedAt',
+              ],
+              include: [{ model: Comment }],
+            },
+            {
+              model: ListItem,
+              attributes: ['keyword', 'description'],
+            },
+          ],
+        },
+      ],
+    })
+    res.status(200).json(checklist)
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: 'Internal server error', details: err.message })
+  }
+}
+
 module.exports = {
   initializeChecklist,
   getAllChecklistsByUserAndSite,
   getOneChecklist,
+  updateMachineId,
 }

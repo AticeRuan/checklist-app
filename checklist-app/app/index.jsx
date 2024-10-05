@@ -2,7 +2,7 @@ import { View, Text } from 'react-native'
 import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 
-const App = () => {
+const SelectSite = () => {
   return (
     <SafeAreaView className="bg-black h-full">
       <View className="items-center justify-center h-full">
@@ -12,4 +12,4 @@ const App = () => {
   )
 }
 
-export default App
+export default SelectSite

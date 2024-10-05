@@ -27,6 +27,13 @@ export const checklistApi = createApi({
             ]
           : ['checklist'],
     }),
+    updateMachineId: builder.mutation({
+      query: (id, machine_id) => ({
+        url: `/checklists/${id}`,
+        method: 'PATCH',
+        body: { machine_id },
+      }),
+    }),
   }),
 })
 
@@ -34,4 +41,5 @@ export const {
   useAddChecklistMutation,
   useGetAllChecklistsByUserAndSiteQuery,
   useGetOneChecklistQuery,
+  useUpdateMachineIdMutation,
 } = checklistApi

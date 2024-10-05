@@ -94,5 +94,6 @@ router.get('/', checklistController.getAllChecklistsByUserAndSite)
  *         description: Internal server error.
  */
 router.get('/:id', checklistController.getOneChecklist)
+router.patch('/:id', checklistController.updateMachineId)
 
 module.exports = router

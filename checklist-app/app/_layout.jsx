@@ -4,7 +4,7 @@ import React from 'react'
 import { Stack } from 'expo-router'
 import { SplashScreen } from 'expo-router'
 import { Provider } from 'react-redux'
-import { store, persistor } from '../app/store/store'
+import { store, persistor } from '../store/store'
 import { PersistGate } from 'redux-persist/integration/react'
 
 // SplashScreen.preventAutoHideAsync()

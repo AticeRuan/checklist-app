@@ -14,7 +14,7 @@ const actionSlice = createSlice({
     },
     updateAction(state, action) {
       const index = state.flags.findIndex(
-        (flag) => flag.action_id === action.payload.id,
+        (flag) => flag.action_id === action.payload.action_id,
       )
       if (index !== -1) {
         state.flags[index] = {
