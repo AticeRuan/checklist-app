@@ -232,9 +232,10 @@ const Settings = () => {
     }
   }
 
-  //handle category settings logic
+  // handle category settings logic
   const categories = useSelector((state) => state.category.categories)
   const category_keys = ['name', 'duration']
+
   const [
     updateCategory,
     { isLoading: isUpdateCategoryLoading, isError: isUpdateCategoryError },
@@ -253,22 +254,20 @@ const Settings = () => {
       setIsLoading(true)
       setIsError(false)
       setErrorMessage('')
-      await updateCategory({
+
+      const updatedCategory = {
         id: updatedItem.category_id,
         category_name: updatedItem.category_name,
         duration: updatedItem.duration,
-      })
-      dispatch(
-        updateCategoryAction({
-          id: updatedItem.category_id,
-          category_name: updatedItem.category_name,
-          duration: updatedItem.duration,
-        }),
-      )
+      }
+
+      await updateCategory(updatedCategory)
+
+      dispatch(updateCategoryAction(updatedCategory))
     } catch (error) {
       console.error('Error while updating category:', error)
       setIsError(true)
-      setErrorMessage('Failed to udpate the category. Please try again.')
+      setErrorMessage('Failed to update the category. Please try again.')
     } finally {
       setIsLoading(false)
     }
@@ -279,6 +278,7 @@ const Settings = () => {
       setIsLoading(true)
       setIsError(false)
       setErrorMessage('')
+
       if (id) {
         await deleteCategory(id)
       } else {
@@ -300,6 +300,7 @@ const Settings = () => {
       setIsLoading(true)
       setIsError(false)
       setErrorMessage('')
+
       const newItem = await addCategory(newCategory).unwrap()
 
       dispatch(addCategoryAction(newItem))

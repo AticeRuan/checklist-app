@@ -838,9 +838,9 @@ const Form = ({ data, listitems, isCreateNew = false }) => {
       )}
       <div className="space-y-4">
         {listitems?.length > 0 &&
-          listitems.map((item, index) => (
+          listitems.map((item) => (
             <ListItem
-              key={index}
+              key={item.listitem_id}
               item={item}
               sites={newItem.sites}
               isDeleting={itemBeingDeleted === item.listitem_id}

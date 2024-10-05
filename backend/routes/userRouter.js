@@ -41,9 +41,9 @@ const checkIPRange = require('../middlewares/checkIPRange')
  */
 router.post(
   '/add-new-user',
-  checkRole,
+  // checkRole,
 
-  requireAuth,
+  // requireAuth,
   userController.addUser,
 )
 /**

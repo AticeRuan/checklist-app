@@ -10,6 +10,7 @@ const OptionGroup = ({
   id_key,
   data,
   keys,
+
   isUser = false,
   handleCreate = () => {},
   handleReset,
@@ -142,7 +143,7 @@ const OptionGroup = ({
           {data?.map((item, index) => {
             return (
               <OptionItem
-                key={index}
+                key={item[id_key]}
                 item={item}
                 keys={keys}
                 handleDelete={handleDelete}
