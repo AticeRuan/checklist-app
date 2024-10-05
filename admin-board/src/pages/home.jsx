@@ -149,7 +149,7 @@ const Home = () => {
   return (
     <>
       <div className="p-[3rem] flex flex-col items-start justify-start w-full mb-20">
-        <h1 className="text-[1.875rem] font-[600] leading-[1.5rem] mb-[3.5rem] whitespace-nowrap">
+        <h1 className="text-[1.875rem] font-[600] leading-[1.5rem] mb-[3.5rem] whitespace-nowrap capitalize">
           Welcome Back {name}!
         </h1>
         <div className=" flex items-center flex-col gap-16 justify-center w-full">

@@ -12,6 +12,9 @@ export const userCheckApi = createApi({
         method: 'PATCH',
         body: check,
       }),
+      invalidatesTags: (result, error, { checklist_id }) => [
+        { type: 'checklist', id: checklist_id },
+      ],
     }),
   }),
 })

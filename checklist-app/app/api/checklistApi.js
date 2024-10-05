@@ -19,6 +19,13 @@ export const checklistApi = createApi({
 
     getOneChecklist: builder.query({
       query: (id) => `/checklists/${id}`,
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'checklist', id })),
+              'checklist',
+            ]
+          : ['checklist'],
     }),
   }),
 })

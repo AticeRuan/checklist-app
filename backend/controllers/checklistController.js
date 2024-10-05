@@ -1,5 +1,6 @@
 const { Op } = require('sequelize')
 const db = require('../models')
+const Sequelize = require('sequelize')
 
 const Checklist = db.Checklist
 const Template = db.Template
@@ -9,6 +10,7 @@ const UserCheck = db.UserCheck
 const TemplateSite = db.TemplateSite
 const Category = db.Category
 const Action = db.Action
+const Comment = db.Comment
 
 const initializeChecklist = async (req, res) => {
   try {
@@ -54,6 +56,7 @@ const initializeChecklist = async (req, res) => {
         where: {
           site_id: site_id,
           template_id: template.template_id,
+          checked_by: username,
           due_date: {
             [Op.gte]: currentDate,
           },
@@ -72,6 +75,7 @@ const initializeChecklist = async (req, res) => {
         const listItems = await ListItem.findAll({
           where: {
             template_id: template.template_id,
+
             updatedAt: {
               [Op.gt]: checklist.createdAt,
             },
@@ -126,9 +130,27 @@ const initializeChecklist = async (req, res) => {
           where: { site_id: site_id },
         })
 
+        // const listItems = await ListItem.findAll({
+        //   where: {
+        //     template_id: template.template_id,
+        //     updatedAt: {
+        //       [Op.gt]: checklist.createdAt,
+        //     },
+        //     // Include a condition to ensure the list item is available for the specific site
+        //     listitem_id: {
+        //       [Op.in]: Sequelize.literal(`(
+        //         SELECT listitem_id FROM ListItems_Sites WHERE site_id = ${site_id}
+        //       )`),
+        //     },
+        //   },
+        // })
+
         for (const listItemSite of listItemsSites) {
           const listItem = await ListItem.findOne({
-            where: { listitem_id: listItemSite.listitem_id },
+            where: {
+              listitem_id: listItemSite.listitem_id,
+              template_id: template.template_id,
+            },
           })
 
           if (!listItem) {
@@ -143,6 +165,38 @@ const initializeChecklist = async (req, res) => {
           })
         }
       }
+
+      checklist = await Checklist.findOne({
+        where: { checklist_id: checklist.checklist_id },
+        include: [
+          {
+            model: Template,
+            attributes: ['title', 'is_environment_related'],
+            include: [{ model: Category, attributes: ['name'] }],
+          },
+          {
+            model: UserCheck,
+            attributes: ['user_check_id', 'is_checked', 'has_action'],
+            include: [
+              {
+                model: Action,
+                attributes: [
+                  'action_id',
+                  'content',
+                  'image_url',
+                  'completed',
+                  'updatedAt',
+                ],
+                include: [{ model: Comment }],
+              },
+              {
+                model: ListItem,
+                attributes: ['keyword', 'description'],
+              },
+            ],
+          },
+        ],
+      })
 
       checklists.push(checklist)
     }
