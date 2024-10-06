@@ -1,6 +1,5 @@
-import { View, Text, Pressable, Modal, FlatList } from 'react-native'
-import React, { useState } from 'react'
-import { Dropdown } from 'react-native-element-dropdown'
+import { View, Text, Pressable, Modal, FlatList } from "react-native";
+import React, { useState } from "react";
 
 const CustomDropdown = ({
   label,
@@ -10,13 +9,13 @@ const CustomDropdown = ({
   text,
   onSelect,
 }) => {
-  const [modalVisible, setModalVisible] = useState(false)
-  const [selectedItem, setSelectedItem] = useState(null)
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
   const handleSelect = (item) => {
-    setSelectedItem(item)
-    setModalVisible(false)
-    onSelect(item)
-  }
+    setSelectedItem(item);
+    setModalVisible(false);
+    onSelect(item);
+  };
   return (
     <>
       <Pressable
@@ -63,7 +62,7 @@ const CustomDropdown = ({
         </View>
       </Modal>
     </>
-  )
-}
+  );
+};
 
-export default CustomDropdown
+export default CustomDropdown;

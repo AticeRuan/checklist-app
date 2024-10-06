@@ -1,70 +1,69 @@
-import { View, Text } from 'react-native'
-import React, { useState, useEffect, useMemo } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import { useGetAllSitesQuery } from '../api/siteApi'
-import { useDispatch, useSelector } from 'react-redux'
-import CustomButton from '../components/CustomButton'
-import CustomDropdown from '../components/CustomDropdown'
-import LoadingState from '../components/LoadingState'
-import { setSites } from '../store/features/siteSlice'
-import { Redirect, useRouter } from 'expo-router'
+import { View, Text } from "react-native";
+import React, { useState, useEffect, useMemo } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useGetAllSitesQuery } from "../api/siteApi";
+import { useDispatch, useSelector } from "react-redux";
+import CustomButton from "../components/CustomButton";
+import CustomDropdown from "../components/CustomDropdown";
+import LoadingState from "../components/LoadingState";
+import { setSites } from "../store/features/siteSlice";
+import { Redirect, useRouter } from "expo-router";
 
 const SelectSite = () => {
-  const { data: sites, error, isLoading } = useGetAllSitesQuery()
-  const dispatch = useDispatch()
-  const historySite = useSelector((state) => state.site.sites)
+  const { data: sites, error, isLoading } = useGetAllSitesQuery();
+  const dispatch = useDispatch();
+  const historySite = useSelector((state) => state.site.sites);
 
-  const [selectedSite, setSelectedSite] = useState(null)
-  const [isRegionSelected, setIsRegionSelected] = useState(false)
-  const [selectedRegion, setSelectedRegion] = useState(null)
-  const region = new Set(sites?.map((site) => site.region))
+  const [selectedSite, setSelectedSite] = useState(null);
+  const [isRegionSelected, setIsRegionSelected] = useState(false);
+  const [selectedRegion, setSelectedRegion] = useState(null);
+  const region = new Set(sites?.map((site) => site.region));
   //   const siteList = useMemo(() => {
   //     return sites?.filter((site) => site.region === selectedRegion)
   //   }, [selectedRegion])
-  const [siteList, setSiteList] = useState([])
+  const [siteList, setSiteList] = useState([]);
 
   useEffect(() => {
-    console.log(historySite)
-  }, [historySite])
+    console.log(historySite);
+  }, [historySite]);
 
   useEffect(() => {
-    setSiteList(sites?.filter((site) => site.region === selectedRegion))
-  }, [selectedRegion])
+    setSiteList(sites?.filter((site) => site.region === selectedRegion));
+  }, [selectedRegion]);
 
   const handleRegionSelect = (region) => {
-    setIsRegionSelected(false)
-    setSelectedSite(null)
-    setSelectedRegion(region)
+    setIsRegionSelected(false);
+    setSelectedSite(null);
+    setSelectedRegion(region);
 
-    setIsRegionSelected(true)
-  }
+    setIsRegionSelected(true);
+  };
 
   const handleSiteSelect = (site) => {
-    setSelectedSite(site)
-  }
+    setSelectedSite(site);
+  };
 
   const handleConfirm = () => {
     if (selectedSite === null) {
-      alert('Please select a site')
+      alert("Please select a site");
     } else {
-      dispatch(setSites(selectedSite))
-      router.push('/(tabs)/checklist/checklists')
+      dispatch(setSites(selectedSite));
+      router.push("/checklist/checklists");
     }
-  }
-  const router = useRouter()
+  };
+  const router = useRouter();
 
-  //   if (historySite !== null) return <Redirect to="/checklist/checklists" />
-  //   else
-  if (isLoading) {
+  if (historySite !== null) return <Redirect href="/checklist/checklists" />;
+  else if (isLoading) {
     return (
       <SafeAreaView className=" h-full bg-transparent">
         <LoadingState />
       </SafeAreaView>
-    )
+    );
   } else
     return (
-      <SafeAreaView className=" h-full bg-transparent">
-        <View className="items-center justify-center h-[80%] gap-[10px] ">
+      <SafeAreaView className="h-full bg-b-mid-blue w-screen items-center justify-start flex-1">
+        <View className="items-center justify-center  bg-white w-screen mt-16 rounded-[48px] h-full">
           <Text className="text-gray-700 capitalize font-psemibold text-[30px] mb-[20px]">
             Selecting Your Site
           </Text>
@@ -75,7 +74,7 @@ const SelectSite = () => {
             data={Array.from(region)}
             text={
               selectedRegion === null
-                ? 'click to select region'
+                ? "click to select region"
                 : selectedRegion
             }
             onSelect={handleRegionSelect}
@@ -87,7 +86,7 @@ const SelectSite = () => {
               otherListStyles=""
               data={siteList?.map((site) => site.site_name)}
               text={
-                selectedSite === null ? 'click to select site' : selectedSite
+                selectedSite === null ? "click to select site" : selectedSite
               }
               onSelect={handleSiteSelect}
             />
@@ -95,7 +94,7 @@ const SelectSite = () => {
           <CustomButton text="Confirm" otherStyles="" OnPress={handleConfirm} />
         </View>
       </SafeAreaView>
-    )
-}
+    );
+};
 
-export default SelectSite
+export default SelectSite;
