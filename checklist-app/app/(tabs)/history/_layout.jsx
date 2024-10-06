@@ -1,12 +1,9 @@
 import { View, Text } from 'react-native'
 import React from 'react'
+import ChildrenLayout from '../../../components/ChildrenLayout'
 
 const HistoryLayout = () => {
-  return (
-    <View>
-      <Text>HistoryLayout</Text>
-    </View>
-  )
+  return <ChildrenLayout />
 }
 
 export default HistoryLayout

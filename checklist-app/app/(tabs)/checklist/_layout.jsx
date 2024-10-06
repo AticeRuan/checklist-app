@@ -1,12 +1,8 @@
-import { View, Text } from 'react-native'
 import React from 'react'
+import ChildrenLayout from '../../../components/ChildrenLayout'
 
 const ChecklistLayout = () => {
-  return (
-    <View>
-      <Text>ChecklistLayout</Text>
-    </View>
-  )
+  return <ChildrenLayout />
 }
 
 export default ChecklistLayout
