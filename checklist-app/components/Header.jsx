@@ -2,13 +2,13 @@ import { View, Text, Pressable, Image } from 'react-native'
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Logo from '../assets/ballance.png'
-import { setSites } from '../store/features/siteSlice'
+import { setSingleSite } from '../store/features/siteSlice'
 import { router } from 'expo-router'
 const Header = () => {
-  const site = useSelector((state) => state.site.sites)
+  const site = useSelector((state) => state.site.singleSite)
   const dispatch = useDispatch()
   const onChangeSitePress = () => {
-    dispatch(setSites(null))
+    dispatch(setSingleSite(null))
     router.replace('/')
   }
   return (

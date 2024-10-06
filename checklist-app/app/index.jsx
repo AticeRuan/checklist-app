@@ -6,27 +6,28 @@ import { useDispatch, useSelector } from 'react-redux'
 import CustomButton from '../components/CustomButton'
 import CustomDropdown from '../components/CustomDropdown'
 import LoadingState from '../components/LoadingState'
-import { setSites } from '../store/features/siteSlice'
+import { setSites, setSingleSite } from '../store/features/siteSlice'
 import { Redirect, useRouter } from 'expo-router'
 import Logo from '../assets/ballance.png'
 
 const SelectSite = () => {
   const { data: sites, error, isLoading } = useGetAllSitesQuery()
   const dispatch = useDispatch()
-  const historySite = useSelector((state) => state.site.sites)
+  const historySite = useSelector((state) => state.site.singleSite)
+  const localSites = useSelector((state) => state.site.sites)
 
   const [selectedSite, setSelectedSite] = useState(null)
   const [isRegionSelected, setIsRegionSelected] = useState(false)
   const [selectedRegion, setSelectedRegion] = useState(null)
   const region = new Set(sites?.map((site) => site.region))
-  //   const siteList = useMemo(() => {
-  //     return sites?.filter((site) => site.region === selectedRegion)
-  //   }, [selectedRegion])
+
   const [siteList, setSiteList] = useState([])
 
   useEffect(() => {
-    console.log(historySite)
-  }, [historySite])
+    if (sites) {
+      dispatch(setSites(sites))
+    }
+  }, [sites])
 
   useEffect(() => {
     setSiteList(sites?.filter((site) => site.region === selectedRegion))
@@ -48,14 +49,15 @@ const SelectSite = () => {
     if (selectedSite === null) {
       alert('Please select a site')
     } else {
-      dispatch(setSites(selectedSite))
+      dispatch(setSingleSite(selectedSite))
       router.push('/checklist')
     }
   }
   const router = useRouter()
 
-  if (historySite !== null) return <Redirect href="/checklist" />
-  else if (isLoading) {
+  if (historySite !== null) {
+    return <Redirect href="/checklist" />
+  } else if (isLoading) {
     return (
       <SafeAreaView className=" h-full bg-transparent">
         <LoadingState />
