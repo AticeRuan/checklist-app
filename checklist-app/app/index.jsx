@@ -8,7 +8,14 @@ import CustomDropdown from '../components/CustomDropdown'
 import LoadingState from '../components/LoadingState'
 import { setSites, setSingleSite } from '../store/features/siteSlice'
 import { Redirect, useRouter } from 'expo-router'
+import { setUser, setUsers } from '../store/features/userSlice'
 import Logo from '../assets/ballance.png'
+
+const users = [
+  { username: 'Shannon', access_level: 3, name: 'Staff' },
+  { username: 'Dan', access_level: 2, name: 'Supervisor' },
+  { username: 'Michael', access_level: 1, name: 'Manager' },
+]
 
 const SelectSite = () => {
   const { data: sites, error, isLoading } = useGetAllSitesQuery()
@@ -47,12 +54,23 @@ const SelectSite = () => {
 
   const handleConfirm = () => {
     if (selectedSite === null) {
-      alert('Please select a site')
+      alert('Please select a site and a user')
     } else {
       dispatch(setSingleSite(selectedSite))
+      //   dispatch(setUser(seletedUser))
+      //   dispatch(setUsers(users))
       router.push('/checklist')
     }
   }
+
+  //   testing only
+  const [seletedUser, setSelectedUser] = useState(null)
+  const handleUserSelect = (user) => {
+    setSelectedUser(user)
+    dispatch(setUser(user))
+    dispatch(setUsers(users))
+  }
+
   const router = useRouter()
 
   if (historySite !== null) {
@@ -94,6 +112,14 @@ const SelectSite = () => {
               onSelect={handleSiteSelect}
             />
           )}
+          <CustomDropdown
+            label="Testing: Select User"
+            otherContainerStyles="mb-[20px]"
+            otherListStyles=""
+            data={users.map((user) => user.name)}
+            text={seletedUser === null ? 'click to select user' : seletedUser}
+            onSelect={handleUserSelect}
+          />
           <CustomButton text="Confirm" otherStyles="" OnPress={handleConfirm} />
         </View>
       </SafeAreaView>

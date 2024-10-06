@@ -9,15 +9,30 @@ import { useEffect, useRef, useState } from 'react'
 const Checklists = () => {
   const localSites = useSelector((state) => state.site.sites)
   const selectedSite = useSelector((state) => state.site.singleSite)
+  //user details
+  const user = useSelector((state) => state.user.user)
+  const users = useSelector((state) => state.user.users)
+  const access_level = users?.find((u) => u.name === user)?.access_level
+  const userName = users?.find((u) => u.name === user)?.username
+
   const siteId = localSites?.find(
     (site) => site.site_name === selectedSite,
   )?.site_id
+
   const dispatch = useDispatch()
   const hasCreatedRef = useRef(false)
 
   const [addChecklist, { data, error, isLoading }] = useAddChecklistMutation()
 
   const [checklists, setlists] = useState(null)
+
+  const checkIsMachineRelated = (checklist) => {
+    const flag = checklist.template.is_machine_related
+    if (!flag) {
+      return false
+    }
+    return flag
+  }
 
   useEffect(() => {
     const initializeChecklist = async () => {
@@ -27,8 +42,8 @@ const Checklists = () => {
         }
         const payload = {
           site_id: siteId,
-          username: 'rain',
-          access_level: 3,
+          username: userName,
+          access_level: access_level,
         }
         const newChecklists = await addChecklist(payload).unwrap()
 
@@ -61,9 +76,9 @@ const Checklists = () => {
   )
 
   useEffect(() => {
-    console.log('categories', categories)
     console.log('checklists', checklists)
-  }, [categories, checklists])
+    console.log('userName', userName)
+  }, [userName, access_level])
 
   return (
     <SafeAreaView className="bg-b-mid-blue w-screen items-center justify-start h-full">
