@@ -1,13 +1,6 @@
 import Form from '../components/form'
-import Add from '../components/svg/add'
-import Cancel from '../components/svg/cancel'
-import Delete from '../components/svg/delete'
-import Edit from '../components/svg/edit'
 import { useState, useEffect, useRef } from 'react'
-import {
-  useAddTemplateMutation,
-  useGetOneTemplateQuery,
-} from '../app/api/templateApi'
+import { useAddTemplateMutation } from '../app/api/templateApi'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { addTemplate as addTemplateAction } from '../app/features/template/templateSlice'
