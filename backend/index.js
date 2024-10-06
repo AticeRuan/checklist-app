@@ -24,7 +24,12 @@ var corsOptions = {
 //middlerware
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'https://checklist-app-gray.vercel.app'],
+    origin: [
+      'http://localhost:5173',
+      'https://checklist-app-gray.vercel.app',
+      'http://localhost:8081',
+      'http://192.168.2.103:8081',
+    ],
 
     optionsSuccessStatus: 200,
     credentials: true,

@@ -54,7 +54,7 @@ router.post('/', requireAuth, checkRole, siteController.addSite)
  *       500:
  *         description: Internal server error.
  */
-router.get('/', requireAuth, siteController.getAllSites)
+router.get('/', siteController.getAllSites)
 /**
  * @swagger
  * /api/sites/{id}:
