@@ -5,7 +5,7 @@ import icons from '../../constants/icons'
 import dateFormat, { masks } from 'dateformat'
 import { router } from 'expo-router'
 
-const SingleList = ({ singleList, isNonEvn = true }) => {
+const SingleList = ({ singleList, isNonEvn = true, isMachine }) => {
   const totalItems = singleList?.user_checks.length || 0
   const completedItems =
     singleList?.user_checks?.filter((item) => item.isChecked || item.has_action)
@@ -19,7 +19,9 @@ const SingleList = ({ singleList, isNonEvn = true }) => {
   }, [id])
 
   const handleOnPress = () => {
-    router.push(`checklist/enter-machine-number/${id}`)
+    if (isMachine && !singleList.machine_id)
+      return router.push(`checklist/enter-machine-number/${id}`)
+    else router.push(`checklist/single-checklist/${id}`)
   }
 
   return (

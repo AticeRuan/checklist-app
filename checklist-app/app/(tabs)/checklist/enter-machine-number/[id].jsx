@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux'
 import { updateChecklist } from '../../../../store/features/checklistSlice'
 import LoadingState from '../../../../components/LoadingState'
 import LoadingScreen from '../../../../components/LoadingScreen'
+import Header from '../../../../components/Header'
 
 const EnterMachineNumber = () => {
   const { id } = useGlobalSearchParams()
@@ -57,7 +58,8 @@ const EnterMachineNumber = () => {
     return <LoadingScreen />
   }
   return (
-    <SafeAreaView className="h-full bg-b-mid-blue w-screen items-center justify-start flex-1 ">
+    <SafeAreaView className=" bg-b-mid-blue w-screen items-center justify-start h-screen ">
+      <Header />
       <Pressable
         className="items-center   bg-white w-screen  rounded-t-[48px]   min-h-screen px-[20px] pt-[30%] "
         onPress={Keyboard.dismiss}

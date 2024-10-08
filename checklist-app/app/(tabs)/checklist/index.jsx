@@ -7,6 +7,7 @@ import { setChecklists } from '../../../store/features/checklistSlice'
 import { useEffect, useRef, useState } from 'react'
 import ListGroup from '../../../components/checklist/ListGroup'
 import LoadingScreen from '../../../components/LoadingScreen'
+import Header from '../../../components/Header'
 
 const Checklists = () => {
   const localSites = useSelector((state) => state.site.sites)
@@ -118,17 +119,17 @@ const Checklists = () => {
   }
 
   return (
-    <SafeAreaView className="bg-b-mid-blue w-screen items-center justify-start h-full">
-      <ScrollView
-        contentContainerStyle={{ height: 'fit-content' }}
-        // alwaysBounceVertical={false}
-        scrollEnabled={true} // Make sure scrolling is enabled
-        // centerContent={true}
-      >
-        <View className="items-center justify-start  bg-white w-screen  rounded-t-[48px]   min-h-screen px-[20px] p-[30px]">
-          <Text className="w-full text-left mb-10 text-lg">
-            {getGreeting()} {userName}!
-          </Text>
+    <SafeAreaView className="bg-b-mid-blue w-screen items-center justify-start h-screen">
+      <Header />
+
+      <View className="items-center justify-start  bg-white w-screen  rounded-t-[48px]   flex-1 px-[10px] p-[30px]">
+        <Text className="w-full text-left mb-10 text-lg">
+          {getGreeting()} {userName}!
+        </Text>
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1 }}
+          scrollEnabled={true}
+        >
           {categories?.map((category) => (
             <ListGroup
               key={category}
@@ -147,8 +148,8 @@ const Checklists = () => {
               isNonEvn={false}
             />
           )}
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </SafeAreaView>
   )
 }

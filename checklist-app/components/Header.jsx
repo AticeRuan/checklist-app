@@ -12,7 +12,7 @@ const Header = () => {
     router.replace('/')
   }
   return (
-    <View className="w-full px-[5vw] items-center justify-between   flex-row bg-b-mid-blue">
+    <View className="w-full px-[5vw] items-center justify-between   flex-row bg-b-mid-blue mb-6">
       <Image source={Logo} resizeMode="contain" className="w-[80px] h-[80px]" />
       <View className="flex-row items-center justify-center">
         <Text className="mr-1 text-white font-pregular text-xl">Site:</Text>

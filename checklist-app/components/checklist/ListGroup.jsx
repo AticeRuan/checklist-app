@@ -7,7 +7,7 @@ const ListGroup = ({ category, listGroup, isNonEvn }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   return (
     <Pressable
-      className="w-full py-[20px] border-t-2 border-b-2 border-b-lighter-grey mb-10"
+      className="w-[80vw] py-[20px] border-t-2 border-b-2 border-b-lighter-grey mb-10"
       onPress={() => {
         setIsExpanded(!isExpanded)
       }}

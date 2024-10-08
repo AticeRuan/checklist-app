@@ -7,7 +7,12 @@ const CheckBox = ({ isChecked, onChange }) => {
     onChange(!isChecked)
   }
   return (
-    <Pressable onPress={handlePress}>
+    <Pressable
+      onPress={(e) => {
+        e.stopPropagation()
+        handlePress()
+      }}
+    >
       <Image
         source={isChecked ? icons.checkedIcon : icons.uncheckIcon}
         className="w-[23px] h-[23px]"

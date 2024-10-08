@@ -7,10 +7,8 @@ const LoadingState = ({ text = 'Loading' }) => {
       className="
     flex-1 justify-center items-center bg-primary w-full h-full "
     >
-      <ActivityIndicator size="large" color="#00AEEF" />
-      <Text className="text-b-deep-blue mt-5 font-psemibold uppercase">
-        {text}
-      </Text>
+      <ActivityIndicator size="large" color="#ffffff" />
+      <Text className="text-white mt-5 font-psemibold uppercase">{text}</Text>
     </View>
   )
 }
