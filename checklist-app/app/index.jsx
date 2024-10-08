@@ -5,11 +5,10 @@ import { useGetAllSitesQuery } from '../api/siteApi'
 import { useDispatch, useSelector } from 'react-redux'
 import CustomButton from '../components/CustomButton'
 import CustomDropdown from '../components/CustomDropdown'
-import LoadingState from '../components/LoadingState'
 import { setSites, setSingleSite } from '../store/features/siteSlice'
 import { Redirect, useRouter } from 'expo-router'
 import { setUser, setUsers } from '../store/features/userSlice'
-import Logo from '../assets/ballance.png'
+import LoadingScreen from '../components/LoadingScreen'
 
 const users = [
   { username: 'Shannon', access_level: 3, name: 'Staff' },
@@ -76,11 +75,7 @@ const SelectSite = () => {
   if (historySite !== null) {
     return <Redirect href="/checklist" />
   } else if (isLoading) {
-    return (
-      <SafeAreaView className=" h-full bg-transparent">
-        <LoadingState />
-      </SafeAreaView>
-    )
+    return <LoadingScreen />
   } else
     return (
       <SafeAreaView className="h-full bg-b-mid-blue w-screen items-center justify-start flex-1 ">
@@ -120,7 +115,11 @@ const SelectSite = () => {
             text={seletedUser === null ? 'click to select user' : seletedUser}
             onSelect={handleUserSelect}
           />
-          <CustomButton text="Confirm" otherStyles="" OnPress={handleConfirm} />
+          <CustomButton
+            text="Confirm"
+            otherStyles="bg-b-mid-blue"
+            OnPress={handleConfirm}
+          />
         </View>
       </SafeAreaView>
     )

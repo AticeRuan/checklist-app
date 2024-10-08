@@ -315,7 +315,7 @@ const updateMachineId = async (req, res) => {
   const checklist_id = req.params.id
   const { machine_id } = req.body
   try {
-    const checklist = await Checklist.findOne({
+    let checklist = await Checklist.findOne({
       where: { checklist_id: checklist_id },
     })
     if (!checklist) {
@@ -326,7 +326,7 @@ const updateMachineId = async (req, res) => {
       { where: { checklist_id: checklist_id } },
     )
     checklist = await Checklist.findOne({
-      where: { checklist_id: id },
+      where: { checklist_id: checklist_id },
       include: [
         {
           model: Template,

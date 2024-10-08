@@ -5,6 +5,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useAddChecklistMutation } from '../../../api/checklistApi'
 import { setChecklists } from '../../../store/features/checklistSlice'
 import { useEffect, useRef, useState } from 'react'
+import ListGroup from '../../../components/checklist/ListGroup'
+import LoadingScreen from '../../../components/LoadingScreen'
 
 const Checklists = () => {
   const localSites = useSelector((state) => state.site.sites)
@@ -24,10 +26,19 @@ const Checklists = () => {
 
   const [addChecklist, { data, error, isLoading }] = useAddChecklistMutation()
 
-  const [checklists, setlists] = useState(null)
+  const [nonEvnChecklists, setNonEvnlists] = useState(null)
+  const [evnChecklists, setEvnlists] = useState(null)
 
   const checkIsMachineRelated = (checklist) => {
     const flag = checklist.template.is_machine_related
+    if (!flag) {
+      return false
+    }
+    return flag
+  }
+
+  const checkIsEvnrionmentRelated = (checklist) => {
+    const flag = checklist.template.is_environment_related
     if (!flag) {
       return false
     }
@@ -48,13 +59,22 @@ const Checklists = () => {
         const newChecklists = await addChecklist(payload).unwrap()
 
         if (newChecklists.error) {
-          console.error('Failed to add checklist:', newChecklist.error)
+          console.error('Failed to add checklist:', newChecklists.error)
           return
         }
 
         if (newChecklists) {
           dispatch(setChecklists(newChecklists))
-          setlists(newChecklists)
+          setNonEvnlists(
+            newChecklists.filter(
+              (checklist) => !checkIsEvnrionmentRelated(checklist),
+            ),
+          )
+          setEvnlists(
+            newChecklists.filter((checklist) =>
+              checkIsEvnrionmentRelated(checklist),
+            ),
+          )
         }
       } catch (err) {
         console.error('Failed to add checklist:', err)
@@ -66,25 +86,67 @@ const Checklists = () => {
     }
   }, [data])
 
-  const categories = new Set(
-    [...(checklists || [])] // Create a shallow copy of the array
-      .sort(
-        (a, b) =>
-          new Date(a.due_date).getTime() - new Date(b.due_date).getTime(),
-      )
-      .map((checklist) => checklist.template.category.name), //
+  const categories = Array.from(
+    new Set(
+      [...(nonEvnChecklists || [])]
+        .sort(
+          (a, b) =>
+            new Date(a.due_date).getTime() - new Date(b.due_date).getTime(),
+        )
+        .map((checklist) => checklist.template.category.name),
+    ),
   )
+  const getGreeting = () => {
+    const currentHour = new Date().getHours()
+
+    if (currentHour < 12) {
+      return 'Good Morning'
+    } else if (currentHour < 18) {
+      return 'Good Afternoon'
+    } else {
+      return 'Good Evening'
+    }
+  }
 
   useEffect(() => {
-    console.log('checklists', checklists)
+    console.log('categories', categories)
     console.log('userName', userName)
-  }, [userName, access_level])
+  }, [userName, categories])
+
+  if (isLoading) {
+    return <LoadingScreen />
+  }
 
   return (
     <SafeAreaView className="bg-b-mid-blue w-screen items-center justify-start h-full">
-      <ScrollView contentContainerStyle={{ height: '100%' }}>
-        <View className="items-center justify-start  bg-white w-screen  rounded-t-[48px] py-[40%]  min-h-full">
-          <Text>Checklists</Text>
+      <ScrollView
+        contentContainerStyle={{ height: 'fit-content' }}
+        // alwaysBounceVertical={false}
+        scrollEnabled={true} // Make sure scrolling is enabled
+        // centerContent={true}
+      >
+        <View className="items-center justify-start  bg-white w-screen  rounded-t-[48px]   min-h-screen px-[20px] p-[30px]">
+          <Text className="w-full text-left mb-10 text-lg">
+            {getGreeting()} {userName}!
+          </Text>
+          {categories?.map((category) => (
+            <ListGroup
+              key={category}
+              category={category}
+              listGroup={nonEvnChecklists.filter(
+                (checklist) =>
+                  checklist.template.category.name === category &&
+                  !checklist.template.is_environment_related,
+              )}
+            />
+          ))}
+          {evnChecklists?.length > 0 && (
+            <ListGroup
+              category="Environment"
+              listGroup={evnChecklists}
+              isNonEvn={false}
+            />
+          )}
         </View>
       </ScrollView>
     </SafeAreaView>

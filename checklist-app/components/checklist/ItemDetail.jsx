@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const EnterMachine = () => {
+const ItemDetail = () => {
   return (
     <View>
-      <Text>EnterMachine</Text>
+      <Text>ItemDetail</Text>
     </View>
   )
 }
 
-export default EnterMachine
+export default ItemDetail

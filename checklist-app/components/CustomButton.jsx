@@ -16,7 +16,7 @@ const CustomButton = ({
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
       disabled={disabled}
-      className={`bg-b-mid-blue ${otherStyles} min-h-[64px] rounded-[50px] min-w-[320px] items-center justify-center ${pressStyles} ${disabledStyles} transition-all duration-700 `}
+      className={` ${otherStyles}  min-h-[64px] rounded-[50px] min-w-[320px] items-center justify-center ${pressStyles} ${disabledStyles} transition-all duration-700 `}
     >
       <Text className="text-[25px] font-[600] capitalize text-white">
         {text}

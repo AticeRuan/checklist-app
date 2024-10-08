@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = { checklists: [] }
+const initialState = { checklists: [], checklist: {} }
 
 const checklistSlice = createSlice({
   name: 'checklist',
@@ -21,7 +21,21 @@ const checklistSlice = createSlice({
         }
       }
     },
+    setSingleChecklist(state, action) {
+      state.checklist = action.payload
+    },
+    updateSingleChecklist(state, action) {
+      state.checklist = {
+        ...state.checklist,
+        ...action.payload,
+      }
+    },
   },
 })
-export const { setChecklists } = checklistSlice.actions
+export const {
+  setChecklists,
+  updateChecklist,
+  setSingleChecklist,
+  updateSingleChecklist,
+} = checklistSlice.actions
 export default checklistSlice.reducer
