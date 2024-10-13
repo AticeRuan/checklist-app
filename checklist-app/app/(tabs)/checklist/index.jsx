@@ -1,26 +1,29 @@
-import { View, Text, ScrollView } from 'react-native'
-import React from 'react'
+import { View, Text, ScrollView, RefreshControl } from 'react-native'
+import React, { use } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useSelector, useDispatch } from 'react-redux'
 import { useAddChecklistMutation } from '../../../api/checklistApi'
 import { setChecklists } from '../../../store/features/checklistSlice'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import ListGroup from '../../../components/checklist/ListGroup'
 import LoadingScreen from '../../../components/LoadingScreen'
 import Header from '../../../components/Header'
+import CustomPressable from '../../../components/CustomPressable'
+import useRefreshing from '../../../hooks/useRefreshing'
+import { useFocusEffect } from 'expo-router'
+import useSiteDetails from '../../../hooks/useSiteDetails'
 
 const Checklists = () => {
-  const localSites = useSelector((state) => state.site.sites)
-  const selectedSite = useSelector((state) => state.site.singleSite)
+  //Site details
+  const { siteId } = useSiteDetails()
   //user details
   const user = useSelector((state) => state.user.user)
   const users = useSelector((state) => state.user.users)
   const access_level = users?.find((u) => u.name === user)?.access_level
   const userName = users?.find((u) => u.name === user)?.username
+  // const [refreshing, setRefreshing] = useState(false)
 
-  const siteId = localSites?.find(
-    (site) => site.site_name === selectedSite,
-  )?.site_id
+  const [refreshing, triggerRefresh, stopRefresh] = useRefreshing()
 
   const dispatch = useDispatch()
   const hasCreatedRef = useRef(false)
@@ -30,13 +33,52 @@ const Checklists = () => {
   const [nonEvnChecklists, setNonEvnlists] = useState(null)
   const [evnChecklists, setEvnlists] = useState(null)
 
-  const checkIsMachineRelated = (checklist) => {
-    const flag = checklist.template.is_machine_related
-    if (!flag) {
-      return false
+  const initializeChecklist = async () => {
+    try {
+      if (hasCreatedRef.current) {
+        return
+      }
+
+      const payload = {
+        site_id: siteId,
+        username: userName,
+        access_level: access_level,
+      }
+
+      const newChecklists = await addChecklist(payload).unwrap()
+
+      if (newChecklists.error) {
+        console.error('Failed to add checklist:', newChecklists.error)
+        return
+      }
+
+      if (newChecklists) {
+        dispatch(setChecklists(newChecklists))
+        setNonEvnlists(
+          newChecklists.filter(
+            (checklist) => !checkIsEvnrionmentRelated(checklist),
+          ),
+        )
+        setEvnlists(
+          newChecklists.filter((checklist) =>
+            checkIsEvnrionmentRelated(checklist),
+          ),
+        )
+      }
+    } catch (err) {
+      console.error('Failed to add checklist:', err)
     }
-    return flag
   }
+
+  useFocusEffect(
+    useCallback(() => {
+      const fetchChecklist = async () => {
+        await initializeChecklist()
+      }
+
+      fetchChecklist()
+    }, []),
+  )
 
   const checkIsEvnrionmentRelated = (checklist) => {
     const flag = checklist.template.is_environment_related
@@ -46,46 +88,26 @@ const Checklists = () => {
     return flag
   }
 
+  const onRefresh = () => {
+    triggerRefresh()
+  }
+
   useEffect(() => {
-    const initializeChecklist = async () => {
-      try {
-        if (hasCreatedRef.current) {
-          return
-        }
-        const payload = {
-          site_id: siteId,
-          username: userName,
-          access_level: access_level,
-        }
-        const newChecklists = await addChecklist(payload).unwrap()
-
-        if (newChecklists.error) {
-          console.error('Failed to add checklist:', newChecklists.error)
-          return
-        }
-
-        if (newChecklists) {
-          dispatch(setChecklists(newChecklists))
-          setNonEvnlists(
-            newChecklists.filter(
-              (checklist) => !checkIsEvnrionmentRelated(checklist),
-            ),
-          )
-          setEvnlists(
-            newChecklists.filter((checklist) =>
-              checkIsEvnrionmentRelated(checklist),
-            ),
-          )
-        }
-      } catch (err) {
-        console.error('Failed to add checklist:', err)
+    const fetchChecklist = async () => {
+      await initializeChecklist()
+      if (refreshing) {
+        stopRefresh()
       }
     }
-    initializeChecklist()
+
+    if (!hasCreatedRef.current || refreshing) {
+      fetchChecklist()
+    }
+
     return () => {
       hasCreatedRef.current = true
     }
-  }, [data])
+  }, [refreshing, siteId, userName, access_level, stopRefresh])
 
   const categories = Array.from(
     new Set(
@@ -109,13 +131,34 @@ const Checklists = () => {
     }
   }
 
-  useEffect(() => {
-    console.log('categories', categories)
-    console.log('userName', userName)
-  }, [userName, categories])
+  // useEffect(() => {
+  //   console.log('categories', categories)
+  //   console.log('userName', userName)
+  // }, [userName, categories])
 
   if (isLoading) {
     return <LoadingScreen />
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView className="h-full bg-b-mid-blue w-screen items-center justify-center flex-1 ">
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingBottom: 100,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          scrollEnabled={true}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          <Text className="text-white">Failed to load checklist.</Text>
+        </ScrollView>
+      </SafeAreaView>
+    )
   }
 
   return (
@@ -127,8 +170,15 @@ const Checklists = () => {
           {getGreeting()} {userName}!
         </Text>
         <ScrollView
-          contentContainerStyle={{ flexGrow: 1 }}
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingx: 10,
+            paddingBottom: 100,
+          }}
           scrollEnabled={true}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         >
           {categories?.map((category) => (
             <ListGroup

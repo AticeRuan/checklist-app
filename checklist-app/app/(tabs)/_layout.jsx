@@ -5,6 +5,8 @@ import Header from '../../components/Header'
 import { Tabs } from 'expo-router'
 
 import icons from '../../constants/icons'
+import ActionNumberIndicator from '../../components/action/ActionNumberIndicator'
+import useUserDetails from '../../hooks/useUserDetails '
 
 const TabIcon = ({ icon, color, name, focused }) => {
   return (
@@ -26,6 +28,7 @@ const TabIcon = ({ icon, color, name, focused }) => {
 }
 
 const TabsLayout = () => {
+  const { access_level } = useUserDetails()
   return (
     <>
       <Tabs
@@ -81,12 +84,15 @@ const TabsLayout = () => {
             title: 'Action',
             headerShown: false,
             tabBarIcon: ({ color, focused }) => (
-              <TabIcon
-                icon={icons.actionIcon}
-                color={color}
-                name="Action"
-                focused={focused}
-              />
+              <View>
+                <TabIcon
+                  icon={icons.actionIcon}
+                  color={color}
+                  name="Action"
+                  focused={focused}
+                />
+                {access_level === 2 && <ActionNumberIndicator />}
+              </View>
             ),
           }}
         />

@@ -3,7 +3,7 @@ INSERT INTO Sites (site_name, region) VALUES
 ('auckland north', 'auckland'),
 ('christchurch east', 'canterbury'),
 ('hamilton city', 'waikato'),
-('napier port', 'hawke\'s bay'),
+('napier port', 'hawkes bay'),
 ('nelson lakes', 'nelson'),
 ('queenstown hill', 'otago'),
 ('invercargill park', 'southland'),

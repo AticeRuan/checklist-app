@@ -4,8 +4,7 @@ import customBaseQuery from './customBaseQuery'
 export const userCheckApi = createApi({
   reducerPath: 'userCheckApi',
   baseQuery: customBaseQuery,
-  tagTypes: ['checklist'],
-
+  tagTypes: ['UserCheck'],
   endpoints: (builder) => ({
     updateCheck: builder.mutation({
       query: ({ id, ...check }) => ({
@@ -13,11 +12,14 @@ export const userCheckApi = createApi({
         method: 'PATCH',
         body: check,
       }),
-      invalidatesTags: (result, error, { checklist_id }) => [
-        { type: 'checklist', id: checklist_id },
-      ],
+      invalidatesTags: ['UserCheck'],
+    }),
+    getUserChecksByChecklist: builder.query({
+      query: (checklist_id) => `user-checks?checklist_id=${checklist_id}`,
+      providesTags: ['UserCheck'],
     }),
   }),
 })
 
-export const { useUpdateCheckMutation } = userCheckApi
+export const { useUpdateCheckMutation, useGetUserChecksByChecklistQuery } =
+  userCheckApi

@@ -6,5 +6,6 @@ const router = require('express').Router()
 const checkIPRange = require('../middlewares/checkIPRange')
 
 router.patch('/:id', userCheckController.updateUserCheck)
+router.get('/', userCheckController.getUserChecksByChecklist)
 
 module.exports = router

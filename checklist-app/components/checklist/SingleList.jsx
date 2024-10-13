@@ -7,19 +7,27 @@ import { router } from 'expo-router'
 
 const SingleList = ({ singleList, isNonEvn = true, isMachine }) => {
   const totalItems = singleList?.user_checks.length || 0
-  const completedItems =
-    singleList?.user_checks?.filter((item) => item.isChecked || item.has_action)
-      .length || 0
+  const completedItems = singleList?.user_checks?.filter(
+    (item) => item.is_checked || item.has_action,
+  ).length
   masks.default = 'dd mmm'
   const date = dateFormat(singleList?.due_date, 'default')
   const id = singleList?.checklist_id
 
-  useEffect(() => {
-    console.log('id', id)
-  }, [id])
+  // useEffect(() => {
+  //   console.log('completedItems of', singleList.template.title, completedItems)
+  // }, [id])
+
+  const checkIsMachineRelated = (checklist) => {
+    const flag = checklist.template.is_machine_related
+    if (!flag) {
+      return false
+    }
+    return flag
+  }
 
   const handleOnPress = () => {
-    if (isMachine && !singleList.machine_id)
+    if (checkIsMachineRelated(singleList) && !singleList.machine_id)
       return router.push(`checklist/enter-machine-number/${id}`)
     else router.push(`checklist/single-checklist/${id}`)
   }
@@ -29,7 +37,7 @@ const SingleList = ({ singleList, isNonEvn = true, isMachine }) => {
       className="items-center justify-around  flex-row w-full py-[11px] mx-[10px] border-b-2 border-gray-100 my-2"
       onPress={handleOnPress}
     >
-      <Text className="text-xl text-b-mid-blue font-semibold ">
+      <Text className="text-xl text-b-mid-blue font-semibold w-[70%] ">
         {singleList?.template.title}
       </Text>
       <View className="flex-row items-center justify-center gap-10">

@@ -4,6 +4,8 @@ import actionIcon from '../assets/icon/flag.png'
 import checkedIcon from '../assets/icon/checked.png'
 import uncheckIcon from '../assets/icon/uncheck.png'
 import backIcon from '../assets/icon/back.png'
+import uploadIcon from '../assets/icon/upload.png'
+import searchIcon from '../assets/icon/search.png'
 
 export default {
   historyIcon,
@@ -12,4 +14,6 @@ export default {
   checkedIcon,
   uncheckIcon,
   backIcon,
+  uploadIcon,
+  searchIcon,
 }

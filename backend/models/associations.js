@@ -54,6 +54,10 @@ module.exports = (db) => {
     foreignKey: 'site_id',
     onUpdate: 'CASCADE',
   })
+  db.Site.hasMany(db.Action, {
+    foreignKey: 'site_id',
+    onUpdate: 'CASCADE',
+  })
 
   // ListItem Associations
   db.ListItem.hasMany(db.UserCheck, {
@@ -102,5 +106,9 @@ module.exports = (db) => {
     foreignKey: 'action_id',
     onUpdate: 'CASCADE',
     onDelete: 'CASCADE',
+  })
+  db.Action.belongsTo(db.Site, {
+    foreignKey: 'site_id',
+    onUpdate: 'CASCADE',
   })
 }

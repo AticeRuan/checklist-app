@@ -1,4 +1,4 @@
-import { View, Text, Pressable, Keyboard } from 'react-native'
+import { View, Text, Pressable, Keyboard, ScrollView } from 'react-native'
 import React, { useState, useEffect } from 'react'
 import { usePathname, useGlobalSearchParams } from 'expo-router'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -36,7 +36,7 @@ const EnterMachineNumber = () => {
 
       if (updatedChecklists && updatedChecklists.machine_id) {
         dispatch(updateChecklist(updatedChecklists))
-        router.push(`/checklist/single-checklist/${id}`)
+        router.replace(`/checklist/single-checklist/${id}`)
       } else {
         alert('Failed to add machine number')
         return
@@ -60,32 +60,37 @@ const EnterMachineNumber = () => {
   return (
     <SafeAreaView className=" bg-b-mid-blue w-screen items-center justify-start h-screen ">
       <Header />
-      <Pressable
-        className="items-center   bg-white w-screen  rounded-t-[48px]   min-h-screen px-[20px] pt-[30%] "
-        onPress={Keyboard.dismiss}
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        keyboardShouldPersistTaps="handled"
       >
-        <View className="mb-3">
-          <Inputfiled
-            label="Enter Machine Number"
-            value={machineNumber}
-            handleChangeText={handleTextChange}
-          />
+        <View
+          className="items-center   bg-white w-screen  rounded-t-[48px]   min-h-screen px-[20px] pt-[30%] "
+          onPress={Keyboard.dismiss}
+        >
+          <View className="mb-3">
+            <Inputfiled
+              label="Enter Machine Number"
+              value={machineNumber}
+              handleChangeText={handleTextChange}
+            />
+          </View>
+          <View className="mb-3">
+            <CustomButton
+              otherStyles="bg-b-mid-blue"
+              text="start"
+              OnPress={handleStart}
+            />
+          </View>
+          <View>
+            <CustomButton
+              otherStyles="bg-b-red"
+              text="cancel"
+              OnPress={handleCancel}
+            />
+          </View>
         </View>
-        <View className="mb-3">
-          <CustomButton
-            otherStyles="bg-b-mid-blue"
-            text="start"
-            OnPress={handleStart}
-          />
-        </View>
-        <View>
-          <CustomButton
-            otherStyles="bg-b-red"
-            text="cancel"
-            OnPress={handleCancel}
-          />
-        </View>
-      </Pressable>
+      </ScrollView>
     </SafeAreaView>
   )
 }

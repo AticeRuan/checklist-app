@@ -10,6 +10,7 @@ import siteReducer from './features/siteSlice'
 import userReducer from './features/userSlice'
 import actionReduer from './features/actionSlice'
 import checklistReducer from './features/checklistSlice'
+import userCheckReducer from './features/userCheckSlice'
 import { combineReducers } from '@reduxjs/toolkit'
 import { persistStore, persistReducer } from 'redux-persist'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -35,12 +36,13 @@ const rootReducer = combineReducers({
   user: userReducer,
   flag: actionReduer,
   checklist: checklistReducer,
+  userCheck: userCheckReducer,
 })
 
 const persistConfig = {
   key: 'root',
   storage: AsyncStorage,
-  whitelist: ['user', 'flag', 'checklist', 'site'],
+  whitelist: ['user', 'flag', 'checklist', 'site', 'userCheck'],
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

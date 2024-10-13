@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = { checklists: [], checklist: null }
+const initialState = { checklists: [], checklist: {} }
 
 const checklistSlice = createSlice({
   name: 'checklist',

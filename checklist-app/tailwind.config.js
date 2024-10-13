@@ -20,6 +20,7 @@ module.exports = {
         'b-green': '#00AD11',
         'b-dark-green': '#066F10',
         'b-pink': '#FFE5E5',
+        'b-light-yellow': '#F5E1A4',
       },
       keyframes: {
         'fade-in-down': {

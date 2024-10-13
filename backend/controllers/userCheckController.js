@@ -60,6 +60,31 @@ const updateUserCheck = async (req, res) => {
   }
 }
 
+const getUserChecksByChecklist = async (req, res) => {
+  const { checklist_id } = req.query
+
+  try {
+    const userChecks = await UserCheck.findAll({
+      where: { checklist_id: checklist_id },
+      include: [
+        {
+          model: Action,
+          include: [{ model: Comment }],
+        },
+        {
+          model: ListItem,
+        },
+      ],
+    })
+    res.status(200).json(userChecks)
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: 'Internal server error', details: err.message })
+  }
+}
+
 module.exports = {
   updateUserCheck,
+  getUserChecksByChecklist,
 }

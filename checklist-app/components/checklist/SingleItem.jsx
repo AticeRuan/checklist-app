@@ -1,10 +1,11 @@
 import { View, Text, Image, Pressable } from 'react-native'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import CheckBox from './CheckBox'
 import icons from '../../constants/icons'
 import { router } from 'expo-router'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { setSingleChecklist } from '../../store/features/checklistSlice'
+
 const SingleItem = ({
   keyword,
   isChecked,
@@ -12,21 +13,32 @@ const SingleItem = ({
   actionCompleted,
   onCheckChange,
   id,
-  item,
+  checklist_id,
 }) => {
   const dispatch = useDispatch()
+  const singleItem = useSelector((state) => state.checklist.checklist)
+
   const handlePress = () => {
-    dispatch(setSingleChecklist(item))
-    router.push(`checklist/single-listitem/${id}`)
+    router.push({
+      pathname: `checklist/single-listitem/${id}`,
+      params: { checklist_id },
+    })
   }
-  const [isPress, setIsPress] = useState(false)
-  const pressStyles = isPress ? 'translate-y-1 ' : ''
+
   return (
     <Pressable
-      className={`flex-row items-center justify-between w-full  mb-3 pb-1 border-b-2 border-b-lighter-grey ${pressStyles}`}
+      className={`flex-row items-center justify-between w-full  mb-3 pb-1 border-b-2 border-b-lighter-grey  px-[10px]`}
       onPress={handlePress}
     >
-      <Text className="text-2xl capitalize">{keyword}</Text>
+      <Text
+        className={
+          isChecked
+            ? 'text-2xl capitalize text-b-light-grey w-[80%] '
+            : 'text-2xl capitalize w-[80%]'
+        }
+      >
+        {keyword}
+      </Text>
       <View className="flex-row items-end justify-center">
         {hasAction && (
           <Image

@@ -1,8 +1,9 @@
 const actionController = require('../controllers/actionController')
 
 const router = require('express').Router()
-router.get('/', actionController.getActions)
-router.get('/:id', actionController.getActionById)
+router.get('/', actionController.getActionsBySite)
+router.get('/by-id/:id', actionController.getActionById)
+router.get('/by-user', actionController.getActionByUser)
 router.post('/', actionController.addAction)
 router.patch('/:id', actionController.updateAction)
 router.delete('/:id', actionController.deleteAction)
