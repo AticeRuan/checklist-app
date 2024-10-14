@@ -16,6 +16,7 @@ import { useGetAllActionsBySiteQuery } from '../../api/actionApi'
 import { useSelector, useDispatch } from 'react-redux'
 import SingleAction from './SingleAction'
 import { setActions } from '../../store/features/actionSlice'
+
 import useRefreshing from '../../hooks/useRefreshing'
 import icons from '../../constants/icons'
 import EmptyState from '../EmptyState'
@@ -57,6 +58,7 @@ const SupervisorActionList = ({ onLoading, onError }) => {
   useEffect(() => {
     if (actions) {
       dispatch(setActions(actions))
+
       setActiveActions(
         actions
           .filter((action) => action.completed === false)

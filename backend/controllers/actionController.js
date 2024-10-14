@@ -60,17 +60,15 @@ const getActionsBySite = async (req, res) => {
   try {
     const { site_id } = req.query
 
-    const actions = await Action.findAll(
-      {
-        order: [['createdAt', 'DESC']],
-        include: [
-          {
-            model: Comment,
-          },
-        ],
-      },
-      { where: { site_id: site_id } },
-    )
+    const actions = await Action.findAll({
+      where: { site_id: site_id },
+      order: [['createdAt', 'DESC']],
+      include: [
+        {
+          model: Comment,
+        },
+      ],
+    })
 
     res.status(200).json(actions)
   } catch (err) {

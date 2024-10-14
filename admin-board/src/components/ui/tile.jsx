@@ -28,7 +28,7 @@ const Tile = ({
   const updated_date = new Date(item.updatedAt)
   const [isUpdating, setIsUpdating] = useState(false)
 
-  masks.default = 'dd-mm-yyyy'
+  masks.default = 'dd-mmm-yyyy'
   createdAt = dateFormat(created_date, 'default')
   updatedAt = dateFormat(updated_date, 'default')
 

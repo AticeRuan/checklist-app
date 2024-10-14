@@ -67,7 +67,7 @@ const DateRangePicker = ({ onDateRangeChange }) => {
           backgroundColor: showDateRangePicker ? '#FD5A00' : '#00AEEF',
         }}
       >
-        <Text className=" text-white font-psemibold">
+        <Text className=" text-white font-psemibold text-xl w-full text-center">
           {customStartDate && customEndDate
             ? `Selected Range: ${formatDate(customStartDate)} - ${formatDate(
                 customEndDate,

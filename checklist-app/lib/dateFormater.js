@@ -25,4 +25,9 @@ const setDateFormat = (date) => {
   }
 }
 
+export const setDateForHistoryTab = (date) => {
+  masks.default = 'UTC:dd/mm/yyyy'
+  return dateFormat(date, 'default')
+}
+
 export default setDateFormat

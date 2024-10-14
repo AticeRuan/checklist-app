@@ -25,9 +25,11 @@ import { updateSingleChecklist } from '../../../../store/features/checklistSlice
 import icons from '../../../../constants/icons'
 import { useAddActionMutation } from '../../../../api/actionApi'
 import { updateChecklist } from '../../../../store/features/checklistSlice'
+import useSiteDetails from '../../../../hooks/useSiteDetails'
 
 const SingleListItem = () => {
   const { id, checklist_id } = useGlobalSearchParams()
+  const { siteId } = useSiteDetails()
   //user details
   const user = useSelector((state) => state.user.user)
   const users = useSelector((state) => state.user.users)
@@ -84,6 +86,7 @@ const SingleListItem = () => {
     content: '',
     image_url: '',
     sender: userName,
+    site_id: siteId,
   })
   const [addAction, { isLoading: addActionLoading, error }] =
     useAddActionMutation()

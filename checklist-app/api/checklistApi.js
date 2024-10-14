@@ -1,10 +1,11 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import customBaseQuery from './customBaseQuery'
+import { indexApi } from './indexApi'
 
-export const checklistApi = createApi({
-  reducerPath: 'checklistApi',
-  baseQuery: customBaseQuery,
-  tagTypes: ['checklist'],
+export const checklistApi = indexApi.injectEndpoints({
+  // reducerPath: 'checklistApi',
+  // baseQuery: customBaseQuery,
+  // tagTypes: ['checklist'],
 
   endpoints: (builder) => ({
     addChecklist: builder.mutation({
@@ -13,23 +14,50 @@ export const checklistApi = createApi({
         method: 'POST',
         body: payload,
       }),
-      // Invalidate 'checklist' to ensure fresh data
-      invalidatesTags: ['checklist'],
+
+      invalidatesTags: [{ type: 'Checklist', id: 'LIST' }],
     }),
 
     getAllChecklistsByUserAndSite: builder.query({
-      query: () => '/checklists',
-      // Invalidate cache if needed for this endpoint
-      providesTags: ['checklist'],
-    }),
+      query: ({ username, site_id }) => ({
+        url: `/checklists?username=${username}&site_id=${site_id}`,
+        method: 'GET',
+      }),
 
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ checklist_id }) => ({
+                type: 'Checklist',
+                id: checklist_id,
+              })),
+              { type: 'Checklist', id: 'LIST' },
+            ]
+          : [{ type: 'Checklist', id: 'LIST' }],
+    }),
+    getAllChecklistBySite: builder.query({
+      query: (site_id) => ({
+        url: `checklists/by-site?site_id=${site_id}`,
+        method: 'GET',
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ checklist_id }) => ({
+                type: 'Checklist',
+                id: checklist_id,
+              })),
+              { type: 'Checklist', id: 'LIST' },
+            ]
+          : [{ type: 'Checklist', id: 'LIST' }],
+    }),
     getOneChecklist: builder.query({
       query: (id) => `/checklists/${id}`,
       transformResponse: (response) => response,
       providesTags: (result) =>
         result
-          ? [{ type: 'checklist', id: result.checklist_id }, 'checklist']
-          : ['checklist'],
+          ? [{ type: 'Checklist', id: result.checklist_id }, 'Checklist']
+          : ['Checklist'],
     }),
 
     updateMachineId: builder.mutation({
@@ -38,10 +66,13 @@ export const checklistApi = createApi({
         method: 'PATCH',
         body: { machine_id },
       }),
-      // Invalidate to refresh the checklist after update
-      invalidatesTags: (result, error, { id }) => [{ type: 'checklist', id }],
+
+      invalidatesTags: (result, error, args) => [
+        { type: 'Checklist', id: result.checklist_id },
+      ],
     }),
   }),
+  overrideExisting: false,
 })
 
 export const {

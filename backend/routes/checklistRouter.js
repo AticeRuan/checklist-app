@@ -65,6 +65,7 @@ router.post('/create', checklistController.initializeChecklist)
  *         description: Internal server error.
  */
 router.get('/', checklistController.getAllChecklistsByUserAndSite)
+router.get('/by-site', checklistController.getAllChecklistBySite)
 /**
  * @swagger
  * /api/checklists/{id}:

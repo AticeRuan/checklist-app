@@ -1,10 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import customBaseQuery from './customBaseQuery'
+import { indexApi } from './indexApi'
 
-export const userCheckApi = createApi({
-  reducerPath: 'userCheckApi',
-  baseQuery: customBaseQuery,
-  tagTypes: ['UserCheck'],
+export const userCheckApi = indexApi.injectEndpoints({
   endpoints: (builder) => ({
     updateCheck: builder.mutation({
       query: ({ id, ...check }) => ({
@@ -12,13 +10,17 @@ export const userCheckApi = createApi({
         method: 'PATCH',
         body: check,
       }),
-      invalidatesTags: ['UserCheck'],
+      invalidatesTags: (result, error, args) => [
+        { type: 'UserCheck' },
+        { type: 'Checklist', id: args.checklist_id },
+      ],
     }),
     getUserChecksByChecklist: builder.query({
       query: (checklist_id) => `user-checks?checklist_id=${checklist_id}`,
       providesTags: ['UserCheck'],
     }),
   }),
+  overrideExisting: false,
 })
 
 export const { useUpdateCheckMutation, useGetUserChecksByChecklistQuery } =

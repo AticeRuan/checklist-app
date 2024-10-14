@@ -30,7 +30,7 @@ const StaffActionList = ({ username, onLoading, onError }) => {
   const [keyword, setKeyword] = useState('')
   const [selectedRange, setSelectedRange] = useState(null)
   const handleDateRangeChange = (range) => {
-    setSelectedRange(range) // Set the selected range in parent state
+    setSelectedRange(range)
   }
 
   const [refreshing, triggerRefresh, stopRefresh] = useRefreshing()

@@ -1,9 +1,14 @@
 import { View, Text } from 'react-native'
 import React from 'react'
-import ChildrenLayout from '../../../components/ChildrenLayout'
+import { Stack } from 'expo-router'
 
 const HistoryLayout = () => {
-  return <ChildrenLayout />
+  return (
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="[date]" options={{ headerShown: false }} />
+    </Stack>
+  )
 }
 
 export default HistoryLayout

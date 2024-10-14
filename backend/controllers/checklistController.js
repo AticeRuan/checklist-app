@@ -217,7 +217,7 @@ const initializeChecklist = async (req, res) => {
 //for history tab
 const getAllChecklistsByUserAndSite = async (req, res) => {
   try {
-    const { username, site_id } = req.body
+    const { username, site_id } = req.query
 
     if (!site_id) {
       return res.status(400).json({ error: 'Site ID is required' })
@@ -225,6 +225,55 @@ const getAllChecklistsByUserAndSite = async (req, res) => {
 
     let checklists = await Checklist.findAll({
       where: { site_id: site_id, checked_by: username },
+      order: [['createdAt', 'DESC']],
+      include: [
+        {
+          model: Template,
+          attributes: ['title', 'is_environment_related', 'is_machine_related'],
+          include: [{ model: Category, attributes: ['name', 'duration'] }],
+        },
+        {
+          model: UserCheck,
+          attributes: ['user_check_id', 'is_checked', 'has_action'],
+          include: [
+            {
+              model: Action,
+              attributes: [
+                'action_id',
+                'content',
+                'image_url',
+                'completed',
+                'updatedAt',
+              ],
+              include: [{ model: Comment }],
+            },
+            {
+              model: ListItem,
+              attributes: ['keyword', 'description'],
+            },
+          ],
+        },
+      ],
+    })
+
+    res.status(200).send(checklists)
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: 'Internal server error', details: err.message })
+  }
+}
+
+const getAllChecklistBySite = async (req, res) => {
+  try {
+    const { site_id } = req.query
+
+    if (!site_id) {
+      return res.status(400).json({ error: 'Site ID is required' })
+    }
+
+    let checklists = await Checklist.findAll({
+      where: { site_id: site_id },
       order: [['createdAt', 'DESC']],
       include: [
         {
@@ -366,6 +415,7 @@ const updateMachineId = async (req, res) => {
 module.exports = {
   initializeChecklist,
   getAllChecklistsByUserAndSite,
+  getAllChecklistBySite,
   getOneChecklist,
   updateMachineId,
 }

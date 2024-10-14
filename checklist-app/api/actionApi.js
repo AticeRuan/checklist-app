@@ -1,11 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import customBaseQuery from './customBaseQuery'
-
-export const actionApi = createApi({
-  reducerPath: 'actionApi',
-  baseQuery: customBaseQuery,
-  tagTypes: ['Action'], // Define tag types here
-
+import { indexApi } from './indexApi'
+export const actionApi = indexApi.injectEndpoints({
   endpoints: (builder) => ({
     addAction: builder.mutation({
       query: (action) => ({
@@ -13,10 +9,7 @@ export const actionApi = createApi({
         method: 'POST',
         body: action,
       }),
-      invalidatesTags: [
-        { type: 'Action', id: 'LIST' },
-        { type: 'Action', id: 'USER' },
-      ],
+      invalidatesTags: [{ type: 'Action', id: 'LIST' }],
     }),
     getAllActionsBySite: builder.query({
       query: (site_id) => `/actions?site_id=${site_id}`,
@@ -33,13 +26,14 @@ export const actionApi = createApi({
     }),
     getOneAction: builder.query({
       query: (id) => `/actions/by-id/${id}`,
-      providesTags: (result, error, { action_id }) => [
-        { type: 'Action', id: action_id },
-      ],
+      providesTags: (result) =>
+        result
+          ? [{ type: 'Action', id: result.action_id }, 'Action']
+          : ['Action'],
     }),
     getActionByUser: builder.query({
       query: (user) => `/actions/by-user?user=${user}`,
-      providesTags: (result, error, user) => [{ type: 'Action', id: user }],
+      providesTags: (result, error, args) => [{ type: 'Action', id: 'LIST' }],
     }),
     updateAction: builder.mutation({
       query: ({ id, ...action }) => ({
@@ -48,9 +42,8 @@ export const actionApi = createApi({
         body: action,
       }),
       invalidatesTags: (result, error, { id }) => [
-        { type: 'Action', id },
+        { type: 'Action', id: result?.action_id || id },
         { type: 'Action', id: 'LIST' },
-        { type: 'Action', id: 'USER' },
       ],
     }),
     deleteAction: builder.mutation({
@@ -58,21 +51,16 @@ export const actionApi = createApi({
         url: `/actions/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: (result, error, id) => [
-        { type: 'Action', id },
-        { type: 'Action', id: 'LIST' },
-        { type: 'Action', id: 'USER' },
-      ],
+      invalidatesTags: (result, error, id) => [{ type: 'Action', id: 'LIST' }],
     }),
     readAction: builder.mutation({
       query: (id) => ({
         url: `/actions/${id}/read`,
         method: 'PATCH',
       }),
-      invalidatesTags: (result, error, id) => [
-        { type: 'Action', id },
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'Action', id: result?.action_id || id },
         { type: 'Action', id: 'LIST' },
-        { type: 'Action', id: 'USER' },
       ],
     }),
     completeAction: builder.mutation({
@@ -80,13 +68,13 @@ export const actionApi = createApi({
         url: `/actions/${id}/complete`,
         method: 'PATCH',
       }),
-      invalidatesTags: (result, error, id) => [
-        { type: 'Action', id },
+      invalidatesTags: (result, error, { id }) => [
+        { type: 'Action', id: result?.action_id || id },
         { type: 'Action', id: 'LIST' },
-        { type: 'Action', id: 'USER' },
       ],
     }),
   }),
+  overrideExisting: false,
 })
 
 export const {

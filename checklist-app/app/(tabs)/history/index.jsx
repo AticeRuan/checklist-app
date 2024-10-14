@@ -1,15 +1,21 @@
 import { View, Text, ScrollView } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
+import Header from '../../../components/Header'
+import StaffHistoryList from '../../../components/history/StaffHistoryList'
 
 const History = () => {
   return (
     <SafeAreaView className="bg-b-mid-blue w-screen items-center justify-start h-full">
-      <ScrollView contentContainerStyle={{ height: '100%' }}>
-        <View className="items-center justify-start  bg-white w-screen  rounded-t-[48px] py-[40%]  min-h-full">
-          <Text>History</Text>
+      <Header />
+      <View className="items-center justify-start  bg-white w-screen  rounded-t-[48px]   flex-1 py-[15px] px-[20px] min-h-full">
+        <View className="mt-2 items-center justify-center w-full h-auto ">
+          <Text className="text-3xl text-b-active-blue font-semibold  ">
+            History
+          </Text>
         </View>
-      </ScrollView>
+        <StaffHistoryList />
+      </View>
     </SafeAreaView>
   )
 }
