@@ -23,7 +23,6 @@ const Tile = ({
   draft = false,
   archived = false,
 }) => {
-  // console.log('data in tile', item)
   const created_date = new Date(item.createdAt)
   const updated_date = new Date(item.updatedAt)
   const [isUpdating, setIsUpdating] = useState(false)

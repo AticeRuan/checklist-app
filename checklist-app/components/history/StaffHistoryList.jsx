@@ -47,13 +47,11 @@ const StaffHistoryList = () => {
     (acc, checklist) => {
       const dueDate = checklist.due_date // Use raw due_date
 
-      // Count the number of actions in user_checks for the current checklist
+      // Count the number of valid actions in user_checks for the current checklist
       const actionCount = checklist.user_checks.reduce((total, userCheck) => {
-        // Ensure action is an array before accessing its length
-        const actionLength = Array.isArray(userCheck.action)
-          ? userCheck.action.length
-          : 0
-        return total + actionLength
+        // Check if the action exists and is a valid object
+        const hasAction = userCheck.action ? 1 : 0
+        return total + hasAction
       }, 0)
 
       // Check if the dueDate already exists in the accumulator
@@ -80,7 +78,7 @@ const StaffHistoryList = () => {
   )
 
   useEffect(() => {
-    console.log('checklists:', groupedChecklistsByDueDate)
+    console.log('groupedChecklistsByDueDate:', groupedChecklistsByDueDate)
   }, [groupedChecklistsByDueDate])
 
   if (isLoading) {
@@ -101,7 +99,12 @@ const StaffHistoryList = () => {
           <Pressable
             className="flex-row w-[85vw] justify-between items-center py-2 px-4 bg-gray-50 rounded-lg"
             onPress={() =>
-              router.push(`history/${encodeURIComponent(item.dueDate)}`)
+              router.push({
+                pathname: `history/${encodeURIComponent(item.dueDate)}`,
+                params: {
+                  checklists: JSON.stringify(item.checklists),
+                },
+              })
             }
           >
             <Text className="text-2xl font-semibold py-2">
@@ -109,12 +112,16 @@ const StaffHistoryList = () => {
             </Text>
             <View>
               <Text className="  text-b-dark-green font-[500] mb-1 ">
-                {item.count} lists Checked
+                {item.count === 1
+                  ? `${item.count} list checked`
+                  : `${item.count} lists checked`}
               </Text>
 
               {item.totalActions > 0 && (
                 <Text className=" text-b-orange  font-[500] ">
-                  {item.totalActions} action sent
+                  {item.totalActions === 1
+                    ? `${item.totalActions} action sent`
+                    : `${item.totalActions} actions sent`}
                 </Text>
               )}
             </View>
