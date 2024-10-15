@@ -78,10 +78,13 @@ const SingleList = () => {
   }
 
   // useEffect(() => {
-  //   console.log('localChecklist:', localChecklist)
+  //   console.log(
+  //     'checklistToRender',
+  //     checklistToRender.template.is_environment_related,
+  //   )
   //   // console.log('id:', id)
   //   // console.log('checklist:', checklist)
-  // }, [localChecklist])
+  // }, [checklistToRender])
 
   // Display loading state
   if (isLoading || updateCheckLoading || localLoding) {
@@ -141,6 +144,7 @@ const SingleList = () => {
                   }}
                   id={check.user_check_id}
                   checklist_id={checklistToRender.checklist_id}
+                  isEnv={checklistToRender.template.is_environment_related}
                 />
               ))}
           </View>

@@ -6,6 +6,7 @@ import uncheckIcon from '../assets/icon/uncheck.png'
 import backIcon from '../assets/icon/back.png'
 import uploadIcon from '../assets/icon/upload.png'
 import searchIcon from '../assets/icon/search.png'
+import addCommentIcon from '../assets/icon/add-comment.png'
 
 export default {
   historyIcon,
@@ -16,4 +17,5 @@ export default {
   backIcon,
   uploadIcon,
   searchIcon,
+  addCommentIcon,
 }

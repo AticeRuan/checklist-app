@@ -159,13 +159,13 @@ const getActionById = async (req, res) => {
   }
 }
 
-const getActionByUser = async (req, res) => {
+const getActionByUserAndSite = async (req, res) => {
   try {
-    const { user } = req.query
+    const { username, site_id } = req.query
 
     const action = await Action.findAll({
       order: [['createdAt', 'DESC']],
-      where: { sender: user },
+      where: { sender: username, site_id: site_id },
       include: [
         { model: Comment },
         // {
@@ -248,5 +248,5 @@ module.exports = {
   readAction,
   completeAction,
   getActionById,
-  getActionByUser,
+  getActionByUserAndSite,
 }

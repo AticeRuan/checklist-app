@@ -11,7 +11,7 @@ import {
 } from 'react-native'
 import React, { useEffect, useState, useMemo } from 'react'
 import SearchBox from '../SearchBox'
-import { useGetActionByUserQuery } from '../../api/actionApi'
+import { useGetActionByUserAndSiteQuery } from '../../api/actionApi'
 import { useSelector, useDispatch } from 'react-redux'
 import SingleAction from './SingleAction'
 import { setActions } from '../../store/features/actionSlice'
@@ -20,13 +20,13 @@ import icons from '../../constants/icons'
 import EmptyState from '../EmptyState'
 import DateRangePicker from '../DateRangePicker'
 
-const StaffActionList = ({ username, onLoading, onError }) => {
+const StaffActionList = ({ username, onLoading, onError, site_id }) => {
   const {
     data: actionsByUsers,
     isError: errorGetActionsByUsers,
     isLoading: loadingActionsByUsers,
     refetch,
-  } = useGetActionByUserQuery(username)
+  } = useGetActionByUserAndSiteQuery({ username, site_id })
   const [keyword, setKeyword] = useState('')
   const [selectedRange, setSelectedRange] = useState(null)
   const handleDateRangeChange = (range) => {
@@ -84,6 +84,9 @@ const StaffActionList = ({ username, onLoading, onError }) => {
       onError(errorGetActionsByUsers)
     }
   }, [loadingActionsByUsers, errorGetActionsByUsers])
+  useEffect(() => {
+    console.log('actionsByUsers:', actionsByUsers)
+  }, [actionsByUsers, actionsByUsers])
 
   return (
     <>

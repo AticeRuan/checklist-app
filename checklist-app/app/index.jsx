@@ -2,7 +2,7 @@ import { View, Text, Image } from 'react-native'
 import React, { useState, useEffect, useMemo } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { useGetAllSitesQuery } from '../api/siteApi'
-// import { useGetAllSitesQuery } from '../api/testingApi'
+
 import { useDispatch, useSelector } from 'react-redux'
 import CustomButton from '../components/CustomButton'
 import CustomDropdown from '../components/CustomDropdown'

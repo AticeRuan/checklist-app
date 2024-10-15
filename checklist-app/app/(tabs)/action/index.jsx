@@ -12,6 +12,7 @@ import Header from '../../../components/Header'
 import {
   useGetAllActionsBySiteQuery,
   useGetActionByUserQuery,
+  useGetActionByUserAndSiteQuery,
 } from '../../../api/actionApi'
 import { useSelector, useDispatch } from 'react-redux'
 import SearchBox from '../../../components/SearchBox'
@@ -29,7 +30,7 @@ const ActionList = () => {
 
   const { username, access_level } = useUserDetails()
 
-  const { refetch } = useGetActionByUserQuery(username, {
+  const { refetch } = useGetActionByUserAndSiteQuery(username, {
     skip: access_level !== 3,
   })
   const { refetch: refetchAllAction } = useGetAllActionsBySiteQuery(siteId, {
@@ -104,6 +105,7 @@ const ActionList = () => {
             username={username}
             onError={handleLoading}
             onLoading={handleLoading}
+            site_id={siteId}
           />
         ) : access_level === 2 ? (
           <SupervisorActionList

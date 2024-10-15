@@ -4,7 +4,7 @@ import EmptyState from '../EmptyState'
 import DateRangePicker from '../DateRangePicker'
 import SearchBox from '../SearchBox'
 import useRefreshing from '../../hooks/useRefreshing'
-import { useGetAllChecklistsByUserAndSiteQuery } from '../../api/checklistApi'
+import { useGetAllChecklistBySiteQuery } from '../../api/checklistApi'
 import useSiteDetails from '../../hooks/useSiteDetails'
 import useUserDetails from '../../hooks/useUserDetails '
 import { setDateForHistoryTab } from '../../lib/dateFormater'
@@ -12,9 +12,9 @@ import LoadingScreen from '../LoadingScreen'
 import { router } from 'expo-router'
 import SingleHistoryList from './SingleHistoryList'
 
-const StaffHistoryList = () => {
+const SupervisorHistoryList = ({ siteId }) => {
   const { username } = useUserDetails()
-  const { siteId } = useSiteDetails()
+  //   const { siteId } = useSiteDetails()
   const [keyword, setKeyword] = useState('')
   const [selectedRange, setSelectedRange] = useState(null)
   //   const [displayData, setDisplayData] = useState([])
@@ -26,7 +26,7 @@ const StaffHistoryList = () => {
     isLoading,
     isError,
     refetch,
-  } = useGetAllChecklistsByUserAndSiteQuery({ username, site_id: siteId })
+  } = useGetAllChecklistBySiteQuery(siteId)
   const [refreshing, triggerRefresh, stopRefresh] = useRefreshing()
   const onRefresh = async () => {
     triggerRefresh()
@@ -106,8 +106,8 @@ const StaffHistoryList = () => {
   const displayData = keyword ? filteredHistory : groupedChecklistsByDueDate
 
   useEffect(() => {
-    console.log('displayData:', displayData)
-  }, [displayData])
+    console.log('checklists:', checklists)
+  }, [checklists])
 
   if (isLoading) {
     return <LoadingScreen />
@@ -173,4 +173,4 @@ const StaffHistoryList = () => {
   )
 }
 
-export default StaffHistoryList
+export default SupervisorHistoryList

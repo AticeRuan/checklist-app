@@ -31,8 +31,12 @@ export const actionApi = indexApi.injectEndpoints({
           ? [{ type: 'Action', id: result.action_id }, 'Action']
           : ['Action'],
     }),
-    getActionByUser: builder.query({
-      query: (user) => `/actions/by-user?user=${user}`,
+    getActionByUserAndSite: builder.query({
+      query: ({ username, site_id }) => {
+        console.log('Logging username in API slice:', username)
+        console.log('Logging site_id in API slice:', site_id)
+        return `/actions/by-user?username=${username}&site_id=${site_id}`
+      },
       providesTags: (result, error, args) => [{ type: 'Action', id: 'LIST' }],
     }),
     updateAction: builder.mutation({
@@ -81,7 +85,7 @@ export const {
   useAddActionMutation,
   useGetAllActionsBySiteQuery,
   useGetOneActionQuery,
-  useGetActionByUserQuery,
+  useGetActionByUserAndSiteQuery,
   useUpdateActionMutation,
   useDeleteActionMutation,
   useReadActionMutation,

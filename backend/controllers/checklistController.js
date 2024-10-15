@@ -266,14 +266,13 @@ const getAllChecklistsByUserAndSite = async (req, res) => {
 
 const getAllChecklistBySite = async (req, res) => {
   try {
-    const { site_id } = req.query
+    const { id } = req.params
 
-    if (!site_id) {
+    if (!id) {
       return res.status(400).json({ error: 'Site ID is required' })
     }
-
     let checklists = await Checklist.findAll({
-      where: { site_id: site_id },
+      where: { site_id: id },
       order: [['createdAt', 'DESC']],
       include: [
         {

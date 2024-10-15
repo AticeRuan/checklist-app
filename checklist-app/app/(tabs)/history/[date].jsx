@@ -45,7 +45,10 @@ const ChecklistByDueDate = () => {
           scrollEnabled={true}
         >
           {checklistsArray.map((checklist) => (
-            <SingleHistoryList checklist={checklist} />
+            <SingleHistoryList
+              checklist={checklist}
+              key={checklist.checklist_id}
+            />
           ))}
         </ScrollView>
       </View>

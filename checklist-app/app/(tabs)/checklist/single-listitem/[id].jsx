@@ -92,7 +92,7 @@ const SingleListItem = () => {
     useAddActionMutation()
 
   const handleSubmitAction = async () => {
-    if (showAction) {
+    if (showAction || userCheck.list_item.is_environment_related) {
       try {
         if (action.content === '') {
           Alert.alert('Entry required', 'Please enter a description', [
@@ -125,6 +125,7 @@ const SingleListItem = () => {
       }
     } else {
       setShowAction(true)
+      setAction({ ...action, content: '' })
     }
   }
 
@@ -168,93 +169,170 @@ const SingleListItem = () => {
               contentContainerStyle={{ flexGrow: 1, paddingBottom: 100 }}
               scrollEnabled={true}
             >
-              <View className="w-full items-start justify-center">
-                <View className="flex-row items-center justify-center mb-6">
-                  {userCheck.action ? (
-                    <Image
-                      source={icons.actionIcon}
-                      resizeMode="contain"
-                      className="w-[26px] h-[26px]  mr-5"
-                      style={{
-                        tintColor: userCheck.action.completed
-                          ? '#F5E1A4'
-                          : '#FF0000',
-                      }}
-                    />
-                  ) : (
-                    <Image
-                      source={
-                        userCheck.is_checked
-                          ? icons.checkedIcon
-                          : icons.uncheckIcon
-                      }
-                      resizeMode="contain"
-                      className="w-[26px] h-[26px]  mr-5"
-                    />
+              {userCheck.list_item.is_environment_related ? (
+                <View className="w-full items-start justify-center">
+                  <View className="flex-row items-center justify-center mb-6">
+                    {userCheck.action && (
+                      <Image
+                        source={icons.actionIcon}
+                        resizeMode="contain"
+                        className="w-[26px] h-[26px]  mr-5"
+                        style={{
+                          tintColor: userCheck.action.completed
+                            ? '#F5E1A4'
+                            : '#FF0000',
+                        }}
+                      />
+                    )}
+
+                    <Text className="text-b-mid-grey text-2xl  flex-1">
+                      {userCheck.list_item.description}
+                    </Text>
+                  </View>
+
+                  {/* input area */}
+
+                  {userCheck.action === null && (
+                    <View className="border-2 border-b-lighter-grey w-full mb-10 rounded-lg p-2 min-h-[30vh]">
+                      <ScrollView
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        keyboardShouldPersistTaps="handled"
+                      >
+                        <TextInput
+                          className="flex-1 w-full p-2 text-lg"
+                          keyboardType="text"
+                          placeholder="Describe the action"
+                          placeholderTextColor="#b8b8b8"
+                          multiline={true}
+                          value={action.content}
+                          onChangeText={(e) =>
+                            setAction({ ...action, content: e })
+                          }
+                        />
+                      </ScrollView>
+                      <Pressable
+                        className="border-dashed border-2 border-b-light-grey w-[100px] h-[100px] rounded-r-md items-center justify-center"
+                        onPress={() => {
+                          router.push('camera')
+                        }}
+                      >
+                        <Image
+                          source={icons.uploadIcon}
+                          resizeMode="contain"
+                          className="w-[15px] h-[18px]"
+                        />
+                        <Text className="text-b-mid-grey text-lg">
+                          Add Photo
+                        </Text>
+                      </Pressable>
+                    </View>
                   )}
 
-                  <Text className="text-b-mid-grey text-2xl  flex-1">
-                    {userCheck.list_item.description}
-                  </Text>
+                  {userCheck.action === null ? (
+                    <CustomButton
+                      text="Send Action"
+                      otherStyles="border-2 border-b-active-blue  bg-b-active-blue text-black "
+                      OnPress={handleSubmitAction}
+                    />
+                  ) : (
+                    <CustomButton
+                      text="View Action"
+                      otherStyles="border-2 border-b-active-blue  bg-b-active-blue text-black "
+                      OnPress={handleViewAction}
+                    />
+                  )}
                 </View>
-
-                <CustomButton
-                  text={userCheck.is_checked ? 'uncheck' : 'check'}
-                  otherStyles={
-                    userCheck.is_checked
-                      ? 'bg-b-red mb-10'
-                      : ' bg-b-mid-blue mb-10'
-                  }
-                  OnPress={() => handleCheckChange(userCheck.is_checked)}
-                />
-                {/* input area */}
-                {showAction && (
-                  <View className="border-2 border-b-lighter-grey w-full mb-10 rounded-lg p-2 min-h-[30vh]">
-                    <ScrollView
-                      contentContainerStyle={{ flexGrow: 1 }}
-                      keyboardShouldPersistTaps="handled"
-                    >
-                      <TextInput
-                        className="flex-1 w-full p-2 text-lg"
-                        keyboardType="text"
-                        placeholder="Describe the action"
-                        placeholderTextColor="#b8b8b8"
-                        multiline={true}
-                        value={action.content}
-                        onChangeText={(e) =>
-                          setAction({ ...action, content: e })
-                        }
-                      />
-                    </ScrollView>
-                    <Pressable
-                      className="border-dashed border-2 border-b-light-grey w-[100px] h-[100px] rounded-r-md items-center justify-center"
-                      onPress={() => {
-                        router.push('camera')
-                      }}
-                    >
+              ) : (
+                <View className="w-full items-start justify-center">
+                  <View className="flex-row items-center justify-center mb-6">
+                    {userCheck.action ? (
                       <Image
-                        source={icons.uploadIcon}
+                        source={icons.actionIcon}
                         resizeMode="contain"
-                        className="w-[15px] h-[18px]"
+                        className="w-[26px] h-[26px]  mr-5"
+                        style={{
+                          tintColor: userCheck.action.completed
+                            ? '#F5E1A4'
+                            : '#FF0000',
+                        }}
                       />
-                      <Text className="text-b-mid-grey text-lg">Add Photo</Text>
-                    </Pressable>
+                    ) : (
+                      <Image
+                        source={
+                          userCheck.is_checked
+                            ? icons.checkedIcon
+                            : icons.uncheckIcon
+                        }
+                        resizeMode="contain"
+                        className="w-[26px] h-[26px]  mr-5"
+                      />
+                    )}
+
+                    <Text className="text-b-mid-grey text-2xl  flex-1">
+                      {userCheck.list_item.description}
+                    </Text>
                   </View>
-                )}
-                {userCheck.action === null ? (
+
                   <CustomButton
-                    text="Send Action"
-                    otherStyles="border-2 border-b-active-blue  bg-b-active-blue text-black "
-                    OnPress={handleSubmitAction}
+                    text={userCheck.is_checked ? 'uncheck' : 'check'}
+                    otherStyles={
+                      userCheck.is_checked
+                        ? 'bg-b-red mb-10'
+                        : ' bg-b-mid-blue mb-10'
+                    }
+                    OnPress={() => handleCheckChange(userCheck.is_checked)}
                   />
-                ) : (
-                  <CustomButton
-                    text="View Action"
-                    otherStyles="border-2 border-b-active-blue  bg-b-active-blue text-black "
-                    OnPress={handleViewAction}
-                  />
-                )}
-              </View>
+                  {/* input area */}
+                  {showAction && (
+                    <View className="border-2 border-b-lighter-grey w-full mb-10 rounded-lg p-2 min-h-[30vh]">
+                      <ScrollView
+                        contentContainerStyle={{ flexGrow: 1 }}
+                        keyboardShouldPersistTaps="handled"
+                      >
+                        <TextInput
+                          className="flex-1 w-full p-2 text-lg"
+                          keyboardType="text"
+                          placeholder="Describe the action"
+                          placeholderTextColor="#b8b8b8"
+                          multiline={true}
+                          value={action.content}
+                          onChangeText={(e) =>
+                            setAction({ ...action, content: e })
+                          }
+                        />
+                      </ScrollView>
+                      <Pressable
+                        className="border-dashed border-2 border-b-light-grey w-[100px] h-[100px] rounded-r-md items-center justify-center"
+                        onPress={() => {
+                          router.push('camera')
+                        }}
+                      >
+                        <Image
+                          source={icons.uploadIcon}
+                          resizeMode="contain"
+                          className="w-[15px] h-[18px]"
+                        />
+                        <Text className="text-b-mid-grey text-lg">
+                          Add Photo
+                        </Text>
+                      </Pressable>
+                    </View>
+                  )}
+                  {userCheck.action === null ? (
+                    <CustomButton
+                      text="Send Action"
+                      otherStyles="border-2 border-b-active-blue  bg-b-active-blue text-black "
+                      OnPress={handleSubmitAction}
+                    />
+                  ) : (
+                    <CustomButton
+                      text="View Action"
+                      otherStyles="border-2 border-b-active-blue  bg-b-active-blue text-black "
+                      OnPress={handleViewAction}
+                    />
+                  )}
+                </View>
+              )}
             </ScrollView>
           </>
         ) : (

@@ -36,10 +36,7 @@ export const checklistApi = indexApi.injectEndpoints({
           : [{ type: 'Checklist', id: 'LIST' }],
     }),
     getAllChecklistBySite: builder.query({
-      query: (site_id) => ({
-        url: `checklists/by-site?site_id=${site_id}`,
-        method: 'GET',
-      }),
+      query: (site_id) => `checklists/by-site/${site_id}`,
       providesTags: (result) =>
         result
           ? [
@@ -80,4 +77,5 @@ export const {
   useGetAllChecklistsByUserAndSiteQuery,
   useGetOneChecklistQuery,
   useUpdateMachineIdMutation,
+  useGetAllChecklistBySiteQuery,
 } = checklistApi

@@ -14,6 +14,7 @@ const SingleItem = ({
   onCheckChange,
   id,
   checklist_id,
+  isEnv,
 }) => {
   const dispatch = useDispatch()
   const singleItem = useSelector((state) => state.checklist.checklist)
@@ -24,6 +25,7 @@ const SingleItem = ({
       params: { checklist_id },
     })
   }
+  console.log('isEnv', isEnv)
 
   return (
     <Pressable
@@ -49,7 +51,15 @@ const SingleItem = ({
           />
         )}
 
-        <CheckBox isChecked={isChecked} onChange={onCheckChange} />
+        {isEnv ? (
+          <Image
+            source={icons.addCommentIcon}
+            resizeMode="contain"
+            className="w-[19px]  mr-5 -mb-1"
+          />
+        ) : (
+          <CheckBox isChecked={isChecked} onChange={onCheckChange} />
+        )}
       </View>
     </Pressable>
   )
