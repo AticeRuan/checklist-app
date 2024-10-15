@@ -89,7 +89,12 @@ const updateAction = async (req, res) => {
     }
 
     await Action.update(
-      { content: content, image_url: image_url, sender: sender },
+      {
+        content: content,
+        image_url: image_url,
+        sender: sender,
+        is_read: false,
+      },
       { where: { action_id: id } },
     )
     const updatedAction = await Action.findOne({

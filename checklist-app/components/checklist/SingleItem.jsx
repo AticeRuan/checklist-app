@@ -25,7 +25,6 @@ const SingleItem = ({
       params: { checklist_id },
     })
   }
-  console.log('isEnv', isEnv)
 
   return (
     <Pressable
@@ -35,13 +34,13 @@ const SingleItem = ({
       <Text
         className={
           isChecked
-            ? 'text-2xl capitalize text-b-light-grey w-[80%] '
+            ? 'text-2xl capitalize text-b-light-grey w-[80%]  '
             : 'text-2xl capitalize w-[80%]'
         }
       >
         {keyword}
       </Text>
-      <View className="flex-row items-end justify-center">
+      <View className="flex-row items-center justify-end">
         {hasAction && (
           <Image
             source={icons.actionIcon}

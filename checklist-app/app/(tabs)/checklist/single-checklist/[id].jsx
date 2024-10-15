@@ -114,7 +114,7 @@ const SingleList = () => {
       <Header />
 
       <View className="items-center justify-start  bg-white w-screen  rounded-t-[48px]   flex-1 px-[10px] p-[30px] min-h-full">
-        <Text className="text-2xl font-pbold text-b-active-blue">
+        <Text className="text-2xl font-bold text-b-active-blue">
           {checklistToRender?.template?.title}
         </Text>
         {checklistToRender?.machine_id && (

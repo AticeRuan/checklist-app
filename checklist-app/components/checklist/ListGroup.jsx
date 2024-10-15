@@ -7,12 +7,12 @@ const ListGroup = ({ category, listGroup, isNonEvn }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   return (
     <Pressable
-      className="w-[80vw] py-[20px] border-t-2 border-b-2 border-b-lighter-grey mb-10"
+      className="w-[70vw] py-[20px] border-t-2 border-b-2 border-b-lighter-grey mb-10"
       onPress={() => {
         setIsExpanded(!isExpanded)
       }}
     >
-      <View className="flex-row justify-between items-center ">
+      <View className="flex-row justify-between items-center w-full ">
         <Text
           className="text-[24px] font-bold text-b-active-blue capitalize"
           style={{ color: isExpanded ? '#00AEEF' : '#00739E' }}
@@ -22,7 +22,7 @@ const ListGroup = ({ category, listGroup, isNonEvn }) => {
         <Image
           source={icons.backIcon}
           resizeMode="contain"
-          className="w-[14px] h-[20.5px] rotate-[180deg]"
+          className="w-[11px] h-[20.5px] rotate-[180deg] scale-75 mr-3"
           style={{
             transform: isExpanded
               ? [{ rotate: '270deg' }]

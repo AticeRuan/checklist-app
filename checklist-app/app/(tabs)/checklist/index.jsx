@@ -142,7 +142,8 @@ const Checklists = () => {
 
   if (error) {
     return (
-      <SafeAreaView className="h-full bg-b-mid-blue w-screen items-center justify-center flex-1 ">
+      <SafeAreaView className="h-full bg-b-mid-blue w-full items-center justify-center flex-1 ">
+        <Header />
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
@@ -166,13 +167,13 @@ const Checklists = () => {
       <Header />
 
       <View className="items-center justify-start  bg-white w-screen  rounded-t-[48px]   flex-1 px-[10px] p-[30px]">
-        <Text className="w-full text-left mb-10 text-lg">
+        <Text className="w-full text-left mb-10 text-lg font-pregular">
           {getGreeting()} {userName}!
         </Text>
         <ScrollView
           contentContainerStyle={{
             flexGrow: 1,
-            paddingx: 10,
+
             paddingBottom: 100,
           }}
           scrollEnabled={true}

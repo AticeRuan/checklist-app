@@ -12,10 +12,11 @@ const CheckBox = ({ isChecked, onChange }) => {
         e.stopPropagation()
         handlePress()
       }}
+      className="p-2 "
     >
       <Image
         source={isChecked ? icons.checkedIcon : icons.uncheckIcon}
-        className="w-[23px] h-[23px]"
+        className="w-[28px] h-[28px]"
       />
     </Pressable>
   )
