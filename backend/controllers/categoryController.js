@@ -1,10 +1,17 @@
 const db = require('../models')
+const validator = require('validator')
 
 const Category = db.Category
 
 const addCategory = async (req, res) => {
   try {
-    const category = await Category.create(req.body)
+    // Sanitize user input
+    const sanitizedBody = {
+      name: validator.trim(validator.escape(req.body.name)),
+      duration: validator.toInt(req.body.duration.toString()), // Convert duration to an integer
+    }
+
+    const category = await Category.create(sanitizedBody)
 
     res.status(201).json(category)
   } catch (err) {
@@ -41,7 +48,16 @@ const getOneCategory = async (req, res) => {
 const updateCategory = async (req, res) => {
   let id = req.params.id
   try {
-    const [updated] = await Category.update(req.body, {
+    // Sanitize user input
+    const sanitizedBody = {}
+    if (req.body.name) {
+      sanitizedBody.name = validator.trim(validator.escape(req.body.name))
+    }
+    if (req.body.duration) {
+      sanitizedBody.duration = validator.toInt(req.body.duration.toString())
+    }
+
+    const updated = await Category.update(sanitizedBody, {
       where: { category_id: id },
     })
 

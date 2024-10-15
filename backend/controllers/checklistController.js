@@ -11,15 +11,21 @@ const TemplateSite = db.TemplateSite
 const Category = db.Category
 const Action = db.Action
 const Comment = db.Comment
+const validator = require('validator')
 
 const initializeChecklist = async (req, res) => {
   try {
     const currentDate = new Date()
     const { site_id, access_level, username } = req.body
 
+    // Sanitize input
+    const sanitizedSiteId = validator.toInt(site_id.toString())
+    const sanitizedAccessLevel = validator.toInt(access_level.toString())
+    const sanitizedUsername = validator.trim(validator.escape(username))
+
     // 1. Get all templateSites for the site
     const templateSites = await TemplateSite.findAll({
-      where: { site_id: site_id },
+      where: { site_id: sanitizedSiteId },
     })
 
     let checklists = []
@@ -29,13 +35,13 @@ const initializeChecklist = async (req, res) => {
       const template = await Template.findOne({
         where: {
           template_id: templateSite.template_id,
-          access_level: access_level,
+          access_level: sanitizedAccessLevel,
           status: 'published',
         },
       })
 
       if (!template) {
-        console.warn('No template is found for site:', site_id)
+        console.warn('No template is found for site:', sanitizedSiteId)
         continue
       }
 
@@ -54,9 +60,9 @@ const initializeChecklist = async (req, res) => {
       // Check if template has any list items updated
       let checklist = await Checklist.findOne({
         where: {
-          site_id: site_id,
+          site_id: sanitizedSiteId,
           template_id: template.template_id,
-          checked_by: username,
+          checked_by: sanitizedUsername,
           due_date: {
             [Op.gte]: currentDate,
           },
@@ -120,30 +126,15 @@ const initializeChecklist = async (req, res) => {
 
         checklist = await Checklist.create({
           template_id: template.template_id,
-          site_id: site_id,
+          site_id: sanitizedSiteId,
           due_date: dueDate,
-          checked_by: username,
+          checked_by: sanitizedUsername,
         })
 
         // 4. For each listItemSite, create a new UserCheck
         const listItemsSites = await ListItemSite.findAll({
-          where: { site_id: site_id },
+          where: { site_id: sanitizedSiteId },
         })
-
-        // const listItems = await ListItem.findAll({
-        //   where: {
-        //     template_id: template.template_id,
-        //     updatedAt: {
-        //       [Op.gt]: checklist.createdAt,
-        //     },
-        //     // Include a condition to ensure the list item is available for the specific site
-        //     listitem_id: {
-        //       [Op.in]: Sequelize.literal(`(
-        //         SELECT listitem_id FROM ListItems_Sites WHERE site_id = ${site_id}
-        //       )`),
-        //     },
-        //   },
-        // })
 
         for (const listItemSite of listItemsSites) {
           const listItem = await ListItem.findOne({
@@ -154,7 +145,7 @@ const initializeChecklist = async (req, res) => {
           })
 
           if (!listItem) {
-            console.warn('ListItem not found for Site:', site_id)
+            console.warn('ListItem not found for Site:', sanitizedSiteId)
             continue
           }
 

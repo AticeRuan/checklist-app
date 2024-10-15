@@ -17,7 +17,13 @@ const addUser = async (req, res) => {
     return res.status(400).json({ message: 'Username is required' })
   }
 
-  const existingUser = await User.findOne({ where: { user_name: user_name } })
+  // Sanitize user input
+  const sanitizedUserName = validator.trim(validator.escape(user_name))
+  const sanitizedRole = role ? validator.trim(validator.escape(role)) : role
+
+  const existingUser = await User.findOne({
+    where: { user_name: sanitizedUserName },
+  })
 
   if (existingUser) {
     return res.status(400).json({ message: 'User already exists' })
@@ -28,9 +34,9 @@ const addUser = async (req, res) => {
 
   try {
     const user = await User.create({
-      user_name: user_name,
+      user_name: sanitizedUserName,
       hashed_password: hashedPassword,
-      role,
+      role: sanitizedRole,
     })
     res.status(201).json(user)
   } catch (err) {
@@ -65,8 +71,14 @@ const updateUserRole = async (req, res) => {
     return res.status(404).json({ message: 'User not found' })
   }
 
+  // Sanitize user input
+  const sanitizedBody = {}
+  if (req.body.role) {
+    sanitizedBody.role = validator.trim(validator.escape(req.body.role))
+  }
+
   try {
-    await User.update(req.body, {
+    await User.update(sanitizedBody, {
       where: { user_id: id },
     })
 
@@ -92,13 +104,20 @@ const loginUser = async (req, res) => {
         .json({ message: 'Username and password are required' })
     }
 
-    const user = await User.findOne({ where: { user_name: user_name } })
+    // Sanitize user input
+    const sanitizedUserName = validator.trim(validator.escape(user_name))
+    const sanitizedPassword = validator.trim(password) // Avoid escape for passwords
+
+    const user = await User.findOne({ where: { user_name: sanitizedUserName } })
 
     if (!user) {
       return res.status(404).json({ message: 'Invalid username' })
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.hashed_password)
+    const isPasswordValid = await bcrypt.compare(
+      sanitizedPassword,
+      user.hashed_password,
+    )
 
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid password' })
@@ -139,21 +158,29 @@ const logoutUser = async (req, res) => {
 const changePassword = async (req, res) => {
   const { user_name, password, newPassword } = req.body
   try {
-    const user = await User.findOne({ where: { user_name: user_name } })
+    // Sanitize user input
+    const sanitizedUserName = validator.trim(validator.escape(user_name))
+    const sanitizedPassword = validator.trim(password) // Avoid escape for passwords
+    const sanitizedNewPassword = validator.trim(newPassword) // Avoid escape for passwords
+
+    const user = await User.findOne({ where: { user_name: sanitizedUserName } })
     if (!user) {
       return res.status(404).json({ message: 'User not found' })
     }
-    const isPasswordValid = await bcrypt.compare(password, user.hashed_password)
+    const isPasswordValid = await bcrypt.compare(
+      sanitizedPassword,
+      user.hashed_password,
+    )
     if (!isPasswordValid) {
       return res.status(401).json({ message: 'Invalid password' })
     }
-    if (!validator.isStrongPassword(newPassword)) {
+    if (!validator.isStrongPassword(sanitizedNewPassword)) {
       return res.status(400).json({ message: 'Password is not strong enough' })
     }
-    const hashedPassword = await bcrypt.hash(newPassword, 10)
+    const hashedPassword = await bcrypt.hash(sanitizedNewPassword, 10)
     await User.update(
       { hashed_password: hashedPassword },
-      { where: { user_name: user_name } },
+      { where: { user_name: sanitizedUserName } },
     )
     res.status(200).json({ message: 'Password changed successfully' })
   } catch (error) {

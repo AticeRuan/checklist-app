@@ -5,11 +5,16 @@ const Template = db.Template
 const Action = db.Action
 const ListItem = db.ListItem
 const Comment = db.Comment
+const validator = require('validator')
 
 const updateUserCheck = async (req, res) => {
   try {
     const id = req.params.id
     const { is_checked, checklist_id } = req.body
+
+    // Sanitize input
+    const sanitizedIsChecked = validator.toBoolean(is_checked.toString())
+    const sanitizedChecklistId = validator.toInt(checklist_id.toString())
 
     const userCheck = await UserCheck.findOne({ where: { user_check_id: id } })
     if (!userCheck) {
@@ -17,13 +22,13 @@ const updateUserCheck = async (req, res) => {
     }
 
     await UserCheck.update(
-      { is_checked: is_checked },
+      { is_checked: sanitizedIsChecked },
       { where: { user_check_id: id } },
     )
-    const message = is_checked ? 'item checked' : 'item unchecked'
+    const message = sanitizedIsChecked ? 'item checked' : 'item unchecked'
 
     const checklist = await Checklist.findOne({
-      where: { checklist_id: checklist_id },
+      where: { checklist_id: sanitizedChecklistId },
       include: [
         {
           model: Template,
@@ -64,8 +69,11 @@ const getUserChecksByChecklist = async (req, res) => {
   const { checklist_id } = req.query
 
   try {
+    // Sanitize input
+    const sanitizedChecklistId = validator.toInt(checklist_id.toString())
+
     const userChecks = await UserCheck.findAll({
-      where: { checklist_id: checklist_id },
+      where: { checklist_id: sanitizedChecklistId },
       include: [
         {
           model: Action,

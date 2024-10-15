@@ -1,6 +1,5 @@
-const { where } = require('sequelize')
 const db = require('../models')
-
+const validator = require('validator')
 const Template = db.Template
 const Site = db.Site
 const Category = db.Category
@@ -15,7 +14,7 @@ const addTemplate = async (req, res) => {
     const template = await Template.create({
       title: 'New Template',
       status: 'draft',
-      last_updated_by: last_updated_by,
+      last_updated_by: validator.trim(validator.escape(last_updated_by)),
       category_id: 1,
       is_environment_related: false,
     })
@@ -72,27 +71,48 @@ const updateTemplate = async (req, res) => {
     const last_updated_by = req.user.user_name
     let id = req.params.id
 
+    // Sanitize input
+    const sanitizedTitle = validator.trim(validator.escape(title))
+    const sanitizedDescription = description
+      ? validator.trim(validator.escape(description))
+      : null
+    const sanitizedCategoryId = validator.toInt(category_id.toString())
+    const sanitizedLastUpdatedBy = validator.trim(
+      validator.escape(last_updated_by),
+    )
+    const sanitizedStatus = validator.trim(validator.escape(status))
+    const sanitizedIsEnvironmentRelated = validator.toBoolean(
+      is_environment_related.toString(),
+    )
+    const sanitizedAccessLevel = validator.toInt(access_level.toString())
+    const sanitizedIsMachineRelated = validator.toBoolean(
+      is_machine_related.toString(),
+    )
+    const sanitizedSites = sites
+      ? sites.map((site_id) => validator.toInt(site_id.toString()))
+      : []
+
     await Template.update(
       {
-        title: title,
-        description: description,
-        category_id: category_id,
-        last_updated_by: last_updated_by,
-        status: status,
-        is_environment_related: is_environment_related,
-        access_level: access_level,
-        is_machine_related: is_machine_related,
+        title: sanitizedTitle,
+        description: sanitizedDescription,
+        category_id: sanitizedCategoryId,
+        last_updated_by: sanitizedLastUpdatedBy,
+        status: sanitizedStatus,
+        is_environment_related: sanitizedIsEnvironmentRelated,
+        access_level: sanitizedAccessLevel,
+        is_machine_related: sanitizedIsMachineRelated,
       },
       { where: { template_id: id } },
     )
 
-    if (sites && Array.isArray(sites)) {
+    if (sanitizedSites && Array.isArray(sanitizedSites)) {
       // Destroy existing template sites
       await TemplateSite.destroy({ where: { template_id: id } })
 
       // Create new template sites in parallel if 'sites' is not empty
-      if (sites.length > 0) {
-        const sitePromises = sites.map((site_id) =>
+      if (sanitizedSites.length > 0) {
+        const sitePromises = sanitizedSites.map((site_id) =>
           TemplateSite.create({ template_id: id, site_id: site_id }),
         )
         await Promise.all(sitePromises)

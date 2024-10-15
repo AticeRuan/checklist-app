@@ -168,7 +168,7 @@ const Checklists = () => {
 
       <View className="items-center justify-start  bg-white w-screen  rounded-t-[48px]   flex-1 px-[10px] p-[30px]">
         <Text className="w-full text-left mb-10 text-lg font-pregular">
-          {getGreeting()} {userName}!
+          {getGreeting()}, {userName}!
         </Text>
         <ScrollView
           contentContainerStyle={{

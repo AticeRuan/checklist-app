@@ -1,4 +1,5 @@
 const db = require('../models')
+const validator = require('validator')
 const UserCheck = db.UserCheck
 const Action = db.Action
 const Comment = db.Comment
@@ -10,8 +11,21 @@ const addAction = async (req, res) => {
   try {
     const { user_check_id, content, image_url, sender, site_id } = req.body
 
+    // Sanitize user input
+    const sanitizedUserCheckId = validator.trim(
+      validator.escape(user_check_id.toString()),
+    )
+    const sanitizedContent = validator.trim(validator.escape(content))
+    const sanitizedImageUrl = image_url
+      ? validator.trim(validator.escape(image_url))
+      : image_url
+    const sanitizedSender = validator.trim(validator.escape(sender))
+    const sanitizedSiteId = site_id
+      ? validator.trim(validator.escape(site_id.toString()))
+      : site_id
+
     const userCheck = await UserCheck.findOne({
-      where: { user_check_id: user_check_id },
+      where: { user_check_id: sanitizedUserCheckId },
     })
     if (!userCheck) {
       return res.status(404).json({ error: 'UserCheck not found' })
@@ -19,15 +33,15 @@ const addAction = async (req, res) => {
 
     await UserCheck.update(
       { has_action: true },
-      { where: { user_check_id: user_check_id } },
+      { where: { user_check_id: sanitizedUserCheckId } },
     )
 
     const action = await Action.create({
-      user_check_id: user_check_id,
-      content: content,
-      image_url: image_url,
-      sender: sender,
-      site_id: site_id,
+      user_check_id: sanitizedUserCheckId,
+      content: sanitizedContent,
+      image_url: sanitizedImageUrl,
+      sender: sanitizedSender,
+      site_id: sanitizedSiteId,
     })
     res.status(200).json(action)
   } catch (err) {
@@ -83,6 +97,13 @@ const updateAction = async (req, res) => {
     const id = req.params.id
     const { content, image_url, sender } = req.body
 
+    // Sanitize user input
+    const sanitizedContent = validator.trim(validator.escape(content))
+    const sanitizedImageUrl = image_url
+      ? validator.trim(validator.escape(image_url))
+      : image_url
+    const sanitizedSender = validator.trim(validator.escape(sender))
+
     const action = await Action.findOne({ where: { action_id: id } })
     if (!action) {
       return res.status(404).json({ error: 'Action not found' })
@@ -90,9 +111,9 @@ const updateAction = async (req, res) => {
 
     await Action.update(
       {
-        content: content,
-        image_url: image_url,
-        sender: sender,
+        content: sanitizedContent,
+        image_url: sanitizedImageUrl,
+        sender: sanitizedSender,
         is_read: false,
       },
       { where: { action_id: id } },

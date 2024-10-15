@@ -1,10 +1,18 @@
 const db = require('../models')
-
+const validator = require('validator')
 const Site = db.Site
 
 const addSite = async (req, res) => {
   try {
-    const site = await Site.create(req.body)
+    // Sanitize input
+    const sanitizedBody = {
+      site_name: validator.trim(validator.escape(req.body.site_name)),
+      region: req.body.region
+        ? validator.trim(validator.escape(req.body.region))
+        : null,
+    }
+
+    const site = await Site.create(sanitizedBody)
 
     res.status(201).json(site)
   } catch (err) {
@@ -41,7 +49,18 @@ const getOneSite = async (req, res) => {
 const updateSite = async (req, res) => {
   let id = req.params.id
   try {
-    await Site.update(req.body, { where: { site_id: id } })
+    // Sanitize input
+    const sanitizedBody = {}
+    if (req.body.site_name) {
+      sanitizedBody.site_name = validator.trim(
+        validator.escape(req.body.site_name),
+      )
+    }
+    if (req.body.region) {
+      sanitizedBody.region = validator.trim(validator.escape(req.body.region))
+    }
+
+    await Site.update(sanitizedBody, { where: { site_id: id } })
     res.status(200).json('Site updated')
   } catch (err) {
     res

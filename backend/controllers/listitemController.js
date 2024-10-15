@@ -1,5 +1,6 @@
 const { where } = require('sequelize')
 const db = require('../models')
+const validator = require('validator')
 
 const ListItem = db.ListItem
 const ListItemSite = db.ListItemSite
@@ -11,12 +12,23 @@ const addListItem = async (req, res) => {
       req.body
     const last_updated_by = req.user.user_name
 
+    // Sanitize input
+    const sanitizedTemplateId = validator.toInt(template_id.toString())
+    const sanitizedIsEnvironmentRelated = validator.toBoolean(
+      is_environment_related.toString(),
+    )
+    const sanitizedKeyword = validator.trim(validator.escape(keyword))
+    const sanitizedDescription = validator.trim(validator.escape(description))
+    const sanitizedSites = sites.map((site_id) =>
+      validator.toInt(site_id.toString()),
+    )
+
     // Create the list item
     const listItem = await ListItem.create({
-      template_id: template_id,
-      is_environment_related: is_environment_related,
-      keyword: keyword,
-      description: description,
+      template_id: sanitizedTemplateId,
+      is_environment_related: sanitizedIsEnvironmentRelated,
+      keyword: sanitizedKeyword,
+      description: sanitizedDescription,
       last_updated_by: last_updated_by,
     })
 
@@ -26,7 +38,7 @@ const addListItem = async (req, res) => {
     }
 
     // Loop through each site and add to ListItemSite
-    for (let site_id of sites) {
+    for (let site_id of sanitizedSites) {
       await ListItemSite.create({
         listitem_id: listItem.listitem_id,
         site_id: site_id,
@@ -72,11 +84,23 @@ const updateListItem = async (req, res) => {
     if (!listItem) {
       return res.status(404).json({ error: 'List item not found' })
     }
+
+    // Sanitize input
+    const sanitizedTemplateId = validator.toInt(template_id.toString())
+    const sanitizedIsEnvironmentRelated = validator.toBoolean(
+      is_environment_related.toString(),
+    )
+    const sanitizedKeyword = validator.trim(validator.escape(keyword))
+    const sanitizedDescription = validator.trim(validator.escape(description))
+    const sanitizedSites = sites.map((site_id) =>
+      validator.toInt(site_id.toString()),
+    )
+
     await listItem.update({
-      template_id: template_id,
-      is_environment_related: is_environment_related,
-      keyword: keyword,
-      description: description,
+      template_id: sanitizedTemplateId,
+      is_environment_related: sanitizedIsEnvironmentRelated,
+      keyword: sanitizedKeyword,
+      description: sanitizedDescription,
       last_updated_by: last_updated_by,
     })
 
@@ -84,7 +108,7 @@ const updateListItem = async (req, res) => {
       where: { listitem_id: id },
     })
 
-    for (let site_id of sites) {
+    for (let site_id of sanitizedSites) {
       await ListItemSite.create({
         listitem_id: id,
         site_id: site_id,
