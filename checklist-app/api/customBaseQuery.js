@@ -1,7 +1,7 @@
 import { fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 import { generateHMAC } from '../lib/hmacUtils'
-import { SECRET_KEY, APPWRITE_ENDPOINT } from '@env'
+import { HMAC_SECRET_KEY, APPWRITE_ENDPOINT } from '@env'
 
 // Define  base query function
 const baseQuery = fetchBaseQuery({
@@ -24,22 +24,11 @@ const baseQuery = fetchBaseQuery({
     const timestamp = Date.now().toString() // Generate the timestamp
 
     // Generate HMAC signature
-    const { signature } = generateHMAC(payload, SECRET_KEY)
+    const { signature } = generateHMAC(payload, HMAC_SECRET_KEY)
 
     // Set headers
     headers.set('x-signature', signature)
     headers.set('x-timestamp', timestamp)
-
-    if (customMethod !== 'GET') {
-      console.log('Payload at client:', payload)
-      console.log('Custom URL:', customUrl) // This should log '/api/sites'
-      console.log('Custom Body:', customBody)
-      console.log('type of body:', typeof customBody) // This should be empty for GET
-      console.log('Custom Method:', customMethod) // This should log 'GET'
-
-      console.log('Timestamp at client:', timestamp)
-      console.log('Signature at client:', signature)
-    }
 
     return headers
   },
