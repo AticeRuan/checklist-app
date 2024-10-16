@@ -13,8 +13,6 @@ import { router } from 'expo-router'
 import SingleHistoryList from './SingleHistoryList'
 
 const SupervisorHistoryList = ({ siteId }) => {
-  const { username } = useUserDetails()
-  //   const { siteId } = useSiteDetails()
   const [keyword, setKeyword] = useState('')
   const [selectedRange, setSelectedRange] = useState(null)
   //   const [displayData, setDisplayData] = useState([])

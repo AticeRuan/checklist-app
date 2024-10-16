@@ -6,6 +6,7 @@ const router = require('express').Router()
 const requireAuth = require('../middlewares/requireAuth')
 const checkRole = require('../middlewares/checkRole')
 const checkIPRange = require('../middlewares/checkIPRange')
+const conditionalAuth = require('../middlewares/conditionalAuth')
 
 /**
  * @swagger
@@ -54,7 +55,7 @@ router.post('/', requireAuth, checkRole, siteController.addSite)
  *       500:
  *         description: Internal server error.
  */
-router.get('/', siteController.getAllSites)
+router.get('/', conditionalAuth, siteController.getAllSites)
 /**
  * @swagger
  * /api/sites/{id}:

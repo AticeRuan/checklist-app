@@ -3,6 +3,7 @@ const checklistController = require('../controllers/checklistController')
 const router = require('express').Router()
 
 // Middleware
+const verifyHMAC = require('../middlewares/verifyHMAC')
 
 const checkIPRange = require('../middlewares/checkIPRange')
 /**
@@ -33,7 +34,7 @@ const checkIPRange = require('../middlewares/checkIPRange')
  *       500:
  *         description: Internal server error.
  */
-router.post('/create', checklistController.initializeChecklist)
+router.post('/create', verifyHMAC, checklistController.initializeChecklist)
 /**
  * @swagger
  * /api/checklists/all/{id}:
@@ -64,8 +65,12 @@ router.post('/create', checklistController.initializeChecklist)
  *       500:
  *         description: Internal server error.
  */
-router.get('/', checklistController.getAllChecklistsByUserAndSite)
-router.get('/by-site/:id', checklistController.getAllChecklistBySite)
+router.get('/', verifyHMAC, checklistController.getAllChecklistsByUserAndSite)
+router.get(
+  '/by-site/:id',
+  verifyHMAC,
+  checklistController.getAllChecklistBySite,
+)
 /**
  * @swagger
  * /api/checklists/{id}:
@@ -94,7 +99,7 @@ router.get('/by-site/:id', checklistController.getAllChecklistBySite)
  *       500:
  *         description: Internal server error.
  */
-router.get('/:id', checklistController.getOneChecklist)
-router.patch('/:id', checklistController.updateMachineId)
+router.get('/:id', verifyHMAC, checklistController.getOneChecklist)
+router.patch('/:id', verifyHMAC, checklistController.updateMachineId)
 
 module.exports = router

@@ -4,6 +4,7 @@ const router = require('express').Router()
 
 // Middleware
 const checkIPRange = require('../middlewares/checkIPRange')
+const verifyHMAC = require('../middlewares/verifyHMAC')
 
 /**
  * @swagger
@@ -44,5 +45,5 @@ const checkIPRange = require('../middlewares/checkIPRange')
  *       500:
  *         description: Internal server error.
  */
-router.post('/', commentController.addComment)
+router.post('/', verifyHMAC, commentController.addComment)
 module.exports = router

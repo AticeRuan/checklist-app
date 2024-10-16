@@ -15,7 +15,14 @@ import { indexApi } from './indexApi'
 export const siteApi = indexApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllSites: builder.query({
-      query: () => '/sites',
+      query: () => ({
+        url: '/sites',
+        headers: {
+          'x-custom-url': '/api/sites', // Pass URL here
+          'x-custom-body': '',
+          'x-custom-method': 'GET',
+        },
+      }),
     }),
   }),
   overrideExisting: false,

@@ -103,6 +103,7 @@ const SingleListItem = () => {
               },
             },
           ])
+          return
         }
 
         const newAction = await addAction(action).unwrap()
@@ -118,6 +119,7 @@ const SingleListItem = () => {
               },
             },
           ])
+          setAction({ ...action, content: '' })
         }
       } catch (error) {
         Alert.alert('Failed to send action')
@@ -205,6 +207,9 @@ const SingleListItem = () => {
                           placeholderTextColor="#b8b8b8"
                           multiline={true}
                           value={action.content}
+                          blurOnSubmit={true}
+                          returnKeyType="done"
+                          onSubmitEditing={() => Keyboard.dismiss()}
                           onChangeText={(e) =>
                             setAction({ ...action, content: e })
                           }

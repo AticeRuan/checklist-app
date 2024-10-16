@@ -9,6 +9,11 @@ export const userCheckApi = indexApi.injectEndpoints({
         url: `/user-checks/${id}`,
         method: 'PATCH',
         body: check,
+        headers: {
+          'x-custom-url': '/api/user-checks/${id}',
+          'x-custom-body': JSON.stringify(check),
+          'x-custom-method': 'PATCH',
+        },
       }),
       invalidatesTags: (result, error, args) => [
         { type: 'UserCheck' },
@@ -16,7 +21,14 @@ export const userCheckApi = indexApi.injectEndpoints({
       ],
     }),
     getUserChecksByChecklist: builder.query({
-      query: (checklist_id) => `user-checks?checklist_id=${checklist_id}`,
+      query: (checklist_id) => ({
+        url: `user-checks?checklist_id=${checklist_id}`,
+        headers: {
+          'x-custom-url': `/api/user-checks?checklist_id=${checklist_id}`,
+          'x-custom-body': '',
+          'x-custom-method': 'GET',
+        },
+      }),
       providesTags: ['UserCheck'],
     }),
   }),

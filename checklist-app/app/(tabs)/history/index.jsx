@@ -22,7 +22,7 @@ const History = () => {
         {access_level === 3 ? (
           <StaffHistoryList />
         ) : access_level === 2 ? (
-          <SupervisorHistoryList />
+          <SupervisorHistoryList siteId={siteId} />
         ) : null}
       </View>
     </SafeAreaView>

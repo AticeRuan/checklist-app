@@ -8,7 +8,11 @@ const swaggerUi = require('swagger-ui-express')
 const serverless = require('serverless-http')
 
 var corsOptions = {
-  origin: ['http://localhost:5173', 'https://checklist-app-gray.vercel.app'],
+  origin: [
+    'http://localhost:5173',
+    'https://checklist-app-gray.vercel.app',
+    'http://localhost:8081',
+  ], // Add localhost:8081
   optionsSuccessStatus: 200,
   credentials: true,
   methods: ['GET', 'POST', 'HEAD', 'PUT', 'PATCH', 'DELETE'],
@@ -17,6 +21,8 @@ var corsOptions = {
     'Authorization',
     'X-Forwarded-For',
     'X-Real-IP',
+    'x-signature',
+    'x-timestamp',
   ],
   exposedHeaders: ['Authorization', 'X-Forwarded-For', 'X-Real-IP'],
 }
@@ -39,29 +45,23 @@ app.use(
       'Authorization',
       'X-Forwarded-For',
       'X-Real-IP',
+      'x-signature',
+      'x-timestamp',
+      'x-custom-url',
+      'x-custom-body',
+      'x-custom-method',
     ],
     exposedHeaders: ['Authorization', 'X-Forwarded-For', 'X-Real-IP'],
   }),
 )
 
-// app.use((req, res, next) => {
-//   res.header(
-//     'Access-Control-Allow-Origin',
-//     'https://checklist-app-gray.vercel.app',
-//   )
-//   res.header(
-//     'Access-Control-Allow-Headers',
-//     'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-//   )
-//   next()
-// })
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions)
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 
-//routes
+//=====ROUTES=====
 
 //Category
 const categoryRouter = require('./routes/categoryRouter')

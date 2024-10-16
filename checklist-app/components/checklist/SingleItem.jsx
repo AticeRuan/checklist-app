@@ -34,8 +34,8 @@ const SingleItem = ({
       <Text
         className={
           isChecked
-            ? 'text-2xl capitalize text-b-light-grey w-[80%]  '
-            : 'text-2xl capitalize w-[80%]'
+            ? 'text-2xl capitalize text-b-light-grey w-[70%]  '
+            : 'text-2xl capitalize w-[70%]'
         }
       >
         {keyword}

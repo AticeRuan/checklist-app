@@ -259,11 +259,15 @@ const getAllChecklistBySite = async (req, res) => {
   try {
     const { id } = req.params
 
-    if (!id) {
+    // Sanitize input
+    const sanitizedSiteId = validator.toInt(id.toString())
+
+    if (!sanitizedSiteId) {
       return res.status(400).json({ error: 'Site ID is required' })
     }
+
     let checklists = await Checklist.findAll({
-      where: { site_id: id },
+      where: { site_id: sanitizedSiteId },
       order: [['createdAt', 'DESC']],
       include: [
         {
